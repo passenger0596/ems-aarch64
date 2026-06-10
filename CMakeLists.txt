@@ -12,6 +12,14 @@ add_compile_options(-Wno-psabi)
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -g1 -DNDEBUG")
 set(CMAKE_BUILD_TYPE Release)
 
+# ==================== 可选构建开关 ====================
+# 开启后使用静态库（默认 ON），否则尝试使用共享库
+option(USE_STATIC_LIBS "Link third-party libraries statically when possible" ON)
+# 是否启用函数/数据段分离与链接时垃圾回收（减小二进制）
+option(ENABLE_GC_SECTIONS "Enable -ffunction-sections/-fdata-sections and linker --gc-sections" ON)
+# 是否在构建后剥离符号（默认开启以减小体积）
+option(STRIP_BINARIES "Strip binaries after linking to reduce size" ON)
+
 # ==================== 交叉编译工具链 ====================
 set(ARM_TOOLCHAIN_PREFIX "aarch64-none-linux-gnu")
 
@@ -115,15 +123,56 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 # ==================== ✅ 静态链接第三方库（推荐）====================
 # 静态链接避免 GLIBC 版本兼容性问题
 target_link_libraries(${PROJECT_NAME}
-    ${LIBSOCKCANPP_ROOT}/lib/libsockcanpp.a
-    ${MODBUS_ROOT}/lib/libmodbus.a      # 静态链接 libmodbus
-    ${HIREDIS_ROOT}/lib/libhiredis.a    # 静态链接 hiredis
-    ${SQLITE3_ROOT}/lib/libsqlite3.a    # 静态链接 SQLite3
-    ${SQLITECPP_ROOT}/lib/libSQLiteCpp.a # 静态链接 SQLiteCpp
-    ${REDISPP_ROOT}/lib/libredis++.a    # 静态链接 redis-plus-plus
-    pthread
-    m
+    # 链接库根据 USE_STATIC_LIBS 选择静态或共享
 )
+
+if(USE_STATIC_LIBS)
+    target_link_libraries(${PROJECT_NAME}
+        ${LIBSOCKCANPP_ROOT}/lib/libsockcanpp.a
+        ${MODBUS_ROOT}/lib/libmodbus.a
+        ${HIREDIS_ROOT}/lib/libhiredis.a
+        ${SQLITE3_ROOT}/lib/libsqlite3.a
+        ${SQLITECPP_ROOT}/lib/libSQLiteCpp.a
+        ${REDISPP_ROOT}/lib/libredis++.a
+        pthread
+        m
+    )
+else()
+    target_link_libraries(${PROJECT_NAME}
+        ${LIBSOCKCANPP_ROOT}/lib/libsockcanpp.so
+        ${MODBUS_ROOT}/lib/libmodbus.so
+        ${HIREDIS_ROOT}/lib/libhiredis.so
+        ${SQLITE3_ROOT}/lib/libsqlite3.so
+        ${SQLITECPP_ROOT}/lib/libSQLiteCpp.so
+        ${REDISPP_ROOT}/lib/libredis++.so
+        pthread
+        m
+    )
+endif()
+
+# ==================== 大小优化选项 ====================
+if(ENABLE_GC_SECTIONS)
+    # 给编译器添加节分割以便链接器可以丢弃未使用部分
+    add_compile_options(-ffunction-sections -fdata-sections)
+    # 对于较老的 CMake 版本使用全局 LINK_FLAGS 退路
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.13")
+        target_link_options(${PROJECT_NAME} PRIVATE -Wl,--gc-sections)
+    else()
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
+    endif()
+endif()
+
+# ==================== 🔗 动态链接第三方库 ====================
+# target_link_libraries(${PROJECT_NAME}
+#     ${LIBSOCKCANPP_ROOT}/lib/sockcanpp.so        # 动态链接 libsockcanpp
+#     ${MODBUS_ROOT}/lib/libmodbus.so              # 动态链接 libmodbus
+#     ${HIREDIS_ROOT}/lib/libhiredis.so            # 动态链接 hiredis
+#     ${SQLITE3_ROOT}/lib/libsqlite3.so            # 动态链接 SQLite3
+#     ${SQLITECPP_ROOT}/lib/libSQLiteCpp.so        # 动态链接 SQLiteCpp
+#     ${REDISPP_ROOT}/lib/libredis++.so            # 动态链接 redis-plus-plus
+#     pthread
+#     m
+# )
 
 # ==================== 可选：静态链接 C++ 运行库 ====================
 # 如果仍担心 GLIBCXX 问题，可打开这一行
@@ -155,3 +204,11 @@ message(STATUS "SQLite3 static lib: ${SQLITE3_ROOT}/lib/libsqlite3.a")
 message(STATUS "SQLiteCpp static lib: ${SQLITECPP_ROOT}/lib/libSQLiteCpp.a")
 message(STATUS "Redis++ static lib: ${REDISPP_ROOT}/lib/libredis++.a")
 message(STATUS "Output: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+
+# 构建后剥离符号以减小体积（若开启 STRIP_BINARIES）
+if(STRIP_BINARIES)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${ARM_TOOLCHAIN_PREFIX}-strip --strip-unneeded $<TARGET_FILE:${PROJECT_NAME}>
+        COMMENT "Stripping binary to reduce size"
+    )
+endif()

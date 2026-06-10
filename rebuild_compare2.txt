@@ -1,0 +1,48 @@
+-- Compiler: aarch64-none-linux-gnu-g++
+-- libsockcanpp static lib: /home/boring/libsockcanpp-aarch64/lib/libsockcanpp.a
+-- Modbus static lib: /home/boring/aarch64-modbus/lib/libmodbus.a
+-- Hiredis static lib: /home/boring/hiredis-aarch64/lib/libhiredis.a
+-- SQLite3 static lib: /home/boring/sqlite-aarch64/lib/libsqlite3.a
+-- SQLiteCpp static lib: /home/boring/sqlite-aarch64/lib/libSQLiteCpp.a
+-- Redis++ static lib: /home/boring/redis++-aarch64/lib/libredis++.a
+-- Output: /home/boring/code/bin
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/boring/code/build
+[  3%] Building CXX object CMakeFiles/ems_aarch64.dir/src/main.cpp.o
+[  7%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/device.cpp.o
+[ 10%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/acmeter_3366.cpp.o
+[ 14%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/gt_bms.cpp.o
+[ 21%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/ems.cpp.o
+[ 21%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/pcs.cpp.o
+[ 25%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/pcs_15am.cpp.o
+[ 32%] Building CXX object CMakeFiles/ems_aarch64.dir/src/control/ejpcs15amcmd.cpp.o
+[ 28%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/bms_uhome.cpp.o
+[ 35%] Building CXX object CMakeFiles/ems_aarch64.dir/src/control/emscmd.cpp.o
+[ 39%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/dcdc.cpp.o
+[ 46%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/wea1610.cpp.o
+[ 42%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/devicemanager.cpp.o
+[ 53%] Building CXX object CMakeFiles/ems_aarch64.dir/src/control/mqttcontroller.cpp.o
+[ 53%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/dehumidifier_v2.cpp.o
+[ 57%] Building CXX object CMakeFiles/ems_aarch64.dir/src/devices/iomodule.cpp.o
+[ 67%] Building CXX object CMakeFiles/ems_aarch64.dir/src/utils/log.cpp.o
+[ 96%] Building CXX object CMakeFiles/ems_aarch64.dir/src/utils/utils.cpp.o
+[ 71%] Building CXX object CMakeFiles/ems_aarch64.dir/src/control/strategy.cpp.o
+[ 71%] Building CXX object CMakeFiles/ems_aarch64.dir/src/utils/modbusserver.cpp.o
+[ 82%] Building CXX object CMakeFiles/ems_aarch64.dir/src/control/qtcontroller.cpp.o
+[ 96%] Building CXX object CMakeFiles/ems_aarch64.dir/src/utils/modbusclient.cpp.o
+[ 78%] Building CXX object CMakeFiles/ems_aarch64.dir/src/pugixml/pugixml.cpp.o
+[ 96%] Building CXX object CMakeFiles/ems_aarch64.dir/src/utils/sqldatabase.cpp.o
+[ 96%] Building CXX object CMakeFiles/ems_aarch64.dir/src/utils/unixsocketserver.cpp.o
+[ 82%] Building CXX object CMakeFiles/ems_aarch64.dir/src/utils/sqlcpp.cpp.o
+[ 96%] Building CXX object CMakeFiles/ems_aarch64.dir/src/utils/canoperator.cpp.o
+[100%] Linking CXX executable /home/boring/code/bin/ems_aarch64
+Stripping binary to reduce size
+[100%] Built target ems_aarch64
+
+===== NEW METRICS (/home/boring/code/bin/ems_aarch64) =====
+/home/boring/code/bin/ems_aarch64: ELF 64-bit LSB executable, ARM aarch64, version 1 (GNU/Linux), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, stripped
+2.9M	/home/boring/code/bin/ems_aarch64
+   text	   data	    bss	    dec	    hex	filename
+2919652	  31040	  19432	2970124	 2d520c	/home/boring/code/bin/ems_aarch64
+  INTERP         0x0000000000000270 0x0000000000400270 0x0000000000400270

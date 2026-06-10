@@ -5,11 +5,13 @@
 #include <memory>
 #include <vector>
 #include <shared_mutex>  // C++17 读写锁支持
+#include <algorithm>
 #include "json.hpp"
 #include "canoperator.h"
 #include "modbusclient.h"
 #include <pugixml.hpp>
 #include "log.h"
+#include "utils.h"
 
 using json = nlohmann::json;
 
@@ -21,6 +23,8 @@ struct RegisterData {
     uint16_t offset = 0;
     std::string datatype;
     std::string unit;
+    uint8_t register_count = 1;
+    bool big_endian = true;
 };
 
 class Device {
@@ -30,12 +34,19 @@ public:
         uint16_t num_regs;
     };
 
+    struct ParsedRegister {
+        std::string key;
+        uint16_t buffer_index;
+    };
+
     Device(const std::string& name, int com, int id)
         : name_(name), com_(com), id_(id) {}
 
     virtual ~Device() = default;
 
-    virtual void parse_rawdata(const std::vector<uint16_t>& data_list)=0;
+    virtual void parse_rawdata(const std::vector<uint16_t>& data_list) {
+        parse_rawdata_generic(data_list);
+    }
 
     virtual void read_data(ModbusClient& mb_client)=0;
 
@@ -67,33 +78,33 @@ public:
 
     // 配置初始化 - 提供默认实现，子类可重写
     virtual void init_config(const std::string& config_file) {
-        LOG_INFO_LOC(("Loading device config from: " + config_file).c_str());
+        LOG_INFO_LOC(("加载"+this->name_+"配置文件: " + config_file).c_str());
         pugi::xml_document doc;
         pugi::xml_parse_result result = doc.load_file(config_file.c_str());
 
         if (!result) {
-            LOG_ERROR_LOC(("Failed to load config file: " + config_file + ", Error: " + result.description()).c_str());
+            LOG_ERROR_LOC(("加载"+this->name_+"配置文件失败: " + config_file + ", Error: " + result.description()).c_str());
             return;
         }
 
         pugi::xml_node root = doc.document_element();
         if (!root) {
-            LOG_ERROR_LOC("Invalid XML format");
+            LOG_ERROR_LOC(("加载"+this->name_+"配置文件XML格式错误").c_str());
             return;
         }
 
         // 解析功能码01（离散输出）
         pugi::xml_node fc01_node = root.child("function_code01");
         if (fc01_node) {
-            for (pugi::xml_node hr : fc01_node.children("hRegister")) {
-                std::string name = hr.attribute("name").as_string();
+            for (pugi::xml_node coil : fc01_node.children("coil")) {
+                std::string name = coil.attribute("name").as_string();
                 if (!name.empty()) {
                     RegisterData reg_data;
-                    reg_data.address = static_cast<uint16_t>(std::stoi(hr.attribute("address").as_string()));
-                    reg_data.mag =  static_cast<double>(std::stoi(hr.attribute("mag").as_string()));
-                    reg_data.offset =  static_cast<uint16_t>(std::stoi(hr.attribute("offset").as_string()));
-                    reg_data.datatype = hr.attribute("datatype").as_string();
-                    reg_data.unit = hr.attribute("unit").as_string();
+                    reg_data.address = static_cast<uint16_t>(std::stoi(coil.attribute("address").as_string()));
+                    // reg_data.mag =  static_cast<double>(std::stoi(coil.attribute("mag").as_string()));
+                    // reg_data.offset =  static_cast<uint16_t>(std::stoi(coil.attribute("offset").as_string()));
+                    reg_data.datatype = coil.attribute("datatype").as_string();
+                    // reg_data.unit = coil.attribute("unit").as_string();
                     reg_data.value = 0.0;
 
                     // 存储到映射和字典中
@@ -107,15 +118,15 @@ public:
         // 解析功能码02（离散输入）
         pugi::xml_node fc02_node = root.child("function_code02");
         if (fc02_node) {
-            for (pugi::xml_node hr : fc02_node.children("hRegister")) {
-                std::string name = hr.attribute("name").as_string();
+            for (pugi::xml_node di : fc02_node.children("di")) {
+                std::string name = di.attribute("name").as_string();
                 if (!name.empty()) {
                     RegisterData reg_data;
-                    reg_data.address = static_cast<uint16_t>(std::stoi(hr.attribute("address").as_string()));
-                    reg_data.mag =  static_cast<double>(std::stoi(hr.attribute("mag").as_string()));
-                    reg_data.offset =  static_cast<uint16_t>(std::stoi(hr.attribute("offset").as_string()));
-                    reg_data.datatype = hr.attribute("datatype").as_string();
-                    reg_data.unit = hr.attribute("unit").as_string();
+                    reg_data.address = static_cast<uint16_t>(std::stoi(di.attribute("address").as_string()));
+                    // reg_data.mag =  static_cast<double>(std::stoi(di.attribute("mag").as_string()));
+                    // reg_data.offset =  static_cast<uint16_t>(std::stoi(di.attribute("offset").as_string()));
+                    reg_data.datatype = di.attribute("datatype").as_string();
+                    // reg_data.unit = di.attribute("unit").as_string();
                     reg_data.value = 0.0;
 
                     // 存储到映射和字典中
@@ -140,6 +151,12 @@ public:
                     reg_data.datatype = hr.attribute("datatype").as_string();
                     reg_data.unit = hr.attribute("unit").as_string();
                     reg_data.value = 0.0;
+                    std::string endian_str = hr.attribute("endian").as_string("BIG");
+                    reg_data.big_endian = (endian_str != "LITTLE");
+                    if (reg_data.datatype.find("INT32") != std::string::npos ||
+                        reg_data.datatype.find("UINT32") != std::string::npos) {
+                        reg_data.register_count = 2;
+                    }
 
                     // 存储到映射和字典中
                     this->fc03_nameToAddr_map[name] = reg_data.address;
@@ -152,16 +169,22 @@ public:
         // 解析功能码04（输入寄存器）
         pugi::xml_node fc04_node = root.child("function_code04");
         if (fc04_node) {
-            for (pugi::xml_node hr : fc04_node.children("hRegister")) {
-                std::string name = hr.attribute("name").as_string();
+            for (pugi::xml_node ir : fc04_node.children("iRegister")) {
+                std::string name = ir.attribute("name").as_string();
                 if (!name.empty()) {
                     RegisterData reg_data;
-                    reg_data.address = static_cast<uint16_t>(std::stoi(hr.attribute("address").as_string()));
-                    reg_data.mag =  static_cast<double>(std::stoi(hr.attribute("mag").as_string()));
-                    reg_data.offset =  static_cast<uint16_t>(std::stoi(hr.attribute("offset").as_string()));
-                    reg_data.datatype = hr.attribute("datatype").as_string();
-                    reg_data.unit = hr.attribute("unit").as_string();
+                    reg_data.address = static_cast<uint16_t>(std::stoi(ir.attribute("address").as_string()));
+                    reg_data.mag =  static_cast<double>(std::stoi(ir.attribute("mag").as_string()));
+                    reg_data.offset =  static_cast<uint16_t>(std::stoi(ir.attribute("offset").as_string()));
+                    reg_data.datatype = ir.attribute("datatype").as_string();
+                    reg_data.unit = ir.attribute("unit").as_string();
                     reg_data.value = 0.0;
+                    std::string endian_str = ir.attribute("endian").as_string("BIG");
+                    reg_data.big_endian = (endian_str != "LITTLE");
+                    if (reg_data.datatype.find("INT32") != std::string::npos ||
+                        reg_data.datatype.find("UINT32") != std::string::npos) {
+                        reg_data.register_count = 2;
+                    }
 
                     // 存储到映射和字典中
                     this->fc04_nameToAddr_map[name] = reg_data.address;
@@ -179,7 +202,7 @@ public:
         for (size_t i = 0; i < this->data_dict_.size(); ++i) {
             this->data_to_qt["data"].push_back(0.0);
         }
-        LOG_INFO_LOC(("Device config loaded successfully: " + std::to_string(this->data_dict_.size()) + " registers.").c_str());
+        LOG_INFO_LOC(("设备 " + this->name_ + "初始化寄存器成功, 共: " + std::to_string(this->data_dict_.size()) + " 个寄存器.").c_str());
     }
 
     // 解析告警信息 - 子类可选择性调用
@@ -262,18 +285,18 @@ public:
                                       const uint16_t& addr,
                                       const std::vector<uint16_t>& value_list) {
         if (!mb_client || !mb_client->is_connected()) {
-            LOG_WARNING_LOC(("Modbus client is not connected for device: " + name_).c_str());
+            LOG_WARNING_LOC(("Modbus client is not connected for device: " + this->name_).c_str());
             return false;
         }
         
         // 设置从站地址
         if (!mb_client->set_slave(this->id_)) {
-            LOG_ERROR_LOC(("Failed to set slave address for device: " + name_).c_str());
+            LOG_ERROR_LOC(("Failed to set slave address for device: " + this->name_).c_str());
             return false;
         }
         
         if (value_list.empty()) {
-            LOG_WARNING_LOC(("Device " + name_ + ": Value list is empty").c_str());
+            LOG_WARNING_LOC(("Device " + this->name_ + ": Value list is empty").c_str());
             return false;
         }
         
@@ -340,6 +363,21 @@ public:
 
     std::vector<uint16_t> data_buffer;  // 缓存从设备读取的数据
 
+    std::vector<RegisterSegment> segments01_;
+    std::vector<RegisterSegment> segments02_;
+    std::vector<RegisterSegment> segments03_;
+    std::vector<RegisterSegment> segments04_;
+
+    std::vector<std::vector<uint8_t>> data_buffer_vec01_;
+    std::vector<std::vector<uint8_t>> data_buffer_vec02_;
+    std::vector<std::vector<uint16_t>> data_buffer_vec03_;
+    std::vector<std::vector<uint16_t>> data_buffer_vec04_;
+
+    std::vector<ParsedRegister> parsed_registers_fc01_;
+    std::vector<ParsedRegister> parsed_registers_fc02_;
+    std::vector<ParsedRegister> parsed_registers_fc03_;
+    std::vector<ParsedRegister> parsed_registers_fc04_;
+
     std::unordered_map<std::string, uint16_t> fc01_nameToAddr_map;
     std::unordered_map<std::string, uint16_t> fc02_nameToAddr_map;
     std::unordered_map<std::string, uint16_t> fc03_nameToAddr_map;
@@ -348,7 +386,7 @@ public:
     // 内部数据处理使用的map
     std::unordered_map<std::string, RegisterData> data_dict_;
 
-    std::vector<uint16_t> useful_indexes;
+    std::vector<ParsedRegister> parsed_registers_;
     std::vector<std::pair<std::string, uint8_t>> alarm_map;
 
     json data_to_qt;
@@ -397,6 +435,7 @@ public:
             it->second.value = value;
             return true;
         }
+        LOG_WARNING_LOC(("设备 " + this->name_ + ": 寄存器 " + key + "未找到，无法更新值").c_str());
         return false;
     }
 
@@ -416,6 +455,21 @@ public:
             out_mag = it->second.mag;
             out_offset = it->second.offset;
             out_datatype = it->second.datatype;
+            return true;
+        }
+        return false;
+    }
+
+    bool getRegisterConfig(const std::string& key, double& out_mag, uint16_t& out_offset,
+                           std::string& out_datatype, bool& out_big_endian, uint8_t& out_register_count) {
+        std::shared_lock<std::shared_mutex> lock(data_dict_rwlock_);
+        auto it = data_dict_.find(key);
+        if (it != data_dict_.end()) {
+            out_mag = it->second.mag;
+            out_offset = it->second.offset;
+            out_datatype = it->second.datatype;
+            out_big_endian = it->second.big_endian;
+            out_register_count = it->second.register_count;
             return true;
         }
         return false;
@@ -460,6 +514,8 @@ public:
     json alarm_level2;
     json alarm_level3;
 
+
+
     std::string name_;
     uint8_t com_;
     uint8_t id_;
@@ -469,41 +525,309 @@ public:
     // 告警状态缓存，用于检测告警状态变化
     std::unordered_map<std::string, bool> alarm_cached;
 
+    /// 3-arg version: fills out_parsed with LOCAL buffer indices (relative to the given segments).
+    /// Does NOT touch parsed_registers_ — use build_parsed_registers() afterwards if needed.
+    void init_useful_indexes_from_map(
+        const std::unordered_map<std::string, uint16_t>& name_to_addr_map,
+        const std::vector<RegisterSegment>& segments,
+        std::vector<ParsedRegister>& out_parsed) {
+        out_parsed.clear();
+
+        std::unordered_map<uint16_t, uint16_t> addr_to_buffer_index;
+        uint16_t buffer_idx = 0;
+        for (const auto& seg : segments) {
+            for (uint16_t addr = seg.start_addr; addr < seg.start_addr + seg.num_regs; ++addr) {
+                addr_to_buffer_index[addr] = buffer_idx;
+                ++buffer_idx;
+            }
+        }
+
+        for (const auto& key : dev_data_keys_) {
+            auto addr_it = name_to_addr_map.find(key);
+            if (addr_it == name_to_addr_map.end()) continue;
+            auto buf_it = addr_to_buffer_index.find(addr_it->second);
+            if (buf_it != addr_to_buffer_index.end()) {
+                out_parsed.push_back({key, buf_it->second});
+            } else {
+                LOG_WARNING_LOC("地址 " + std::to_string(addr_it->second) +
+                    " (寄存器: " + key + ") 不在任何读取段中");
+            }
+        }
+
+        if (out_parsed.size() != name_to_addr_map.size()) {
+            LOG_WARNING_LOC("索引数量(" + std::to_string(out_parsed.size()) +
+                ") 与寄存器数量(" + std::to_string(name_to_addr_map.size()) + ")不匹配");
+        } else {
+            LOG_INFO_LOC("索引匹配成功: " + std::to_string(out_parsed.size()) + " 个寄存器已索引");
+        }
+    }
+
+    /// 2-arg backward-compatible wrapper: fills parsed_registers_ directly.
+    /// Used by single-FC devices — no changes needed in existing code.
+    void init_useful_indexes_from_map(
+        const std::unordered_map<std::string, uint16_t>& name_to_addr_map,
+        const std::vector<RegisterSegment>& segments) {
+        init_useful_indexes_from_map(name_to_addr_map, segments, parsed_registers_);
+    }
+
+    /// Helper: count total registers in a vector of segments
+    static uint16_t count_segment_registers(const std::vector<RegisterSegment>& segs) {
+        uint16_t total = 0;
+        for (const auto& seg : segs) total += seg.num_regs;
+        return total;
+    }
+
+    /// Build parsed_registers_ from all per-FC vectors with correct global buffer offsets.
+    /// The offset for each FC is the total register count of all preceding FCs,
+    /// matching the concatenation order in read_all_registers().
+    void build_parsed_registers() {
+        parsed_registers_.clear();
+        uint16_t offset = 0;
+
+        auto append_with_offset = [this](const std::vector<ParsedRegister>& fc_vec,
+                                          uint16_t& offset,
+                                          const std::vector<RegisterSegment>& segs) {
+            for (const auto& pr : fc_vec) {
+                parsed_registers_.push_back(
+                    {pr.key, static_cast<uint16_t>(pr.buffer_index + offset)});
+            }
+            offset += count_segment_registers(segs);
+        };
+
+        append_with_offset(parsed_registers_fc01_, offset, segments01_);
+        append_with_offset(parsed_registers_fc02_, offset, segments02_);
+        append_with_offset(parsed_registers_fc03_, offset, segments03_);
+        append_with_offset(parsed_registers_fc04_, offset, segments04_);
+
+        LOG_INFO_LOC("构建全局寄存器索引完成: " + std::to_string(parsed_registers_.size()) +
+                     " 个寄存器, 总偏移 " + std::to_string(offset));
+    }
+
+    static double parse_register_value(
+        const std::vector<uint16_t>& data_list,
+        uint16_t buffer_index,
+        double mag,
+        uint16_t offset,
+        const std::string& datatype,
+        bool big_endian = true,
+        uint8_t register_count = 1) {
+        if (buffer_index >= data_list.size()) return 0.0;
+
+        double actual_value = 0.0;
+
+        if (datatype.find("BOOL") != std::string::npos) {
+            actual_value = (data_list[buffer_index] != 0) ? 1.0 : 0.0;
+        } else if (register_count == 2 && buffer_index + 1 < data_list.size()) {
+            Utils::Endian endian = big_endian ? Utils::Endian::BIG : Utils::Endian::LITTLE;
+            if (datatype.find("INT32") != std::string::npos) {
+                uint32_t raw = Utils::getUint32num(data_list[buffer_index], data_list[buffer_index + 1], endian);
+                actual_value = static_cast<double>(static_cast<int32_t>(raw)) / mag + offset;
+            } else {
+                uint32_t raw = Utils::getUint32num(data_list[buffer_index], data_list[buffer_index + 1], endian);
+                actual_value = static_cast<double>(raw) / mag + offset;
+            }
+        } else if (datatype.find("INT16") != std::string::npos) {
+            actual_value = static_cast<double>(static_cast<int16_t>(data_list[buffer_index])) / mag + offset;
+        } else {
+            actual_value = static_cast<double>(data_list[buffer_index]) / mag + offset;
+        }
+
+        return actual_value;
+    }
+
+
+    // 通用解析原始数据，适用于单个功能码的设备
+    void parse_rawdata_generic(const std::vector<uint16_t>& data_list) {
+        this->online_status = true;
+        json data_array = json::array();
+
+        for (const auto& pr : this->parsed_registers_) {
+            if (pr.buffer_index >= data_list.size()) break;
+
+            double mag = 1.0;
+            uint16_t offset = 0;
+            std::string datatype;
+            bool big_endian = true;
+            uint8_t register_count = 1;
+
+            if (!this->getRegisterConfig(pr.key, mag, offset, datatype, big_endian, register_count)) {
+                data_array.push_back(0.0);
+                continue;
+            }
+
+            double actual_value = parse_register_value(
+                data_list, pr.buffer_index, mag, offset, datatype, big_endian, register_count);
+
+            this->updateRegisterValue(pr.key, actual_value);
+            data_array.push_back(actual_value);
+        }
+
+        auto now = std::chrono::system_clock::now();
+        auto time_t_now = std::chrono::system_clock::to_time_t(now);
+        std::stringstream ss;
+        ss << std::put_time(std::localtime(&time_t_now), "%Y-%m-%d %H:%M:%S");
+
+        {
+            std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
+            this->data_to_qt["timestamp"] = ss.str();
+            this->data_to_qt["online_status"] = true;
+            this->data_to_qt["data"] = data_array;
+        }
+    }
+
+    bool read_fc01_segments(ModbusClient& mb_client,
+                            const std::vector<RegisterSegment>& segments,
+                            std::vector<std::vector<uint8_t>>& buffer_vec,
+                            std::vector<uint16_t>& data_buffer) {
+        if (!mb_client.is_connected()) return false;
+
+        mb_client.set_slave(this->id_);
+
+        buffer_vec.resize(segments.size());
+        for (size_t i = 0; i < segments.size(); ++i) {
+            buffer_vec[i].resize(segments[i].num_regs);
+            if (!mb_client.read_coils(
+                    segments[i].start_addr, segments[i].num_regs, buffer_vec[i].data())) {
+                return false;
+            }
+        }
+
+        for (const auto& buf : buffer_vec) {
+            data_buffer.insert(data_buffer.end(), buf.begin(), buf.end());
+        }
+        return true;
+    }
+
+    bool read_fc02_segments(ModbusClient& mb_client,
+                            const std::vector<RegisterSegment>& segments,
+                            std::vector<std::vector<uint8_t>>& buffer_vec,
+                            std::vector<uint16_t>& data_buffer) {
+        if (!mb_client.is_connected()) return false;
+
+        mb_client.set_slave(this->id_);
+
+        buffer_vec.resize(segments.size());
+        for (size_t i = 0; i < segments.size(); ++i) {
+            buffer_vec[i].resize(segments[i].num_regs);
+            if (!mb_client.read_input_bits(
+                    segments[i].start_addr, segments[i].num_regs, buffer_vec[i].data())) {
+                return false;
+            }
+        }
+
+        for (const auto& buf : buffer_vec) {
+            data_buffer.insert(data_buffer.end(), buf.begin(), buf.end());
+        }
+        return true;
+    }
+   
+
+    bool read_fc03_segments(ModbusClient& mb_client,
+                            const std::vector<RegisterSegment>& segments,
+                            std::vector<std::vector<uint16_t>>& buffer_vec,
+                            std::vector<uint16_t>& data_buffer) {
+        if (!mb_client.is_connected()) return false;
+
+        mb_client.set_slave(this->id_);
+
+        buffer_vec.resize(segments.size());
+        for (size_t i = 0; i < segments.size(); ++i) {
+            buffer_vec[i].resize(segments[i].num_regs);
+            if (!mb_client.read_holding_registers(
+                    segments[i].start_addr, segments[i].num_regs, buffer_vec[i].data())) {
+                return false;
+            }
+        }
+
+        for (const auto& buf : buffer_vec) {
+            data_buffer.insert(data_buffer.end(), buf.begin(), buf.end());
+        }
+        return true;
+    }
+
+
+
+    bool read_fc04_segments(ModbusClient& mb_client,
+                            const std::vector<RegisterSegment>& segments,
+                            std::vector<std::vector<uint16_t>>& buffer_vec,
+                            std::vector<uint16_t>& data_buffer) {
+        if (!mb_client.is_connected()) return false;
+
+        mb_client.set_slave(this->id_);
+
+        buffer_vec.resize(segments.size());
+        for (size_t i = 0; i < segments.size(); ++i) {
+            buffer_vec[i].resize(segments[i].num_regs);
+            if (!mb_client.read_input_registers(
+                    segments[i].start_addr, segments[i].num_regs, buffer_vec[i].data())) {
+                return false;
+            }
+        }
+
+        for (const auto& buf : buffer_vec) {
+            data_buffer.insert(data_buffer.end(), buf.begin(), buf.end());
+        }
+        return true;
+    }
+
+    bool read_all_registers(ModbusClient& mb_client){
+        this->data_buffer.clear();
+        bool success = true;
+        if (!this->fc01_nameToAddr_map.empty()) 
+            success = read_fc01_segments(mb_client, this->segments01_, this->data_buffer_vec01_, this->data_buffer);
+        if (!this->fc02_nameToAddr_map.empty()) 
+            success =read_fc02_segments(mb_client, this->segments02_, this->data_buffer_vec02_, this->data_buffer);
+        if (!this->fc03_nameToAddr_map.empty()) 
+            success =read_fc03_segments(mb_client, this->segments03_, this->data_buffer_vec03_, this->data_buffer);
+        if (!this->fc04_nameToAddr_map.empty()) 
+            success =read_fc04_segments(mb_client, this->segments04_, this->data_buffer_vec04_, this->data_buffer);
+        return success;
+    }
+
     static std::vector<RegisterSegment> generate_segments_from_addresses(
-        const std::vector<uint16_t>& addresses, 
-        uint16_t max_registers_per_segment = 100) {
+        const std::vector<uint16_t>& addresses,
+        uint16_t max_registers_per_segment = 100,
+        uint16_t gap_tolerance = 5) {
         std::vector<RegisterSegment> segments;
         if (addresses.empty()) return segments;
 
         std::vector<uint16_t> sorted_addrs = addresses;
         std::sort(sorted_addrs.begin(), sorted_addrs.end());
+        sorted_addrs.erase(std::unique(sorted_addrs.begin(), sorted_addrs.end()), sorted_addrs.end());
 
         uint16_t segment_start = sorted_addrs[0];
         uint16_t segment_end = sorted_addrs[0];
 
+        auto flush_segment = [&]() {
+            uint16_t num_regs = segment_end - segment_start + 1;
+            if (num_regs > 0) {
+                segments.push_back({segment_start, num_regs});
+            }
+        };
+
         for (size_t i = 1; i < sorted_addrs.size(); ++i) {
             uint16_t addr = sorted_addrs[i];
-            if (addr == segment_end + 1) {
+            uint16_t gap = addr - segment_end;
+            uint16_t current_count = segment_end - segment_start + 1;
+
+            if (gap == 1) {
+                segment_end = addr;
+                if (current_count + 1 >= max_registers_per_segment) {
+                    flush_segment();
+                    segment_start = addr;
+                    segment_end = addr;
+                }
+            } else if (gap > 1 && gap <= gap_tolerance &&
+                       current_count + gap <= max_registers_per_segment) {
                 segment_end = addr;
             } else {
-                if (segment_end >= segment_start) {
-                    uint16_t num_regs = segment_end - segment_start + 1;
-                    if (num_regs > 0) {
-                        segments.push_back({segment_start, num_regs});
-                    }
-                }
+                flush_segment();
                 segment_start = addr;
                 segment_end = addr;
             }
         }
 
-        if (segment_end >= segment_start) {
-            uint16_t num_regs = segment_end - segment_start + 1;
-            if (num_regs > 0) {
-                segments.push_back({segment_start, num_regs});
-            }
-        }
-
+        flush_segment();
         return segments;
     }
 };

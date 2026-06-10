@@ -68,27 +68,14 @@ private:
      * @brief 解析离散输入告警位
      * @param coil_data 离散输入数据（每个元素代表一个位）
      */
-    void parse_coil_data(const std::vector<uint8_t>& coil_data);
+    void parse_di_data(const std::vector<std::vector<uint8_t>>& segment_buffers,
+                         const std::vector<RegisterSegment>& segments);
 
     // 告警映射表：索引 -> (告警名称, 告警等级)
     std::vector<std::pair<std::string, uint8_t>> alarm_map_;
 
-    // 段配置
-    std::vector<RegisterSegment> segments02_;
-    std::vector<RegisterSegment> segments04_;
-
-    std::vector<uint16_t> useful_indexes_fc02;
-    std::vector<uint16_t> useful_indexes_fc04;
 
     std::vector<bool> alarm_bits;
-    std::vector<std::vector<uint8_t>> data_buffer_vec02_;
-    std::vector<std::vector<uint16_t>> data_buffer_vec04_;
-
-    // 初始化02功能码的有用索引
-    void init_useful_fc02_indexes();
-
-    // 初始化04功能码的有用索引
-    void init_useful_fc04_indexes();
 };
 
 #endif // GT_BMS_H

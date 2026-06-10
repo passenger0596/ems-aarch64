@@ -23,14 +23,8 @@ class Dcdc : public Device {
 
     private:
 
-    
-        // 辅助函数
-        // void init_json_structure(std::string name);
         void update_alarm_status();
-        void init_useful_indexes();
-        
-        std::vector<Device::RegisterSegment> segments_;
-        std::vector<std::vector<uint16_t>> data_buffer_vec_;
+    
 
         std::vector<bool> alarm_bits;
         

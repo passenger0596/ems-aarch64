@@ -9,7 +9,7 @@
 #include <vector>
 #include <unordered_map>
 
-using json = nlohmann::json;
+using json = nlohmann::json;  
 
 
 class DehumidifierV2 : public Device {
@@ -20,11 +20,7 @@ public:
     void parse_rawdata(const std::vector<uint16_t>& data_list) override;
     void read_data(ModbusClient& mb_client) override;
     void init_config(const std::string& config_file) override;
-    void init_useful_indexes();
 
-private:
-    std::vector<Device::RegisterSegment> segments_;
-    std::vector<std::vector<uint16_t>> data_buffer_vec_;
 };
 
 

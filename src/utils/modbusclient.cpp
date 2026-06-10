@@ -125,12 +125,8 @@ bool ModbusClient::read_input_bits(int addr, int count, uint8_t *dest)
 bool ModbusClient::read_holding_registers(int addr, int count, uint16_t *dest)
 {
     std::shared_lock<std::shared_mutex> lock(modbus_rw_mutex_);
-    // auto start = std::chrono::high_resolution_clock::now();
     int rc = modbus_read_registers(ctx_, addr, count, dest);
     if (rc == count) {
-        // auto end = std::chrono::high_resolution_clock::now();
-        // auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-        // std::cout << "读取保持寄存器耗时: " << duration.count() << " 微秒" << "\n";
         return true;
     }
     return false;
@@ -158,11 +154,10 @@ ModbusClient::~ModbusClient()
 // 写单个线圈 (功能码 05)
 bool ModbusClient::write_coil(int addr, bool value)
 {
-    std::unique_lock<std::shared_mutex> lock(modbus_rw_mutex_);
     if (!connected_ || ctx_ == nullptr) {
         return false;
     }
-    
+    std::unique_lock<std::shared_mutex> lock(modbus_rw_mutex_);
     int rc = modbus_write_bit(ctx_, addr, value ? 1 : 0);
     if (rc == 1) {
         return true;
@@ -176,11 +171,10 @@ bool ModbusClient::write_coil(int addr, bool value)
 // 写多个线圈 (功能码 15)
 bool ModbusClient::write_coils(int addr, int count, const uint8_t* values)
 {
-    std::unique_lock<std::shared_mutex> lock(modbus_rw_mutex_);
     if (!connected_ || ctx_ == nullptr) {
         return false;
     }
-    
+    std::unique_lock<std::shared_mutex> lock(modbus_rw_mutex_);
     int rc = modbus_write_bits(ctx_, addr, count, values);
     if (rc == count) {
         return true;
@@ -196,11 +190,10 @@ bool ModbusClient::write_coils(int addr, int count, const uint8_t* values)
 // 写单个寄存器 (功能码 06)
 bool ModbusClient::write_register(int addr, uint16_t value)
 {
-    std::unique_lock<std::shared_mutex> lock(modbus_rw_mutex_);
     if (!connected_ || ctx_ == nullptr) {
         return false;
     }
-    
+    std::unique_lock<std::shared_mutex> lock(modbus_rw_mutex_);
     int rc = modbus_write_register(ctx_, addr, value);
     if (rc == 1) {
         return true;
@@ -214,11 +207,10 @@ bool ModbusClient::write_register(int addr, uint16_t value)
 // 写多个寄存器 (功能码 16)
 bool ModbusClient::write_registers(int addr, int count, const uint16_t* values)
 {
-    std::unique_lock<std::shared_mutex> lock(modbus_rw_mutex_);
     if (!connected_ || ctx_ == nullptr) {
         return false;
     }
-    
+    std::unique_lock<std::shared_mutex> lock(modbus_rw_mutex_);
     int rc = modbus_write_registers(ctx_, addr, count, values);
     if (rc == count) {
         return true;

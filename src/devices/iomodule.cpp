@@ -22,17 +22,24 @@ IOModule::IOModule(const std::string& name, int com, int id)
     init_config(Config::IOMODULE_COMMUNICATION_FILEPATH);
     
     // 初始化寄存器段配置（根据协议XML，主要处理线圈和离散输入）
-    this->segments_ = {
+    this->segments01_ = {
         {0, 8},   // 第1段：线圈（功能码01）- 8个DO
-        {0, 8}    // 第2段：离散输入（功能码02）- 8个DI
     };
 
-    init_useful_indexes();
+    this->segments02_ = {
+        {0, 8},   // 第2段：离散输入（功能码02）- 8个DI
+    };
+
+    init_useful_indexes_from_map(this->fc01_nameToAddr_map, this->segments01_,
+                                 parsed_registers_fc01_);
+    init_useful_indexes_from_map(this->fc02_nameToAddr_map, this->segments02_,
+                                 parsed_registers_fc02_);
+    build_parsed_registers();
     
     // 预分配数据缓冲区
-    this->data_buffer_vec_.resize(this->segments_.size());
-    this->data_buffer_vec_[0].resize(this->segments_[0].num_regs);
-    this->data_buffer_vec_[1].resize(this->segments_[1].num_regs);
+
+    this->data_buffer_vec01_ = std::vector<std::vector<uint8_t>>(this->segments01_.size());
+    this->data_buffer_vec02_ = std::vector<std::vector<uint8_t>>(this->segments02_.size());
 }
 
 void IOModule::init_config(const std::string& config_file) {
@@ -114,62 +121,28 @@ void IOModule::init_config(const std::string& config_file) {
 void IOModule::parse_rawdata(const std::vector<uint16_t>& data_list)
 {
     this->online_status = true;
-    
-    int index = 0; // 对应dev_data_keys_和json data数组的索引
     json data_array = json::array();
-    json temp_updates;  // ✅ 临时存储需要更新的单独键值对
-    
-    // ✅ 步骤1: 使用临时变量，无锁处理数据
-    for (const uint16_t& buffer_index : this->useful_indexes) {
-        // 确保索引不越界
-        if (index >= static_cast<int>(this->dev_data_keys_.size()) || buffer_index >= data_list.size()) {
-            break;
-        }
-        
-        const std::string& key = this->dev_data_keys_[index];
-        
-        // ✅ 线程安全地获取寄存器配置
-        double mag = 1.0;
-        uint16_t offset = 0;
-        std::string datatype;
-        
-        if (!this->getRegisterConfig(key, mag, offset, datatype)) {
-            LOG_WARNING_LOC("未找到寄存器配置: " + key);
-            index++;
-            continue;
-        }
+    json temp_updates;
 
-        // 对于DI/DO设备，数据类型为BOOL，直接转换为布尔值
-        bool status = (data_list[buffer_index] != 0);
+    // 使用 parsed_registers_（已通过 build_parsed_registers() 构建全局偏移）
+    for (const auto& pr : parsed_registers_) {
+        if (pr.buffer_index >= data_list.size()) break;
+        bool status = (data_list[pr.buffer_index] != 0);
         double actual_value = status ? 1 : 0;
-        
-        // ✅ 线程安全地更新寄存器值
-        this->updateRegisterValue(key, actual_value);
-        
-        // 填充临时JSON数组
+        this->updateRegisterValue(pr.key, actual_value);
         data_array.push_back(actual_value);
-        
-        // ✅ 收集需要更新的单独键值对
-        temp_updates[key] = status;
-        
-        index++;
+        temp_updates[pr.key] = status;
     }
 
-    // ✅ 步骤2: 仅在最后原子替换时持锁
     {
         std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-        
-        // 设置在线状态
         this->data_to_qt["online_status"] = true;
         this->data_to_qt["data"] = data_array;
-        
-        // ✅ 批量更新单独的DI/DO状态字段
         for (auto it = temp_updates.begin(); it != temp_updates.end(); ++it) {
             this->data_to_qt[it.key()] = it.value();
         }
-    }  // 锁立即释放
+    }
     
-    // 更新告警状态
     update_di_status();
 }
 
@@ -226,7 +199,7 @@ void IOModule::read_data(ModbusClient& mb_client)
         
         // 使用读线圈功能码，因设备协议固定不变，直接写死地址
         bool read_success = mb_client.read_coils(
-            0, 8, this->data_buffer_vec_[0].data());
+            0, 8, this->data_buffer_vec01_[0].data());
         
         if (!read_success) {
             total_read_success = false;
@@ -240,7 +213,7 @@ void IOModule::read_data(ModbusClient& mb_client)
             
             // 使用读离散输入功能码,直接写死
             bool read_success = mb_client.read_input_bits(
-                0, 8, this->data_buffer_vec_[1].data());
+                0, 8, this->data_buffer_vec02_[0].data());
             
             if (!read_success) {
                 total_read_success = false;
@@ -251,7 +224,13 @@ void IOModule::read_data(ModbusClient& mb_client)
             this->data_buffer.clear();
             
             // 合并DI和DO数据
-            for (const std::vector<uint8_t>& reg : this->data_buffer_vec_){
+            for (const std::vector<uint8_t>& reg : this->data_buffer_vec01_){
+                for (const uint8_t& bit : reg){
+                    this->data_buffer.push_back(bit);
+                }
+            }
+
+            for (const std::vector<uint8_t>& reg : this->data_buffer_vec02_){
                 for (const uint8_t& bit : reg){
                     this->data_buffer.push_back(bit);
                 }
@@ -276,48 +255,5 @@ void IOModule::read_data(ModbusClient& mb_client)
         this->data_to_qt["online_status"] = false;
         this->online_status = false;
         std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-}
-
-void IOModule::init_useful_indexes()
-{
-    // 使用与DCDC类一致的索引映射机制
-    LOG_DEBUG_LOC("IOModule的fc01_nameToAddr_map大小: " + std::to_string(this->fc01_nameToAddr_map.size()) + 
-                 ", fc02_nameToAddr_map大小: " + std::to_string(this->fc02_nameToAddr_map.size()));
-    
-    // 对于IOModule，需要分别处理功能码01（线圈）和功能码02（离散输入）的地址映射
-    // 由于DI/DO设备的数据读取方式与保持寄存器不同，这里需要特殊处理
-    
-    // 方法1：为每个DI/DO点分配虚拟索引（与DCDC保持一致的模式）
-    uint16_t virtual_index = 0;
-
-    // 处理功能码01（线圈）的DO点和02（离散输入）的DI点
-    for (uint8_t i =0;i<this->segments_.size();++i){
-        for (uint16_t index=this->segments_[i].start_addr; index<this->segments_[i].start_addr+this->segments_[i].num_regs; ++index){
-            std::unordered_map<std::string, uint16_t> map;
-            if (i==0){
-                map = this->fc01_nameToAddr_map;
-            }else{
-                map = this->fc02_nameToAddr_map;
-            }
-            for (const auto& pair : map) {
-                if (pair.second == index) {
-                    this->useful_indexes.push_back(virtual_index);
-                    break;
-                }
-            }
-            ++virtual_index;
-        }
-    }
-
-    // 确保索引数量与键数量一致
-    if (this->useful_indexes.size() != this->dev_data_keys_.size()) {
-        LOG_WARNING_LOC("Warning: IOModule useful indexes size (" + 
-                       std::to_string(this->useful_indexes.size()) +
-                       ") does not match data keys size (" + 
-                       std::to_string(this->dev_data_keys_.size()) + ").");
-    } else {
-        LOG_INFO_LOC("IOModule索引匹配成功：" + std::to_string(this->useful_indexes.size()) + 
-                    " 个数据点已索引");
     }
 }

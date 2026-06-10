@@ -1,0 +1,11 @@
+===== OLD METRICS (/home/boring/code/bin/ems_aarch64) =====
+/home/boring/code/bin/ems_aarch64: ELF 64-bit LSB executable, ARM aarch64, version 1 (GNU/Linux), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, with debug_info, not stripped
+13M	/home/boring/code/bin/ems_aarch64
+   text	   data	    bss	    dec	    hex	filename
+2919966	  31112	  19432	2970510	 2d538e	/home/boring/code/bin/ems_aarch64
+  INTERP         0x0000000000000270 0x0000000000400270 0x0000000000400270
+CMake Error at CMakeLists.txt:164:
+  Parse error.  Expected a command name, got right paren with text ")".
+
+
+-- Configuring incomplete, errors occurred!
