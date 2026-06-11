@@ -1,5 +1,7 @@
 #include "acmeter_3366.h"
-#include "pcs_15am.h"
+
+#include "pcs.h"
+#include "dcdc.h"
 #include "ems.h"
 #include "bms_uhome.h"
 #include "wea1610.h"
@@ -53,7 +55,9 @@ class DeviceManager{
 
         // 具体设备实例
         std::shared_ptr<EMS> ems_ = nullptr;
-        std::shared_ptr<Pcs_15am> pcs_ = nullptr; 
+        std::shared_ptr<Pcs> pcs_ = nullptr; 
+        std::shared_ptr<Dcdc> dcdc1_ = nullptr;
+        std::shared_ptr<Dcdc> dcdc2_ = nullptr;
         std::shared_ptr<ACMeter_3366> dtsd3366_ = nullptr;
         std::shared_ptr<BmsUhome> bms_uhome_ = nullptr;
         std::shared_ptr<Wea1610> wea1610_ = nullptr;
@@ -112,12 +116,15 @@ class DeviceManager{
 
         // ── Modbus TCP 服务器 ──
         struct Fc03Mapping {
-            std::string key;       // data_dict 中的 key
+            std::string device_name;  // 所属设备名
+            std::string key;          // data_dict 中的 key
             double mag;
             uint16_t offset;
             std::string datatype;
-            int reg_count;         // 1 or 2
-            uint16_t last_val[2];  // 上一次同步后的值，用于检测外部写入
+            int reg_count;            // 1 or 2
+            uint16_t rtu_addr;        // RTU原始modbus地址（EMS为0）
+            uint16_t last_val[2];     // 上一次HR值，检测客户端写入
+            int skip_count;           // RTU写入后跳过N轮推送等data_dict追上
         };
 
         std::unique_ptr<ModbusServer> modbus_tcp_server_;
@@ -128,17 +135,21 @@ class DeviceManager{
         std::unordered_map<std::string, std::pair<uint16_t, uint16_t>> fc04_offsets_;
         // FC04: 每设备自定义起始地址（未设置则自动按顺序分配）
         std::unordered_map<std::string, uint16_t> fc04_start_addrs_;
-        // FC03: tcp_addr → EMS mapping entry
+        // FC03: 每设备自定义起始地址（未设置则自动按顺序分配）
+        std::unordered_map<std::string, uint16_t> fc03_start_addrs_;
+        // FC03: tcp_addr → mapping entry (所有设备)
         std::map<uint16_t, Fc03Mapping> fc03_map_;
+        uint16_t fc03_total_holding_ = 0;
 
         // ── 定时模式 / 需求响应模式块映射 ──
         // 可配置的起始地址（可通过 setter 修改）
         uint16_t timer_block_start_addr_      = 100;
         uint16_t demand_block_start_addr_     = 200;
 
-        // 最大条目数（决定了占用的寄存器空间）
-        static constexpr int MAX_TIMER_ENTRIES   = 12;   // 12 × 6 = 72 寄存器
-        static constexpr int MAX_DEMAND_ENTRIES  = 14;   // 14 × 12 = 168 寄存器
+        // 动态条目数（根据 EMS 配置文件中的实际条目数决定）
+        int timer_charge_entries_    = 0;
+        int timer_discharge_entries_ = 0;
+        int demand_entries_          = 0;
 
         static constexpr int TIMER_ENTRY_REGS     = 6;   // 每条定时记录用 6 个寄存器
         static constexpr int DEMAND_ENTRY_REGS    = 12;  // 每条需求响应记录用 12 个寄存器
@@ -155,6 +166,7 @@ class DeviceManager{
         void syncAllFc04();
         void syncAllFc03();
         void modbusSyncLoop();
+        static constexpr int FC03_SKIP_CYCLES = 4;  // RTU写入后跳过推送的轮数
 
     public:
         // 允许外部设置定时/需求响应块的起始地址（必须在 startModbusTcpServer 之前调用）
@@ -162,8 +174,10 @@ class DeviceManager{
         inline void setDemandBlockStartAddr(uint16_t addr) { demand_block_start_addr_ = addr; }
         // 允许外部设置设备的 FC04 起始地址（必须在 startModbusTcpServer 之前调用）
         inline void setDeviceFc04StartAddr(const std::string& name, uint16_t addr) { fc04_start_addrs_[name] = addr; }
+        // 允许外部设置设备的 FC03 起始地址（必须在 startModbusTcpServer 之前调用）
+        inline void setDeviceFc03StartAddr(const std::string& name, uint16_t addr) { fc03_start_addrs_[name] = addr; }
 
-    public:
+        // 启动 Modbus TCP 服务器
         void startModbusTcpServer();
         void stopModbusTcpServer();
 

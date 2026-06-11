@@ -12,21 +12,20 @@
 #include <chrono>
 #include <iomanip>
 #include <functional>  // 用于 std::function
-#include "gt_bms.h"  // 添加高特BMS头文件
+#include <algorithm>
 
 DeviceManager::DeviceManager() {
     // 初始化所有设备实例
     this->ems_ = EMS::instance();
-    this->pcs_ = std::make_shared<Pcs_15am>("pcs1", 0, 1);
-    this->wea1610_ = std::make_shared<Wea1610>("ac_wea1610", 2, 1);
-    this->dehumidifierV2_ = std::make_shared<DehumidifierV2>("dehumidifier", 3, 1);
-    this->dtsd3366_ = std::make_shared<ACMeter_3366>("dtsd3366", 4, 1);
-    // this->bms_uhome_ = std::make_shared<BmsUhome>("bms_uhome", 16, 1);
+    this->pcs_ = std::make_shared<Pcs>("pcs1", 0, 1);
     
+    this->wea1610_ = std::make_shared<Wea1610>("ac_wea1610", 2, 1);
+    this->dtsd3366_ = std::make_shared<ACMeter_3366>("dtsd3366", 4, 1);
+
     // 创建高特BMS设备（假设使用串口5，Modbus从站地址为1）
     this->gt_bms_ = std::make_shared<GtBms>("gt_bms", 5, 1);
     
-    this->devices_ = {this->ems_, this->pcs_, this->wea1610_, this->dehumidifierV2_, 
+    this->devices_ = {this->ems_, this->pcs_, this->wea1610_, 
                       this->dtsd3366_, this->gt_bms_}; 
     
     for (auto& device : this->devices_) {
@@ -481,11 +480,11 @@ void DeviceManager::runningLogShowThread() {
             LOG_ERROR_LOC(("运行日志显示线程异常: " + std::string(e.what())).c_str());
         }
         
-        // 每5秒输出一次
-        for (int i = 0; i < 50; ++i) {
+        // 每10秒输出一次
+        for (int i = 0; i < 100; ++i) {
 
-        if (this->stop_running_log_) {
-            break;
+            if (this->stop_running_log_) {
+                break;
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -647,7 +646,7 @@ void DeviceManager::publishDataToRedis()
     if (!all_success) {
         LOG_WARNING_LOC("发布 " + std::to_string(devices_.size()) + " 个设备数据到Redis失败");
     }
-    
+
     // 6. 清理连接
     redisFree(redis_conn);
 }
@@ -921,7 +920,7 @@ void DeviceManager::initModbusTcpServer(const std::string& ip, int port) {
     // --- FC04: 遍历非EMS设备，分配地址（支持自定义起始地址，未设置则按顺序分配） ---
     uint16_t cursor = 0;
     for (const auto& dev : devices_) {
-        if (!dev || dev->get_name() == "ems") continue;
+        if (!dev) continue;
 
         const auto& keys = dev->dev_data_keys_;
         if (keys.empty()) continue;
@@ -993,14 +992,15 @@ void DeviceManager::initModbusTcpServer(const std::string& ip, int port) {
 
             uint16_t addr = v["tcp_addr"].get<uint16_t>();
             Fc03Mapping m;
+            m.device_name = "ems";
             m.key      = k;
             m.mag      = v.value("mag", 1.0);
             m.offset   = v.value("offset", 0);
             m.datatype = v.value("datatype", "INT16");
             m.reg_count = reg_count_of(m.datatype);
-            m.last_val[0] = m.last_val[1] = 0;
+            m.rtu_addr = 0;  // EMS是虚拟设备，无RTU地址
+            m.skip_count = 0; m.last_val[0] = m.last_val[1] = 0;
 
-            // 用 data_dict 当前值初始化 last_val
             auto dit = ems_->data_dict_.find(k);
             if (dit != ems_->data_dict_.end()) {
                 int dummy;
@@ -1013,7 +1013,158 @@ void DeviceManager::initModbusTcpServer(const std::string& ip, int port) {
         }
     }
 
+
+    // ── 根据 EMS 配置文件动态计算定时/需求响应条目数 ──
+    timer_charge_entries_    = 0;
+    timer_discharge_entries_ = 0;
+    demand_entries_          = 0;
+    if (ems_) {
+        std::shared_lock<std::shared_mutex> lk(ems_->json_rwlock_);
+        if (ems_->timingModeSet.contains("chargeTimeList") && ems_->timingModeSet["chargeTimeList"].is_array())
+            timer_charge_entries_ = static_cast<int>(ems_->timingModeSet["chargeTimeList"].size());
+        if (ems_->timingModeSet.contains("dischargeTimeList") && ems_->timingModeSet["dischargeTimeList"].is_array())
+            timer_discharge_entries_ = static_cast<int>(ems_->timingModeSet["dischargeTimeList"].size());
+        if (ems_->demandResponseModeSet.is_array())
+            demand_entries_ = static_cast<int>(ems_->demandResponseModeSet.size());
+    }
+    // 确保至少有一定空间
+    if (timer_charge_entries_ < 1)    timer_charge_entries_ = 1;
+    if (timer_discharge_entries_ < 1) timer_discharge_entries_ = 1;
+    if (demand_entries_ < 1)          demand_entries_ = 1;
+    int total_timer_entries  = timer_charge_entries_ + timer_discharge_entries_;
+    int total_timer_regs     = total_timer_entries * TIMER_ENTRY_REGS;
+    int total_demand_regs    = demand_entries_ * DEMAND_ENTRY_REGS;
+
     // 计算 total_holding = max(fc03_end, timer_block_end, demand_block_end)
+    // --- FC03: 为非EMS设备分配地址 ---
+    // 用于自动分配的游标：从定时/需求块之后开始
+    // 先用 fc04 cursor 或一个安全起点
+    uint16_t fc03_cursor = 5000;  // 自动分配起始，避免与EMS/定时/需求块重叠
+    for (const auto& dev : devices_) {
+        if (!dev) continue;
+        if (dev->get_name() == "ems") continue;  // EMS 已处理
+
+        const auto& keys = dev->dev_data_keys_;
+        if (keys.empty()) continue;
+
+        // 确定起始地址
+        auto custom_it = this->fc03_start_addrs_.find(dev->get_name());
+        uint16_t start = (custom_it != this->fc03_start_addrs_.end())
+                             ? custom_it->second
+                             : fc03_cursor;
+
+        // 计算所需寄存器数: addr0=online_status + 每个 data_dict 条目
+        uint16_t cnt = 1;  // online_status
+        {
+            std::shared_lock<std::shared_mutex> lk(dev->data_dict_rwlock_);
+            const auto& dict = dev->data_dict_;
+            for (const auto& k : keys) {
+                auto it = dict.find(k);
+                if (it != dict.end())
+                    cnt += reg_count_of(it->second.datatype);
+            }
+        }
+        if (cnt <= 1) continue;  // 只有online_status，无意义
+
+        uint16_t end = start + cnt - 1;
+
+        // 冲突检测：新范围 [start, end] 与已有 fc03_map_ 是否重叠
+        bool conflict = false;
+        for (const auto& kv : this->fc03_map_) {
+            uint16_t a = kv.first;
+            uint16_t b = kv.first + kv.second.reg_count - 1;
+            if (!(end < a || start > b)) {
+                LOG_ERROR_LOC(("FC03 [" + dev->get_name() + "] addr " +
+                               std::to_string(start) + "~" + std::to_string(end) +
+                               " 与已有映射 addr " + std::to_string(a) +
+                               " 重叠，跳过").c_str());
+                conflict = true;
+                break;
+            }
+        }
+        // 检查是否与定时模式块重叠
+        if (!conflict) {
+            uint16_t t_start = timer_block_start_addr_;
+            uint16_t t_end   = t_start + total_timer_regs - 1;
+            if (!(end < t_start || start > t_end)) {
+                LOG_ERROR_LOC(("FC03 [" + dev->get_name() + "] addr " +
+                               std::to_string(start) + "~" + std::to_string(end) +
+                               " 与定时模式块重叠，跳过").c_str());
+                conflict = true;
+            }
+        }
+        // 检查是否与需求响应块重叠
+        if (!conflict) {
+            uint16_t d_start = demand_block_start_addr_;
+            uint16_t d_end   = d_start + total_demand_regs - 1;
+            if (!(end < d_start || start > d_end)) {
+                LOG_ERROR_LOC(("FC03 [" + dev->get_name() + "] addr " +
+                               std::to_string(start) + "~" + std::to_string(end) +
+                               " 与需求响应块重叠，跳过").c_str());
+                conflict = true;
+            }
+        }
+        if (conflict) continue;
+
+        // 创建映射
+        uint16_t addr = start;
+
+        // addr+0: online_status
+        {
+            Fc03Mapping m;
+            m.device_name = dev->get_name();
+            m.key         = "online_status";
+            m.mag         = 1.0;
+            m.offset      = 0;
+            m.datatype    = "UINT16";
+            m.reg_count   = 1;
+            m.last_val[0] = dev->online_status.load() ? 1 : 0;
+            m.last_val[1] = 0;
+            m.skip_count  = 0;
+            this->fc03_map_[addr] = m;
+            addr++;
+        }
+
+        // 依次映射 data_dict 条目
+        {
+            std::shared_lock<std::shared_mutex> lk(dev->data_dict_rwlock_);
+            const auto& dict = dev->data_dict_;
+            for (const auto& k : keys) {
+                auto it = dict.find(k);
+                if (it == dict.end()) continue;
+
+                const RegisterData& rd = it->second;
+                Fc03Mapping m;
+                m.device_name = dev->get_name();
+                m.key         = k;
+                m.mag         = rd.mag;
+                m.offset      = rd.offset;
+                m.datatype    = rd.datatype;
+            m.skip_count = 0; m.last_val[0] = m.last_val[1] = 0;
+                m.reg_count   = reg_count_of(rd.datatype);
+                m.rtu_addr    = rd.address;  // RTU原始modbus地址
+
+                int dummy;
+                uint16_t out[2];
+                value_to_regs(rd.value, m.mag, m.offset, m.datatype, out, dummy);
+                m.last_val[0] = out[0];
+                if (m.reg_count > 1) m.last_val[1] = out[1];
+
+                this->fc03_map_[addr] = m;
+                addr += m.reg_count;
+            }
+        }
+
+        // 未自定义的设备才推进自动游标
+        if (custom_it == this->fc03_start_addrs_.end()) {
+            fc03_cursor = addr;
+        }
+
+        LOG_INFO_LOC(("FC03 [" + dev->get_name() + "] addr " +
+                      std::to_string(start) + "~" + std::to_string(addr - 1) +
+                      " (" + std::to_string(addr - start) + " regs, rtu_writeback=" +
+                      (dev->get_com() <= 7 ? "enabled" : "disabled") + ")").c_str());
+    }
     uint16_t total_holding = 1;
     if (!this->fc03_map_.empty()) {
         auto last = this->fc03_map_.rbegin();
@@ -1022,15 +1173,15 @@ void DeviceManager::initModbusTcpServer(const std::string& ip, int port) {
                             : last->first + 1;
     }
 
-    // 确保 total_holding 能覆盖定时模式块和需求响应模式块
-    uint16_t timer_block_end = timer_block_start_addr_ + MAX_TIMER_ENTRIES * TIMER_ENTRY_REGS;
-    uint16_t demand_block_end = demand_block_start_addr_ + MAX_DEMAND_ENTRIES * DEMAND_ENTRY_REGS;
-    if (timer_block_end > total_holding)    total_holding = timer_block_end;
-    if (demand_block_end > total_holding)   total_holding = demand_block_end;
+    uint16_t timer_block_end  = timer_block_start_addr_ + total_timer_regs;
+    uint16_t demand_block_end = demand_block_start_addr_ + total_demand_regs;
+    if (timer_block_end > total_holding)  total_holding = timer_block_end;
+    if (demand_block_end > total_holding) total_holding = demand_block_end;
+    fc03_total_holding_ = total_holding;
 
     // 初始化 last 缓存
-    last_timer_block_.assign(MAX_TIMER_ENTRIES * TIMER_ENTRY_REGS, 0);
-    last_demand_block_.assign(MAX_DEMAND_ENTRIES * DEMAND_ENTRY_REGS, 0);
+    last_timer_block_.assign(total_timer_regs, 0);
+    last_demand_block_.assign(total_demand_regs, 0);
 
     // 创建 ModbusServer 并分配数据区
     this->modbus_tcp_server_ = std::make_unique<ModbusServer>(ip, std::to_string(port), 10);
@@ -1038,10 +1189,12 @@ void DeviceManager::initModbusTcpServer(const std::string& ip, int port) {
 
     LOG_INFO_LOC(("ModbusTCP server初始化: total_holding=" + std::to_string(total_holding) +
                   ", total_input=" + std::to_string(total_input) +
-                  ", timer_block=" + std::to_string(timer_block_start_addr_) +
-                  "~" + std::to_string(timer_block_end - 1) +
-                  ", demand_block=" + std::to_string(demand_block_start_addr_) +
-                  "~" + std::to_string(demand_block_end - 1)).c_str());
+                  ", timer(charge=" + std::to_string(timer_charge_entries_) +
+                  "+discharge=" + std::to_string(timer_discharge_entries_) +
+                  ")@" + std::to_string(timer_block_start_addr_) +
+                  ", demand(" + std::to_string(demand_entries_) +
+                  ")@" + std::to_string(demand_block_start_addr_) +
+                  ", fc03_mappings=" + std::to_string(this->fc03_map_.size())).c_str());
 }
 
 // ── 启动 ──
@@ -1049,11 +1202,17 @@ void DeviceManager::startModbusTcpServer() {
     std::string ip = "0.0.0.0";
     int port = 1026;
     // 设置每个设备的 FC04 ModbusTcp服务器起始地址
-    setDeviceFc04StartAddr("pcs1", 0);
-    setDeviceFc04StartAddr("bms_uhome", 300);
-    setDeviceFc04StartAddr("dtsd3366", 600);
-    setDeviceFc04StartAddr("ac_wea1610", 700);
-    setDeviceFc04StartAddr("dehumidifier", 750);
+    setDeviceFc04StartAddr("ems", 0);
+    setDeviceFc04StartAddr("pcs1", 1000);
+    setDeviceFc04StartAddr("gt_bms", 2000);
+    setDeviceFc04StartAddr("dtsd3366", 4000);
+    setDeviceFc04StartAddr("ac_wea1610", 4500);
+
+    // 设置每个设备的 FC03 ModbusTcp服务器起始地址（非EMS设备）
+    setDeviceFc03StartAddr("pcs1", 1000);
+    setDeviceFc03StartAddr("gt_bms", 2000);
+    setDeviceFc03StartAddr("dtsd3366", 4000);
+    setDeviceFc03StartAddr("ac_wea1610", 4500);
 
     initModbusTcpServer(ip, port);
 
@@ -1077,6 +1236,7 @@ void DeviceManager::startModbusTcpServer() {
 void DeviceManager::stopModbusTcpServer() {
     modbus_sync_running_ = false;
     if (this->modbus_sync_thread_.joinable()) this->modbus_sync_thread_.join();
+
     if (this->modbus_tcp_server_) this->modbus_tcp_server_->stop();
     LOG_INFO_LOC("Modbus TCP server stopped");
 }
@@ -1114,7 +1274,7 @@ void DeviceManager::syncAllFc04() {
     std::vector<DeviceData> all_devices_data;
 
     for (const auto& dev : devices_) {
-        if (!dev || dev->get_name() == "ems") continue;
+        if (!dev) continue;
 
         auto off_it = this->fc04_offsets_.find(dev->get_name());
         if (off_it == this->fc04_offsets_.end()) continue;
@@ -1163,121 +1323,101 @@ void DeviceManager::syncAllFc04() {
     }
 }
 
-// ── FC03: 双向同步（检测客户端写入→EMS, EMS→保持寄存器），单趟消除竞态 ──
+// ── FC03: 双边同步（待决追踪 + 速率限制）──
+// 写入方向: HR变化检测 → 写回RTU + 设置待决追踪（期望值+3秒超时）
+// ── FC03: 双边同步（skip_count 防回弹）──
+// 写入方向: 检测HR变化 → 写RTU → skip_count=3 跳过后续推送等data_dict追上
+// 推送方向: skip_count>0 则递减并跳过；否则 data_dict → HR
 void DeviceManager::syncAllFc03() {
-    if (!this->modbus_tcp_server_ || !ems_) return;
+    if (!this->modbus_tcp_server_) return;
     if (this->fc03_map_.empty()) return;
 
-    // 1. 先读取所有 EMS 当前值（shared_lock）
-    std::map<std::string, double> ems_values;
-    {
-        std::shared_lock<std::shared_mutex> lk(ems_->json_rwlock_);
-        for (const auto& pair : this->fc03_map_) {
-            auto dit = ems_->data_dict_.find(pair.second.key);
-            if (dit != ems_->data_dict_.end())
-                ems_values[pair.second.key] = dit->second.value;
-        }
-    }
-
     bool server_running = this->modbus_tcp_server_->is_running();
+    auto hr = this->modbus_tcp_server_->get_holding_registers(0, fc03_total_holding_);
+    if (hr.size() < fc03_total_holding_) return;
 
-    // 2. 逐寄存器处理：先检测客户端写入，再决定推/拉方向
-    struct ClientWrite {
-        std::string key;
-        double real;
-    };
-    std::vector<ClientWrite> client_writes;
+    struct CW { std::string key; double real; };
+    std::vector<CW> ems_writes;
 
-    for (auto& pair : this->fc03_map_) {
+    for (auto& pair : fc03_map_) {
         uint16_t addr = pair.first;
         Fc03Mapping& m = pair.second;
+        if (addr >= hr.size()) continue;
 
-        // 读当前 HR 值
-        uint16_t cur[2] = {0, 0};
-        if (!this->modbus_tcp_server_->get_holding_register(addr, &cur[0])) continue;
-        if (m.reg_count > 1)
-            this->modbus_tcp_server_->get_holding_register(addr + 1, &cur[1]);
+        uint16_t cur[2] = {hr[addr], 0};
+        if (m.reg_count > 1 && addr + 1 < hr.size()) cur[1] = hr[addr + 1];
 
-        // 服务器未启动时禁止客户端写入检测（HR 刚由 init_data_area 清零，
-        // last_val 却是从 EMS 初始化的实际值，会误判为客户端写入 0）
-        bool changed = server_running &&
-                       ((cur[0] != m.last_val[0]) ||
+        bool changed = server_running && ((cur[0] != m.last_val[0]) ||
                         (m.reg_count > 1 && cur[1] != m.last_val[1]));
 
         if (changed) {
-            // 客户端写入 → 记录，稍后批量更新 EMS
+            // ── 客户端写入 ──
             double real = regs_to_value(cur, m.reg_count, m.mag, m.offset);
-            client_writes.push_back({m.key, real});
-            m.last_val[0] = cur[0];
-            if (m.reg_count > 1) m.last_val[1] = cur[1];
-
-            LOG_INFO_LOC(("FC03 客户端写入: [" + m.key + "] raw=" +
-                          std::to_string(cur[0]) + " real=" + std::to_string(real)).c_str());
-        } else {
-            // 无外部写入 → EMS 值推送到 HR
-            auto vit = ems_values.find(m.key);
-            if (vit == ems_values.end()) continue;
-
-            uint16_t out[2]; int cnt;
-            value_to_regs(vit->second, m.mag, m.offset, m.datatype, out, cnt);
-
-            // 服务器运行时：写入前再次确认 HR 未被客户端修改（消除 TOCTOU 窗口）
-            if (server_running) {
-                uint16_t recheck[2] = {0, 0};
-                if (!this->modbus_tcp_server_->get_holding_register(addr, &recheck[0])) continue;
-                if (m.reg_count > 1)
-                    this->modbus_tcp_server_->get_holding_register(addr + 1, &recheck[1]);
-
-                bool race_detected = (recheck[0] != m.last_val[0]) ||
-                                     (m.reg_count > 1 && recheck[1] != m.last_val[1]);
-
-                if (race_detected) {
-                    // 竞态：在读 EMS 和写入之间客户端修改了 HR → 转为客户端写入处理
-                    double real = regs_to_value(recheck, m.reg_count, m.mag, m.offset);
-                    client_writes.push_back({m.key, real});
-                    m.last_val[0] = recheck[0];
-                    if (m.reg_count > 1) m.last_val[1] = recheck[1];
-
-                    LOG_INFO_LOC(("FC03 竞态转客户端写入: [" + m.key + "] raw=" +
-                                  std::to_string(recheck[0]) + " real=" + std::to_string(real)).c_str());
-                    continue;
+            if (m.device_name == "ems") {
+                ems_writes.push_back({m.key, real});
+            } else if (m.rtu_addr != 0 && m.key != "online_status") {
+                auto dev = getDeviceByName(m.device_name);
+                auto mb = mapComToModbusClient.find(static_cast<int>(dev ? dev->get_com() : 0));
+                if (mb != mapComToModbusClient.end() && mb->second && mb->second->is_connected() && dev) {
+                    dev->updateRegisterValue(m.key, real);
+                    mb->second->set_slave(dev->get_id());
+                    bool ok = (m.reg_count >= 2) ? mb->second->write_registers(m.rtu_addr, 2, cur)
+                                                   : mb->second->write_register(m.rtu_addr, cur[0]);
+                    if (ok) {
+                        m.skip_count = FC03_SKIP_CYCLES;
+                        LOG_INFO_LOC(("FC03 写回: [" + m.device_name + "][" + m.key +
+                                      "] tcp=" + std::to_string(addr) + " rtu=" + std::to_string(m.rtu_addr) +
+                                      " raw=" + std::to_string(cur[0]) + " real=" + std::to_string(real) +
+                                      " skip=" + std::to_string(FC03_SKIP_CYCLES)).c_str());
+                    }
                 }
             }
+            m.last_val[0] = cur[0];
+            if (m.reg_count > 1) m.last_val[1] = cur[1];
+        } else {
+            // ── 推送 data_dict → HR ──
+            if (m.skip_count > 0) { m.skip_count--; continue; }  // 等待 RTU 确认
 
-            // 安全：写入 EMS 值到 HR
+            double value = 0.0;
+            if (m.device_name == "ems")
+                value = ems_ ? ems_->getValue<double>(m.key, 0.0) : 0.0;
+            else if (m.key == "online_status") {
+                auto dev = getDeviceByName(m.device_name);
+                value = dev ? (dev->online_status.load() ? 1.0 : 0.0) : 0.0;
+            } else {
+                auto dev = getDeviceByName(m.device_name);
+                value = dev ? dev->getValue<double>(m.key, 0.0) : 0.0;
+            }
+
+            uint16_t out[2]; int cnt;
+            value_to_regs(value, m.mag, m.offset, m.datatype, out, cnt);
+            if (out[0] == cur[0] && (cnt < 2 || m.reg_count < 2 || out[1] == cur[1])) continue;
+
             if (cnt >= 2)
                 this->modbus_tcp_server_->set_holding_registers(addr, 2, out);
             else
                 this->modbus_tcp_server_->set_holding_register(addr, out[0]);
 
-            // 读回确认实际写入值
-            uint16_t confirm[2] = {0, 0};
-            this->modbus_tcp_server_->get_holding_register(addr, &confirm[0]);
-            if (m.reg_count > 1)
-                this->modbus_tcp_server_->get_holding_register(addr + 1, &confirm[1]);
-
-            m.last_val[0] = confirm[0];
-            if (m.reg_count > 1) m.last_val[1] = confirm[1];
+            uint16_t c[2];
+            this->modbus_tcp_server_->get_holding_register(addr, &c[0]);
+            if (cnt >= 2 && m.reg_count > 1) this->modbus_tcp_server_->get_holding_register(addr + 1, &c[1]);
+            m.last_val[0] = c[0];
+            if (m.reg_count > 1) m.last_val[1] = c[1];
         }
     }
 
-    // 3. 批量更新 EMS data_dict 并持久化（服务器未启动时跳过，不需要写回）
-    if (!client_writes.empty() && server_running) {
+    // EMS 持久化
+    if (!ems_writes.empty() && server_running && ems_) {
         std::unique_lock<std::shared_mutex> lk(ems_->json_rwlock_);
-        json data_to_save;
-        for (const auto& cw : client_writes) {
-            auto dit = ems_->data_dict_.find(cw.key);
-            if (dit != ems_->data_dict_.end()) {
-                dit->second.value = cw.real;
-            }
-            data_to_save[cw.key] = cw.real;
+        json data;
+        for (auto& w : ems_writes) {
+            auto dit = ems_->data_dict_.find(w.key);
+            if (dit != ems_->data_dict_.end()) dit->second.value = w.real;
+            data[w.key] = w.real;
         }
-        if (!data_to_save.empty()) {
-            ems_->write_jsonfile_nolock(data_to_save);
-        }
+        if (!data.empty()) ems_->write_jsonfile_nolock(data);
     }
 }
-//  定时模式块 (timer_block_start_addr_, 默认 100)
 //  每条记录 6 个寄存器:
 //    [0] startHour   [1] startMinute  [2] endHour
 //    [3] endMinute   [4] weekday(bitmask)  [5] power(signed)
@@ -1330,7 +1470,9 @@ static std::string format_datetime(int y, int m, int d, int hh, int mm) {
 void DeviceManager::syncTimerBlock() {
     if (!this->modbus_tcp_server_ || !ems_) return;
 
-    size_t total = MAX_TIMER_ENTRIES * TIMER_ENTRY_REGS;
+    int charge_cnt    = timer_charge_entries_;
+    int discharge_cnt = timer_discharge_entries_;
+    size_t total = (timer_charge_entries_ + timer_discharge_entries_) * TIMER_ENTRY_REGS;
 
     // 1. 读当前 HR 块
     std::vector<uint16_t> cur(total);
@@ -1340,6 +1482,34 @@ void DeviceManager::syncTimerBlock() {
                 timer_block_start_addr_ + i, &v)) return;
         cur[i] = v;
     }
+
+    // 辅助 lambda：编码一条定时记录到 regs
+    auto encode_entry = [](std::vector<uint16_t>& regs, int& idx, const json& entry) {
+        auto [sh, sm] = parse_time_str(entry.value("startTime", "00:00"));
+        auto [eh, em] = parse_time_str(entry.value("endTime", "00:00"));
+        int wd = 0;
+        if (entry.contains("weekday") && entry["weekday"].is_array())
+            wd = weekday_json_to_int(entry["weekday"]);
+        int16_t power = static_cast<int16_t>(entry.value("power", 0));
+        regs[idx++] = static_cast<uint16_t>(sh);
+        regs[idx++] = static_cast<uint16_t>(sm);
+        regs[idx++] = static_cast<uint16_t>(eh);
+        regs[idx++] = static_cast<uint16_t>(em);
+        regs[idx++] = static_cast<uint16_t>(wd);
+        regs[idx++] = static_cast<uint16_t>(power);
+    };
+
+    // 辅助 lambda：解码 regs 到 JSON entry
+    auto decode_entry = [](const uint16_t* cur_ptr) -> json {
+        int sh = cur_ptr[0], sm = cur_ptr[1], eh = cur_ptr[2], em = cur_ptr[3];
+        int wd = cur_ptr[4];
+        int16_t power = static_cast<int16_t>(cur_ptr[5]);
+        char sb[6], eb[6];
+        snprintf(sb, sizeof(sb), "%02d:%02d", sh, sm);
+        snprintf(eb, sizeof(eb), "%02d:%02d", eh, em);
+        return {{"startTime", sb}, {"endTime", eb},
+                {"weekday", int_to_weekday_json(wd)}, {"power", power}};
+    };
 
     bool client_wrote = (cur != last_timer_block_);
     if (!client_wrote) {
@@ -1352,26 +1522,25 @@ void DeviceManager::syncTimerBlock() {
 
         std::vector<uint16_t> regs(total, 0);
         int idx = 0;
+
+        // chargeTimeList
         if (timing.contains("chargeTimeList") && timing["chargeTimeList"].is_array()) {
             for (const auto& entry : timing["chargeTimeList"]) {
-                if (idx >= static_cast<int>(total)) break;
-                auto [sh, sm] = parse_time_str(entry.value("startTime", "00:00"));
-                auto [eh, em] = parse_time_str(entry.value("endTime", "00:00"));
-                int wd = 0;
-                if (entry.contains("weekday") && entry["weekday"].is_array())
-                    wd = weekday_json_to_int(entry["weekday"]);
-                int16_t power = static_cast<int16_t>(entry.value("power", 0));
+                if (idx >= charge_cnt * TIMER_ENTRY_REGS) break;
+                encode_entry(regs, idx, entry);
+            }
+        }
+        idx = charge_cnt * TIMER_ENTRY_REGS;  // discharge 从 charge 之后开始
 
-                regs[idx++] = static_cast<uint16_t>(sh);
-                regs[idx++] = static_cast<uint16_t>(sm);
-                regs[idx++] = static_cast<uint16_t>(eh);
-                regs[idx++] = static_cast<uint16_t>(em);
-                regs[idx++] = static_cast<uint16_t>(wd);
-                regs[idx++] = static_cast<uint16_t>(power);
+        // dischargeTimeList
+        if (timing.contains("dischargeTimeList") && timing["dischargeTimeList"].is_array()) {
+            for (const auto& entry : timing["dischargeTimeList"]) {
+                if (idx >= static_cast<int>(total)) break;
+                encode_entry(regs, idx, entry);
             }
         }
 
-        // 写入前 recheck HR（消除 TOCTOU 窗口）
+        // 写入前 recheck HR
         for (size_t i = 0; i < total; ++i) {
             uint16_t v;
             if (!this->modbus_tcp_server_->get_holding_register(
@@ -1380,56 +1549,52 @@ void DeviceManager::syncTimerBlock() {
         }
 
         if (cur != last_timer_block_) {
-            // 竞态：在读 EMS 和写入之间客户端修改了 HR → 按客户端写入处理
             client_wrote = true;
         } else if (regs != last_timer_block_) {
-            // 安全写入
             for (size_t i = 0; i < total; ++i)
-                this->modbus_tcp_server_->set_holding_register(
-                    timer_block_start_addr_ + i, regs[i]);
-
-            // 读回确认
+                this->modbus_tcp_server_->set_holding_register(timer_block_start_addr_ + i, regs[i]);
             for (size_t i = 0; i < total; ++i) {
                 uint16_t v;
-                this->modbus_tcp_server_->get_holding_register(
-                    timer_block_start_addr_ + i, &v);
+                this->modbus_tcp_server_->get_holding_register(timer_block_start_addr_ + i, &v);
                 cur[i] = v;
             }
             last_timer_block_ = cur;
             return;
         } else {
-            return; // 无变化
+            return;
         }
     }
 
     // 2b. 客户端写入 → 解析并更新 EMS
     {
         json charge_list = json::array();
-        for (size_t i = 0; i + TIMER_ENTRY_REGS <= cur.size(); i += TIMER_ENTRY_REGS) {
+        json discharge_list = json::array();
+
+        // 前 charge_cnt 条是 chargeTimeList
+        for (int i = 0; i < charge_cnt; i++) {
+            size_t off = i * TIMER_ENTRY_REGS;
+            if (off + TIMER_ENTRY_REGS > cur.size()) break;
             bool all_zero = true;
-            for (int j = 0; j < TIMER_ENTRY_REGS; ++j) {
-                if (cur[i + j] != 0) { all_zero = false; break; }
-            }
+            for (int j = 0; j < TIMER_ENTRY_REGS; ++j)
+                if (cur[off + j] != 0) { all_zero = false; break; }
             if (all_zero) continue;
+            charge_list.push_back(decode_entry(&cur[off]));
+        }
 
-            int sh = cur[i], sm = cur[i + 1], eh = cur[i + 2], em = cur[i + 3];
-            int wd = cur[i + 4];
-            int16_t power = static_cast<int16_t>(cur[i + 5]);
-
-            char start_buf[6], end_buf[6];
-            snprintf(start_buf, sizeof(start_buf), "%02d:%02d", sh, sm);
-            snprintf(end_buf,   sizeof(end_buf),   "%02d:%02d", eh, em);
-
-            json entry;
-            entry["startTime"] = start_buf;
-            entry["endTime"]   = end_buf;
-            entry["weekday"]   = int_to_weekday_json(wd);
-            entry["power"]     = power;
-            charge_list.push_back(entry);
+        // 后 discharge_cnt 条是 dischargeTimeList
+        for (int i = 0; i < discharge_cnt; i++) {
+            size_t off = charge_cnt * TIMER_ENTRY_REGS + i * TIMER_ENTRY_REGS;
+            if (off + TIMER_ENTRY_REGS > cur.size()) break;
+            bool all_zero = true;
+            for (int j = 0; j < TIMER_ENTRY_REGS; ++j)
+                if (cur[off + j] != 0) { all_zero = false; break; }
+            if (all_zero) continue;
+            discharge_list.push_back(decode_entry(&cur[off]));
         }
 
         std::unique_lock<std::shared_mutex> lk(ems_->json_rwlock_);
-        ems_->timingModeSet["chargeTimeList"] = charge_list;
+        ems_->timingModeSet["chargeTimeList"]    = charge_list;
+        ems_->timingModeSet["dischargeTimeList"] = discharge_list;
         ems_->tcp_timingModeSet = ems_->timingModeSet;
         ems_->write_timerJsonFile(
             json{{"timingModeSet", ems_->timingModeSet}},
@@ -1437,14 +1602,15 @@ void DeviceManager::syncTimerBlock() {
     }
 
     last_timer_block_ = cur;
-    LOG_INFO_LOC("检测到远程定时模式块写入，已同步");
+    LOG_INFO_LOC("定时模式块同步: charge=" + std::to_string(charge_cnt) +
+                 " discharge=" + std::to_string(discharge_cnt));
 }
 
 // ── 需求响应模式块：双向同步（检测客户端写入→EMS, EMS→保持寄存器），单趟消除竞态 ──
 void DeviceManager::syncDemandBlock() {
     if (!this->modbus_tcp_server_ || !ems_) return;
 
-    size_t total = MAX_DEMAND_ENTRIES * DEMAND_ENTRY_REGS;
+    size_t total = demand_entries_ * DEMAND_ENTRY_REGS;
 
     // 1. 读当前 HR 块
     std::vector<uint16_t> cur(total);

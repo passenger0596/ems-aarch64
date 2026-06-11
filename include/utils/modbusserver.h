@@ -22,6 +22,9 @@ public:
     // 回调函数类型定义
     using ConnectionCallback = std::function<void(int client_fd)>;
     using DisconnectionCallback = std::function<void(int client_fd)>;
+    // 写保持寄存器回调: (func_code, start_addr, count, values)
+    // func_code: 6=写单个寄存器, 16=写多个寄存器
+    using WriteHoldingRegisterCallback = std::function<void(int func_code, int start_addr, int count, const uint16_t* values)>;
     
     // RTU 从站构造函数
     ModbusServer(const std::string& port, int baudrate = 9600, int slave_id = 1);
@@ -102,6 +105,8 @@ public:
     // 设置连接/断开回调
     void set_connection_callback(ConnectionCallback callback);
     void set_disconnection_callback(DisconnectionCallback callback);
+    // 设置写保持寄存器回调（拦截FC06/FC16）
+    void set_write_holding_callback(WriteHoldingRegisterCallback callback);
 
 private:
     // 新增：客户端结构
@@ -144,6 +149,7 @@ private:
     // 回调函数
     ConnectionCallback on_connect_;
     DisconnectionCallback on_disconnect_;
+    WriteHoldingRegisterCallback on_write_holding_;
     
     // 监听线程
     std::thread listen_thread_;

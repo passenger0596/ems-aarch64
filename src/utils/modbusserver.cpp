@@ -8,6 +8,23 @@
 #include "device.h"
 #include "log.h"
 
+namespace {
+bool request_mutates_mapping(const uint8_t* req, int req_length)
+{
+    if (!req || req_length <= 1) return true;
+
+    switch (req[1]) {
+        case MODBUS_FC_READ_COILS:
+        case MODBUS_FC_READ_DISCRETE_INPUTS:
+        case MODBUS_FC_READ_HOLDING_REGISTERS:
+        case MODBUS_FC_READ_INPUT_REGISTERS:
+            return false;
+        default:
+            return true;
+    }
+}
+}  // namespace
+
 
 // ==================== 构造函数 ====================
 
@@ -405,6 +422,11 @@ void ModbusServer::set_disconnection_callback(DisconnectionCallback callback)
     on_disconnect_ = callback;
 }
 
+void ModbusServer::set_write_holding_callback(WriteHoldingRegisterCallback callback)
+{
+    on_write_holding_ = callback;
+}
+
 
 // ==================== 内部方法 ====================
 
@@ -538,9 +560,46 @@ int ModbusServer::handle_request(modbus_t* ctx, uint8_t* req, int req_length)
         return -1;
     }
 
-    std::unique_lock<std::shared_mutex> lock(data_mutex_);
+    // 拦截写保持寄存器请求（FC06/FC16），提取地址和值供回调使用
+    bool is_write_holding = false;
+    int func_code = 0, start_addr = 0, count = 0;
+    uint16_t write_vals[123] = {0};  // max 123 registers per Modbus TCP PDU
 
-    int rc = modbus_reply(ctx, req, req_length, mb_mapping_);
+    if (req_length >= 5) {
+        func_code = req[1];
+        if (func_code == 6 && req_length >= 5) {
+            // FC06: 写单个寄存器
+            is_write_holding = true;
+            start_addr = (req[2] << 8) | req[3];
+            count = 1;
+            write_vals[0] = (req[4] << 8) | req[5];
+        } else if (func_code == 16 && req_length >= 8) {
+            // FC16: 写多个寄存器
+            is_write_holding = true;
+            start_addr = (req[2] << 8) | req[3];
+            count = (req[4] << 8) | req[5];
+            int byte_count = req[6];
+            if (count > 123) count = 123;
+            for (int i = 0; i < count && i * 2 + 7 < req_length; i++) {
+                write_vals[i] = (req[7 + i * 2] << 8) | req[8 + i * 2];
+            }
+        }
+    }
+
+    int rc = -1;
+    if (request_mutates_mapping(req, req_length)) {
+        std::unique_lock<std::shared_mutex> lock(data_mutex_);
+        rc = modbus_reply(ctx, req, req_length, mb_mapping_);
+    } else {
+        std::shared_lock<std::shared_mutex> lock(data_mutex_);
+        rc = modbus_reply(ctx, req, req_length, mb_mapping_);
+    }
+
+    // 写入成功后触发回调（在锁外执行，避免死锁）
+    if (is_write_holding && rc >= 0 && on_write_holding_) {
+        on_write_holding_(func_code, start_addr, count, write_vals);
+    }
+
     if (rc == -1) {
         LOG_ERROR_LOC("Failed to reply: " + std::string(modbus_strerror(errno)));
     }

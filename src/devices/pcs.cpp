@@ -16,7 +16,7 @@ Pcs::Pcs(const std::string& name, int com, int id)
     : Device(name, com, id) {
     this->name_ = name;
     this->id_ = id;
-    this->com_ = com;
+    this->com_ = com; 
     Device::init_json_structure(name);
     init_config(Config::EJPCS_COMMUNICATION_FILEPATH);
 
@@ -102,10 +102,7 @@ void Pcs::read_data(ModbusClient& mb_client)
         } else {
             this->reconnect_counter++;
             if (this->reconnect_counter>3){
-                {
-                    std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-                    this->data_to_qt["online_status"] = false;
-                }
+                safe_set_qt_data(false);
                 this->online_status = false;
                 this->reconnect_counter = 0;
                 LOG_ERROR_LOC("Modbus read failed: " + get_name());
@@ -114,10 +111,7 @@ void Pcs::read_data(ModbusClient& mb_client)
         }
     } catch (const std::exception& e) {
         LOG_ERROR_LOC("Modbus read error for PCS " + get_name() + ": " + std::string(e.what()));
-        {
-            std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-            this->data_to_qt["online_status"] = false;
-        }
+        safe_set_qt_data(false);
         this->online_status = false;
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

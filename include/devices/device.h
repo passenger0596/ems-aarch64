@@ -363,6 +363,7 @@ public:
 
     std::vector<uint16_t> data_buffer;  // 缓存从设备读取的数据
 
+    // 段读取策略
     std::vector<RegisterSegment> segments01_;
     std::vector<RegisterSegment> segments02_;
     std::vector<RegisterSegment> segments03_;
@@ -373,11 +374,13 @@ public:
     std::vector<std::vector<uint16_t>> data_buffer_vec03_;
     std::vector<std::vector<uint16_t>> data_buffer_vec04_;
 
+    // 字段名->每个功能码的数组的地址映射
     std::vector<ParsedRegister> parsed_registers_fc01_;
     std::vector<ParsedRegister> parsed_registers_fc02_;
     std::vector<ParsedRegister> parsed_registers_fc03_;
     std::vector<ParsedRegister> parsed_registers_fc04_;
 
+    // 字段名->每个功能码的modbus原始地址映射
     std::unordered_map<std::string, uint16_t> fc01_nameToAddr_map;
     std::unordered_map<std::string, uint16_t> fc02_nameToAddr_map;
     std::unordered_map<std::string, uint16_t> fc03_nameToAddr_map;
@@ -386,6 +389,7 @@ public:
     // 内部数据处理使用的map
     std::unordered_map<std::string, RegisterData> data_dict_;
 
+    // 字段名->总的数组的地址映射
     std::vector<ParsedRegister> parsed_registers_;
     std::vector<std::pair<std::string, uint8_t>> alarm_map;
 
@@ -510,11 +514,34 @@ public:
                              bool status, 
                              const std::string& now);
 
+
+
+
+    virtual void safe_set_qt_data(const bool online){
+        auto now = std::chrono::system_clock::now();
+        auto time_t_now = std::chrono::system_clock::to_time_t(now);
+        std::stringstream ss;
+        ss << std::put_time(std::localtime(&time_t_now), "%Y-%m-%d %H:%M:%S");
+        std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
+        this->data_to_qt["online_status"] = online;
+        this->data_to_qt["timestamp"] = ss.str();
+    }
+    
+    virtual void safe_set_qt_data(const bool online,const json& json_array){
+        auto now = std::chrono::system_clock::now();
+        auto time_t_now = std::chrono::system_clock::to_time_t(now);
+        std::stringstream ss;
+        ss << std::put_time(std::localtime(&time_t_now), "%Y-%m-%d %H:%M:%S");
+        std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
+        this->data_to_qt["online_status"] = online;
+        if (online) 
+            this->data_to_qt["data"] = json_array;
+        this->data_to_qt["timestamp"] = ss.str();
+    }
+
     json alarm_level1;
     json alarm_level2;
     json alarm_level3;
-
-
 
     std::string name_;
     uint8_t com_;
@@ -662,17 +689,8 @@ public:
             data_array.push_back(actual_value);
         }
 
-        auto now = std::chrono::system_clock::now();
-        auto time_t_now = std::chrono::system_clock::to_time_t(now);
-        std::stringstream ss;
-        ss << std::put_time(std::localtime(&time_t_now), "%Y-%m-%d %H:%M:%S");
+        safe_set_qt_data(true, data_array);
 
-        {
-            std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-            this->data_to_qt["timestamp"] = ss.str();
-            this->data_to_qt["online_status"] = true;
-            this->data_to_qt["data"] = data_array;
-        }
     }
 
     bool read_fc01_segments(ModbusClient& mb_client,

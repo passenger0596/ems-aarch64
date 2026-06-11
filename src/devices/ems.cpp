@@ -164,11 +164,11 @@ bool EMS::load_data_dict_from_json(const std::string& filepath) {
             this->data_dict_[key] = reg_data;
         }
         
-        LOG_INFO_LOC("Loaded " + std::to_string(this->data_dict_.size()) + " items from data dict JSON");
+        LOG_INFO_LOC("EMS加载数据字典成功，共 " + std::to_string(this->data_dict_.size()) + "项");
         return true;
         
     } catch (const std::exception& e) {
-        LOG_ERROR_LOC("Error loading data dict from JSON: " + std::string(e.what()));
+        LOG_ERROR_LOC("EMS加载数据字典失败，错误信息: " + std::string(e.what()));
         return false;
     }
 }
@@ -178,18 +178,18 @@ bool EMS::load_tcp_cmd_from_json(const std::string& filepath) {
     try {
         std::ifstream file(filepath);
         if (!file.is_open()) {
-            LOG_ERROR_LOC("Cannot open TCP cmd file: " + filepath);
+            LOG_ERROR_LOC("EMS加载TCP命令失败，文件不存在: " + filepath);
             return false;
         }
         
         file >> this->tcp_cmd;
         file.close();
         
-        LOG_INFO_LOC("Loaded TCP commands from JSON");
+        LOG_INFO_LOC("EMS加载TCP命令成功!!");
         return true;
         
     } catch (const std::exception& e) {
-        LOG_ERROR_LOC("Error loading TCP commands from JSON: " + std::string(e.what()));
+        LOG_ERROR_LOC("EMS加载TCP命令失败，错误信息: " + std::string(e.what()));
         return false;
     }
 }

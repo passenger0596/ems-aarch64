@@ -175,10 +175,7 @@ void GtBms::read_data(ModbusClient& mb_client) {
         } else {
             this->reconnect_counter++;
             if (this->reconnect_counter > 3) {
-                {
-                    std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-                    this->data_to_qt["online_status"] = false;
-                }
+                safe_set_qt_data(false);
                 this->online_status = false;
                 this->reconnect_counter = 0;
                 LOG_ERROR_LOC("Modbus读取失败: " + get_name());
@@ -188,10 +185,7 @@ void GtBms::read_data(ModbusClient& mb_client) {
 
     } catch (const std::exception& e) {
         LOG_ERROR_LOC("Modbus读取异常 (" + get_name() + "): " + std::string(e.what()));
-        {
-            std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-            this->data_to_qt["online_status"] = false;
-        }
+        safe_set_qt_data(false);
         this->online_status = false;
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
@@ -222,17 +216,7 @@ void GtBms::parse_rawdata(const std::vector<uint16_t>& data_list) {
         data_array.push_back(actual_value);
     }
 
-    auto now = std::chrono::system_clock::now();
-    auto time_t_now = std::chrono::system_clock::to_time_t(now);
-    std::stringstream ss;
-    ss << std::put_time(std::localtime(&time_t_now), "%Y-%m-%d %H:%M:%S");
-
-    {
-        std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-        this->data_to_qt["timestamp"] = ss.str();
-        this->data_to_qt["online_status"] = true;
-        this->data_to_qt["data"] = data_array;
-    }
+    safe_set_qt_data(true, data_array);
     
     update_alarm_status();
 }

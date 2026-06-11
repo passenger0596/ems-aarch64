@@ -62,7 +62,7 @@ void Pcs_15am::init_config(const std::string& config_file) {
 void Pcs_15am::parse_rawdata(const std::vector<uint16_t>& data_list)
 {
     parse_rawdata_generic(data_list);
-    this->update_alarm_status();
+    update_alarm_status();
 }
 
 void Pcs_15am::update_alarm_status()
@@ -109,10 +109,7 @@ void Pcs_15am::read_data(ModbusClient& mb_client)
         } else {
             this->reconnect_counter++;
             if (this->reconnect_counter>3){
-                {
-                    std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-                    this->data_to_qt["online_status"] = false;
-                }
+                safe_set_qt_data(false);
                 this->online_status = false;
                 this->reconnect_counter = 0;
                 LOG_ERROR_LOC("Modbus read failed: " + get_name());
@@ -121,10 +118,7 @@ void Pcs_15am::read_data(ModbusClient& mb_client)
         }
     } catch (const std::exception& e) {
         LOG_ERROR_LOC("Modbus read error for PCS " + get_name() + ": " + std::string(e.what()));
-        {
-            std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-            this->data_to_qt["online_status"] = false;
-        }
+        safe_set_qt_data(false);
         this->online_status = false;
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

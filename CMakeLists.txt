@@ -72,7 +72,7 @@ set(DEVICE_SOURCES
 
 # 控制策略层
 set(CONTROL_SOURCES
-    # ${CMAKE_SOURCE_DIR}/src/control/ejpcscmd.cpp
+    ${CMAKE_SOURCE_DIR}/src/control/ejpcscmd.cpp
     ${CMAKE_SOURCE_DIR}/src/control/ejpcs15amcmd.cpp
     ${CMAKE_SOURCE_DIR}/src/control/emscmd.cpp
     ${CMAKE_SOURCE_DIR}/src/control/mqttcontroller.cpp

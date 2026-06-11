@@ -64,10 +64,7 @@ void ACMeter_3366::read_data(ModbusClient& mb_client)
         } else {
             this->reconnect_counter++;
             if (this->reconnect_counter>3){
-                {
-                    std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-                    this->data_to_qt["online_status"] = false;
-                }
+                safe_set_qt_data(false);
                 this->online_status = false;
                 this->reconnect_counter = 0;
                 LOG_ERROR_LOC("Modbus read failed: " + get_name());
@@ -76,10 +73,7 @@ void ACMeter_3366::read_data(ModbusClient& mb_client)
         }
     } catch (const std::exception& e) {
         LOG_ERROR_LOC("Modbus read error for ACMeter_3366 " + get_name() + ": " + std::string(e.what()));
-        {
-            std::unique_lock<std::shared_mutex> lock(this->data_to_qt_rwlock_);
-            this->data_to_qt["online_status"] = false;
-        }
+        safe_set_qt_data(false);
         this->online_status = false;
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

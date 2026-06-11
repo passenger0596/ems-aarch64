@@ -16,7 +16,7 @@ QtController::QtController(const std::string& cfg_file_path) {
     }
     ifs >> this->cmd_from_qt;
     ifs.close();
-    LOG_INFO_LOC("cmd_from_qt init done!");
+    LOG_INFO_LOC("qtController加载command.json成功!!");
     
 }
 
