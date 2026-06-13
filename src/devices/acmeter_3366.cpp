@@ -1,6 +1,6 @@
 #include "acmeter_3366.h"
 #include "utils.h"
-#include "../include/settings/config.h"
+#include "config.h"
 #include <iostream>
 #include "modbusclient.h"
 #include <fstream>

@@ -9,7 +9,7 @@
 		<coil address="5" name="外风机运行状态" datatype="bool" unit="" />
 		<coil address="6" name="除湿状态" datatype="bool" unit="" />
 		<coil address="7" name="排氢运行状态" datatype="bool" unit="" />
-		<coil address="8" name="预留" datatype="bool" unit="" />
+		<coil address="8" name="预留1" datatype="bool" unit="" />
 		<coil address="9" name="干接点告警输出状态" datatype="bool" unit="" />
 	</function_code01>
 	<function_code02 code="0x02" description="Read Discrete Input">
@@ -29,17 +29,17 @@
 		<di address="13" name="柜内低温告警" datatype="bool" unit="" />
 		<di address="14" name="柜外高温告警" datatype="bool" unit="" />
 		<di address="15" name="柜外低温告警" datatype="bool" unit="" />
-		<di address="16" name="预留" datatype="bool" unit="" />
+		<di address="16" name="预留2" datatype="bool" unit="" />
 		<di address="17" name="外部输入（门禁）告警" datatype="bool" unit="" />
-		<di address="18" name="预留" datatype="bool" unit="" />
-		<di address="19" name="预留" datatype="bool" unit="" />
+		<di address="18" name="预留3" datatype="bool" unit="" />
+		<di address="19" name="预留4" datatype="bool" unit="" />
 		<di address="20" name="蒸发盘管温度传感器故障" datatype="bool" unit="" />
 		<di address="21" name="高湿告警" datatype="bool" unit="" />
 		<di address="22" name="低电压告警" datatype="bool" unit="" />
 		<di address="23" name="高电压告警" datatype="bool" unit="" />
 		<di address="24" name="变频压缩机故障" datatype="bool" unit="" />
-		<di address="25" name="预留" datatype="bool" unit="" />
-		<di address="26" name="预留" datatype="bool" unit="" />
+		<di address="25" name="预留5" datatype="bool" unit="" />
+		<di address="26" name="预留6" datatype="bool" unit="" />
 		<di address="27" name="蒸发器冻结告警" datatype="bool" unit="" />
 		<di address="28" name="高压力频繁告警" datatype="bool" unit="" />
 		<di address="29" name="低压力频繁告警" datatype="bool" unit="" />
@@ -58,8 +58,8 @@
 		<hRegister address="7" name="除湿停止回差" datatype="UINT16" unit="%" mag="10.0" offset="0.0" />
 		<hRegister address="8" name="高湿告警值" datatype="UINT16" unit="%" mag="10.0" offset="0.0" />
 		<hRegister address="9" name="除湿使能" datatype="UINT16" unit="" mag="10.0" offset="0.0" />
-		<hRegister address="10" name="预留" datatype="UINT16" unit="" mag="1.0" offset="0.0" />
-		<hRegister address="11" name="预留" datatype="UINT16" unit="" mag="1.0" offset="0.0" />
+		<hRegister address="10" name="预留7" datatype="UINT16" unit="" mag="1.0" offset="0.0" />
+		<hRegister address="11" name="预留8" datatype="UINT16" unit="" mag="1.0" offset="0.0" />
 		<hRegister address="12" name="内风机提前运转温度" datatype="UINT16" unit="℃" mag="10.0" offset="0.0" />
 		<hRegister address="13" name="待机模式内风机状态" datatype="UINT16" unit="" mag="1.0" offset="0.0" />
 		<hRegister address="14" name="通信波特率" datatype="UINT16" unit="" mag="1.0" offset="0.0" />

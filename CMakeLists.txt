@@ -57,26 +57,34 @@ set(MAIN_SOURCES
 # 设备驱动层
 set(DEVICE_SOURCES
     ${CMAKE_SOURCE_DIR}/src/devices/acmeter_3366.cpp
-    ${CMAKE_SOURCE_DIR}/src/devices/bms_uhome.cpp
+    # ${CMAKE_SOURCE_DIR}/src/devices/bms_uhome.cpp
     ${CMAKE_SOURCE_DIR}/src/devices/device.cpp
     ${CMAKE_SOURCE_DIR}/src/devices/devicemanager.cpp
-    ${CMAKE_SOURCE_DIR}/src/devices/dehumidifier_v2.cpp
+    # ${CMAKE_SOURCE_DIR}/src/devices/dehumidifier_v2.cpp
     ${CMAKE_SOURCE_DIR}/src/devices/dcdc.cpp
     ${CMAKE_SOURCE_DIR}/src/devices/ems.cpp
     ${CMAKE_SOURCE_DIR}/src/devices/gt_bms.cpp
     ${CMAKE_SOURCE_DIR}/src/devices/iomodule.cpp
     ${CMAKE_SOURCE_DIR}/src/devices/pcs.cpp
-    ${CMAKE_SOURCE_DIR}/src/devices/pcs_15am.cpp
-    ${CMAKE_SOURCE_DIR}/src/devices/wea1610.cpp
+    # ${CMAKE_SOURCE_DIR}/src/devices/pcs_15am.cpp
+    # ${CMAKE_SOURCE_DIR}/src/devices/wea1610.cpp
+    ${CMAKE_SOURCE_DIR}/src/devices/ac_hengdu.cpp
+    ${CMAKE_SOURCE_DIR}/src/devices/dg_hgm6100.cpp
+    ${CMAKE_SOURCE_DIR}/src/devices/infy_charger.cpp
 )
 
 # 控制策略层
 set(CONTROL_SOURCES
     ${CMAKE_SOURCE_DIR}/src/control/ejpcscmd.cpp
-    ${CMAKE_SOURCE_DIR}/src/control/ejpcs15amcmd.cpp
+    # ${CMAKE_SOURCE_DIR}/src/control/ejpcs15amcmd.cpp
+    ${CMAKE_SOURCE_DIR}/src/control/ejdcdc.cpp
     ${CMAKE_SOURCE_DIR}/src/control/emscmd.cpp
     ${CMAKE_SOURCE_DIR}/src/control/mqttcontroller.cpp
     ${CMAKE_SOURCE_DIR}/src/control/qtcontroller.cpp
+    ${CMAKE_SOURCE_DIR}/src/control/hgm6100cmd.cpp
+    ${CMAKE_SOURCE_DIR}/src/control/hengduaccmd.cpp
+    ${CMAKE_SOURCE_DIR}/src/control/zhongsheng8didocmd.cpp
+    ${CMAKE_SOURCE_DIR}/src/control/gtbmscmd.cpp
     ${CMAKE_SOURCE_DIR}/src/control/strategy.cpp
 )
 

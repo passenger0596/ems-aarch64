@@ -25,9 +25,18 @@ class Strategy {
         std::atomic<bool> keep_running_{true};
         std::thread worker_thread_;   // ✨ 新增：保存线程对象
         std::thread pilot_lamp_show_thread_;     // 指示灯线程
-        // EjPcsCmd pcs_cmd_;
-        EjPcs15AmCmd pcs15am_cmd_;
+
         EmsCmd ems_cmd_;
+        EjPcsCmd pcs_cmd_;
+        EjDcdcCmd dcdc_cmd_;
+        GtbmsCmd gtbms_cmd_;
+        
+        HengduAcCmd hengdu_ac_cmd_;
+        Hgm6100Cmd dg_hgm6100_cmd_;
+        
+        Zhongsheng8didoCmd zhongsheng8dido_cmd_;
+        
+
         
         // 运行模式函数
         void sysRun();

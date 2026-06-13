@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='utf-8'?>
+<HGM6100N_protocol device="HGM6100N">
+	<function_code01 code="0x01" description="Read Coils">
+		<coil address="0" name="公共报警" datatype="BOOL" unit="" />
+		<coil address="1" name="公共警告报警" datatype="BOOL" unit="" />
+		<coil address="2" name="公共停机报警" datatype="BOOL" unit="" />
+		<coil address="3" name="远程模式" datatype="BOOL" unit="" />
+		<coil address="4" name="远程锁机" datatype="BOOL" unit="" />
+		<coil address="5" name="保留1" datatype="BOOL" unit="" />
+		<coil address="6" name="市电带负载" datatype="BOOL" unit="" />
+		<coil address="7" name="发电带负载" datatype="BOOL" unit="" />
+		<coil address="8" name="紧急停机" datatype="BOOL" unit="" />
+		<coil address="9" name="超速报警停机" datatype="BOOL" unit="" />
+		<coil address="10" name="欠速报警停机" datatype="BOOL" unit="" />
+		<coil address="11" name="速度信号丢失停机" datatype="BOOL" unit="" />
+		<coil address="12" name="超频报警停机" datatype="BOOL" unit="" />
+		<coil address="13" name="欠频报警停机" datatype="BOOL" unit="" />
+		<coil address="14" name="过压报警停机" datatype="BOOL" unit="" />
+		<coil address="15" name="欠压报警停机" datatype="BOOL" unit="" />
+		<coil address="16" name="发电过流停机" datatype="BOOL" unit="" />
+		<coil address="17" name="起动失败" datatype="BOOL" unit="" />
+		<coil address="18" name="水温高报警停机" datatype="BOOL" unit="" />
+		<coil address="19" name="油压低报警停机" datatype="BOOL" unit="" />
+		<coil address="20" name="频率丢失报警" datatype="BOOL" unit="" />
+		<coil address="21" name="输入口停机报警" datatype="BOOL" unit="" />
+		<coil address="22" name="燃油位低停机报警" datatype="BOOL" unit="" />
+		<coil address="23" name="冷却液低停机报警" datatype="BOOL" unit="" />
+		<coil address="24" name="水温高警告报警" datatype="BOOL" unit="" />
+		<coil address="25" name="油压低警告报警" datatype="BOOL" unit="" />
+		<coil address="26" name="发电过流警告报警" datatype="BOOL" unit="" />
+		<coil address="27" name="停机失败警告报警" datatype="BOOL" unit="" />
+		<coil address="28" name="油位低警告" datatype="BOOL" unit="" />
+		<coil address="29" name="充电失败警告" datatype="BOOL" unit="" />
+		<coil address="30" name="电池电压过低警告报警" datatype="BOOL" unit="" />
+		<coil address="31" name="电池电压过高警告报警" datatype="BOOL" unit="" />
+		<coil address="32" name="输入口警告报警" datatype="BOOL" unit="" />
+		<coil address="33" name="速度信号丢失警告" datatype="BOOL" unit="" />
+		<coil address="34" name="冷却液低警告" datatype="BOOL" unit="" />
+		<coil address="35" name="温度传感器开路警告" datatype="BOOL" unit="" />
+		<coil address="36" name="油压传感器开路警告" datatype="BOOL" unit="" />
+		<coil address="37" name="维护时间到警告" datatype="BOOL" unit="" />
+		<coil address="38" name="充电器充电失败警告" datatype="BOOL" unit="" />
+		<coil address="39" name="过功率警告" datatype="BOOL" unit="" />
+		<coil address="40" name="系统在测试模式" datatype="BOOL" unit="" />
+		<coil address="41" name="系统在自动模式" datatype="BOOL" unit="" />
+		<coil address="42" name="系统在手动模式" datatype="BOOL" unit="" />
+		<coil address="43" name="系统在停机模式" datatype="BOOL" unit="" />
+		<coil address="44" name="温度传感器器开路停机" datatype="BOOL" unit="" />
+		<coil address="45" name="油压传感器开路停机" datatype="BOOL" unit="" />
+		<coil address="46" name="维护时间到停机报警" datatype="BOOL" unit="" />
+		<coil address="47" name="过功率停机报警" datatype="BOOL" unit="" />
+		<coil address="48" name="紧急停机输入" datatype="BOOL" unit="" />
+		<coil address="49" name="可编程输入口1" datatype="BOOL" unit="" />
+		<coil address="50" name="可编程输入口2" datatype="BOOL" unit="" />
+		<coil address="51" name="可编程输入口3" datatype="BOOL" unit="" />
+		<coil address="52" name="可编程输入口4" datatype="BOOL" unit="" />
+		<coil address="53" name="可编程输入口5" datatype="BOOL" unit="" />
+		<coil address="54" name="漏液停机" datatype="BOOL" unit="" />
+		<coil address="55" name="保留2" datatype="BOOL" unit="" />
+		<coil address="56" name="起动继电器输出" datatype="BOOL" unit="" />
+		<coil address="57" name="燃油继电器输出" datatype="BOOL" unit="" />
+		<coil address="58" name="可编程输出口1" datatype="BOOL" unit="" />
+		<coil address="59" name="可编程输出口2" datatype="BOOL" unit="" />
+		<coil address="60" name="可编程输出口3" datatype="BOOL" unit="" />
+		<coil address="61" name="可编程输出口4" datatype="BOOL" unit="" />
+		<coil address="62" name="燃油1输出控制" datatype="BOOL" unit="" />
+		<coil address="63" name="过流故障停机输入报警" datatype="BOOL" unit="" />
+		<coil address="64" name="超速停机输入报警" datatype="BOOL" unit="" />
+		<coil address="65" name="市电故障" datatype="BOOL" unit="" />
+		<coil address="66" name="市电正常" datatype="BOOL" unit="" />
+		<coil address="67" name="市电过压" datatype="BOOL" unit="" />
+		<coil address="68" name="市电欠压" datatype="BOOL" unit="" />
+		<coil address="69" name="市电缺相" datatype="BOOL" unit="" />
+		<coil address="70" name="市电无" datatype="BOOL" unit="" />
+		<coil address="71" name="低油压报警停机" datatype="BOOL" unit="" />
+		<coil address="72" name="发电正常" datatype="BOOL" unit="" />
+		<coil address="73" name="发电过压" datatype="BOOL" unit="" />
+		<coil address="74" name="发电欠压" datatype="BOOL" unit="" />
+		<coil address="75" name="发电过频" datatype="BOOL" unit="" />
+		<coil address="76" name="发电欠频" datatype="BOOL" unit="" />
+		<coil address="77" name="发电过流" datatype="BOOL" unit="" />
+		<coil address="78" name="定时不开机时间指示" datatype="BOOL" unit="" />
+		<coil address="79" name="漏液警告" datatype="BOOL" unit="" />
+	</function_code01>
+	<function_code02 code="0x02" description="Read Discrete Input" />
+	<function_code03 code="0x03" description="Read Holding Registers">
+		<hRegister address="0" name="市电UA" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="1" name="市电UB" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="2" name="市电UC" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="3" name="市电UAB" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="4" name="市电UBC" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="5" name="市电UCA" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="6" name="市电频率" datatype="UINT16" unit="V" mag="10" offset="0" />
+		<hRegister address="7" name="发电UA" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="8" name="发电UB" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="9" name="发电UC" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="10" name="发电UAB" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="11" name="发电UBC" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="12" name="发电UCA" datatype="UINT16" unit="V" mag="1" offset="0" />
+		<hRegister address="13" name="发电频率" datatype="UINT16" unit="Hz" mag="10" offset="0" />
+		<hRegister address="14" name="A相电流" datatype="UINT16" unit="A" mag="1" offset="0" />
+		<hRegister address="15" name="B相电流" datatype="UINT16" unit="A" mag="1" offset="0" />
+		<hRegister address="16" name="C相电流" datatype="UINT16" unit="A" mag="1" offset="0" />
+		<hRegister address="17" name="水温温度值" datatype="UINT16" unit="℃" mag="1" offset="0" />
+		<hRegister address="18" name="水温电阻值" datatype="UINT16" unit="Ω" mag="10" offset="0" />
+		<hRegister address="19" name="油压值" datatype="UINT16" unit="kPa" mag="1" offset="0" />
+		<hRegister address="20" name="油压电阻值" datatype="UINT16" unit="Ω" mag="10" offset="0" />
+		<hRegister address="21" name="液位值" datatype="UINT16" unit="%" mag="1" offset="0" />
+		<hRegister address="22" name="液位电阻值" datatype="UINT16" unit="Ω" mag="10" offset="0" />
+		<hRegister address="23" name="转速" datatype="UINT16" unit="RPM" mag="1" offset="0" />
+		<hRegister address="24" name="电池电压" datatype="UINT16" unit="V" mag="10" offset="0" />
+		<hRegister address="25" name="D+电压" datatype="UINT16" unit="V" mag="10" offset="0" />
+		<hRegister address="26" name="有功功率" datatype="INT16" unit="kW" mag="1" offset="0" />
+		<hRegister address="27" name="无功功率" datatype="INT16" unit="kVar" mag="1" offset="0" />
+		<hRegister address="28" name="视在功率" datatype="INT16" unit="kVA" mag="1" offset="0" />
+		<hRegister address="29" name="功率因数" datatype="INT16" unit="" mag="100" offset="0" />
+		<hRegister address="30" name="维护倒计时小时" datatype="UINT16" unit="h" mag="1" offset="0" />
+		<hRegister address="31" name="维护倒计时分" datatype="UINT16" unit="min" mag="1" offset="0" />
+		<hRegister address="34" name="控制器运行状态" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="35" name="延时1" datatype="UINT16" unit="s" mag="1" offset="0" />
+		<hRegister address="36" name="自动运行状态" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="37" name="延时2" datatype="UINT16" unit="s" mag="1" offset="0" />
+		<hRegister address="38" name="ATS运行状态" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="39" name="延时3" datatype="UINT16" unit="s" mag="1" offset="0" />
+		<hRegister address="40" name="市电状态" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="41" name="延时4" datatype="UINT16" unit="s" mag="1" offset="0" />
+		<hRegister address="42" name="油机运行累计计时（小时）高位" datatype="UINT16" unit="h" mag="1" offset="0" />
+		<hRegister address="43" name="油机运行累计计时（小时）低位" datatype="UINT16" unit="h" mag="1" offset="0" />
+		<hRegister address="44" name="油机运行累计计时（分钟）" datatype="UINT16" unit="min" mag="1" offset="0" />
+		<hRegister address="45" name="油机运行累计计时（秒）" datatype="UINT16" unit="s" mag="1" offset="0" />
+		<hRegister address="46" name="累计开机次数高位" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="47" name="累计开机次数低位" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="48" name="累计电能高位" datatype="UINT16" unit="kWh" mag="1" offset="0" />
+		<hRegister address="49" name="累计电能低位" datatype="UINT16" unit="kWh" mag="1" offset="0" />
+		<hRegister address="50" name="软件版本" datatype="UINT16" unit="" mag="10" offset="0" />
+		<hRegister address="51" name="硬件版本" datatype="UINT16" unit="" mag="10" offset="0" />
+		<hRegister address="52" name="A相有功功率" datatype="INT16" unit="kW" mag="1" offset="0" />
+		<hRegister address="53" name="B相有功功率" datatype="INT16" unit="kW" mag="1" offset="0" />
+		<hRegister address="54" name="C相有功功率" datatype="INT16" unit="kW" mag="1" offset="0" />
+		<hRegister address="55" name="负载输出百分比" datatype="UINT16" unit="%" mag="1" offset="0" />
+		<hRegister address="67" name="进气压力" datatype="INT16" unit="kPa" mag="1" offset="0" />
+		<hRegister address="68" name="累计燃油消耗" datatype="INT16" unit="L" mag="1" offset="0" />
+		<hRegister address="92" name="发电UA相位" datatype="INT16" unit="°" mag="1" offset="0" />
+		<hRegister address="93" name="发电UB相位" datatype="INT16" unit="°" mag="1" offset="0" />
+		<hRegister address="94" name="发电UC相位" datatype="INT16" unit="°" mag="1" offset="0" />
+		<hRegister address="95" name="市电UA相位" datatype="INT16" unit="°" mag="1" offset="0" />
+		<hRegister address="96" name="市电UB相位" datatype="INT16" unit="°" mag="1" offset="0" />
+		<hRegister address="97" name="市电UC相位" datatype="INT16" unit="°" mag="1" offset="0" />
+		<hRegister address="2500" name="A相电流" datatype="UINT32" unit="A" mag="10" offset="0" />
+		<hRegister address="2501" name="B相电流" datatype="UINT32" unit="A" mag="10" offset="0" />
+		<hRegister address="2504" name="C相电流" datatype="UINT32" unit="A" mag="10" offset="0" />
+		<hRegister address="2506" name="有功功率" datatype="INT32" unit="kW" mag="10" offset="0" />
+		<hRegister address="2508" name="无功功率" datatype="INT32" unit="kVar" mag="10" offset="0" />
+		<hRegister address="2510" name="视在功率" datatype="INT32" unit="kVA" mag="10" offset="0" />
+	</function_code03>
+	<function_code04 code="0x04" description="Read Input Registers" />
+	<function_code05 code="0x05" description="Write Single Coil" />
+	<function_code06 code="0x06" description="Write Single Registers" />
+	<dido code="" description="Parse dido">
+		<subdido name="公共报警" level="1" />
+		<subdido name="公共警告报警" level="1" />
+		<subdido name="公共停机报警" level="1" />
+		<subdido name="紧急停机" level="1" />
+		<subdido name="超速报警停机" level="1" />
+		<subdido name="欠速报警停机" level="1" />
+		<subdido name="速度信号丢失停机" level="1" />
+		<subdido name="超频报警停机" level="1" />
+		<subdido name="欠频报警停机" level="1" />
+		<subdido name="过压报警停机" level="1" />
+		<subdido name="欠压报警停机" level="1" />
+		<subdido name="发电过流停机" level="1" />
+		<subdido name="起动失败" level="1" />
+		<subdido name="水温高报警停机" level="1" />
+		<subdido name="油压低报警停机" level="1" />
+		<subdido name="频率丢失报警" level="1" />
+		<subdido name="输入口停机报警" level="1" />
+		<subdido name="燃油位低停机报警" level="1" />
+		<subdido name="冷却液低停机报警" level="1" />
+		<subdido name="水温高警告报警" level="1" />
+		<subdido name="油压低警告报警" level="1" />
+		<subdido name="发电过流警告报警" level="1" />
+		<subdido name="停机失败警告报警" level="1" />
+		<subdido name="油位低警告" level="1" />
+		<subdido name="充电失败警告" level="1" />
+		<subdido name="电池电压过低警告报警" level="1" />
+		<subdido name="电池电压过高警告报警" level="1" />
+		<subdido name="输入口警告报警" level="1" />
+		<subdido name="速度信号丢失警告" level="1" />
+		<subdido name="冷却液低警告" level="1" />
+		<subdido name="温度传感器开路警告" level="1" />
+		<subdido name="油压传感器开路警告" level="1" />
+		<subdido name="维护时间到警告" level="1" />
+		<subdido name="充电器充电失败警告" level="1" />
+		<subdido name="过功率警告" level="1" />
+		<subdido name="温度传感器器开路停机" level="1" />
+		<subdido name="油压传感器开路停机" level="1" />
+		<subdido name="维护时间到停机报警" level="1" />
+		<subdido name="过功率停机报警" level="1" />
+		<subdido name="紧急停机输入" level="1" />
+		<subdido name="漏液停机" level="1" />
+		<subdido name="起动继电器输出" level="1" />
+		<subdido name="燃油继电器输出" level="1" />
+		<subdido name="燃油1输出控制" level="1" />
+		<subdido name="过流故障停机输入报警" level="1" />
+		<subdido name="超速停机输入报警" level="1" />
+		<subdido name="市电故障" level="1" />
+		<subdido name="市电正常" level="1" />
+		<subdido name="市电过压" level="1" />
+		<subdido name="市电欠压" level="1" />
+		<subdido name="市电缺相" level="1" />
+		<subdido name="市电无" level="1" />
+		<subdido name="低油压报警停机" level="1" />
+		<subdido name="发电正常" level="1" />
+		<subdido name="发电过压" level="1" />
+		<subdido name="发电欠压" level="1" />
+		<subdido name="发电过频" level="1" />
+		<subdido name="发电欠频" level="1" />
+		<subdido name="发电过流" level="1" />
+		<subdido name="定时不开机时间指示" level="1" />
+		<subdido name="漏液警告" level="1" />
+	</dido>
+</HGM6100N_protocol>

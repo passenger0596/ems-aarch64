@@ -113,7 +113,7 @@ void EmsCmd::set_demandResponseMode(const json& demandResponseMode_cfg) {
 }
 
 
-void EmsCmd::process_ems_commands(EjPcs15AmCmd& pcs15am_cmd) { 
+void EmsCmd::process_ems_commands(EjPcsCmd& pcs_cmd,EjDcdcCmd& dcdc_cmd,GtbmsCmd& gtbms_cmd) { 
     try {
         auto& device_commands = cmd()->cmd_from_qt["ems"];
 
@@ -133,7 +133,14 @@ void EmsCmd::process_ems_commands(EjPcs15AmCmd& pcs15am_cmd) {
             // 使用线程安全的 setValue 方法
             this->ems->setValue<double>("开机", 0);
             if (this->device_map_["pcs1"])
-                pcs15am_cmd.pcs_on_off("off","定时",this->device_map_["pcs1"]);
+                pcs_cmd.pcs_on_off("off","手动",this->device_map_["pcs1"]);
+            if (this->device_map_["dcdc1"])
+                dcdc_cmd.dcdc_on_off("off","手动",this->device_map_["dcdc1"]);
+            if (this->device_map_["dcdc2"])
+                dcdc_cmd.dcdc_on_off("off","手动",this->device_map_["dcdc2"]);
+            if (this->device_map_["gtbms485"])
+                gtbms_cmd.gtbms_vol_on_off("off","手动",this->device_map_["gtbms485"]);
+            
             LOG_INFO_LOC("系统关机指令已执行");
         }
 
@@ -281,7 +288,7 @@ void EmsCmd::process_ems_commands(EjPcs15AmCmd& pcs15am_cmd) {
         if (device_commands.contains("sys_reset") && device_commands["sys_reset"].is_number() && device_commands["sys_reset"].get<int>() != 0) {
             device_commands["sys_reset"] = 0;
             if (this->device_map_["pcs1"])
-                pcs15am_cmd.pcs_reset(this->device_map_["pcs1"],"定时");
+                pcs_cmd.pcs_reset(this->device_map_["pcs1"],"定时");
             this->ems->setValue<double>("系统状态", 2);
             LOG_INFO_LOC("系统故障复位指令已执行");
 

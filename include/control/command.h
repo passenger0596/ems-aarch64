@@ -15,25 +15,25 @@ class EjPcsCmd {
         void pcs_reset(std::shared_ptr<Device>& device,const std::string& mode);
         void pcs_switch_gridMode(const uint16_t& grid_mode,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_solid_param(const std::string& mode,std::shared_ptr<Device>& device);
-        void pcs_set_power(const int16_t& power,const std::string& mode,std::shared_ptr<Device>& device);
+        void pcs_set_power(const double& power,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_set_runMode(const uint16_t& run_mode,const std::string& mode,std::shared_ptr<Device>& device);
-        void pcs_set_dcChargeVol(const uint16_t& dc_charge_vol,const std::string& mode,std::shared_ptr<Device>& device);
-        void pcs_set_reactivePower(const int16_t& reactive_power,const std::string& mode,std::shared_ptr<Device>& device);
+        void pcs_set_dcChargeVol(const double& dc_charge_vol,const std::string& mode,std::shared_ptr<Device>& device);
+        void pcs_set_reactivePower(const double& reactive_power,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_set_singlePhaseCtrl(const uint16_t& single_phase_ctrl,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_set_masterMode(const uint16_t& master_mode,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_set_offGridVol(const uint16_t& off_grid_vol,const std::string& mode,std::shared_ptr<Device>& device);
-        void pcs_set_frequency(const uint16_t& frequency,const std::string& mode,std::shared_ptr<Device>& device);
-        void pcs_set_dcBusVol(const uint16_t& dc_bus_vol,const std::string& mode,std::shared_ptr<Device>& device);
+        void pcs_set_frequency(const double& frequency,const std::string& mode,std::shared_ptr<Device>& device);
+        void pcs_set_dcBusVol(const double& dc_bus_vol,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_set_vsgEnable(const uint16_t& vsg_enable,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_set_vsgTimeVar(const uint16_t& vsg_time_var,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_set_vsgDamp(const uint16_t& vsg_damp,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_set_vsgPfr(const uint16_t& vsg_pfr,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_set_vsgRcoef(const uint16_t& vsg_rcoef,const std::string& mode,std::shared_ptr<Device>& device);
         void pcs_set_vsgVirtualR(const uint16_t& vsg_virtual_r,const std::string& mode,std::shared_ptr<Device>& device);
-        void pcs_set_busHighProtect(const uint16_t& bus_high_protect,const std::string& mode,std::shared_ptr<Device>& device);
-        void pcs_set_busLowProtect(const uint16_t& bus_low_protect,const std::string& mode,std::shared_ptr<Device>& device);
-        void pcs_set_acHighProtect(const uint16_t& ac_high_protect,const std::string& mode,std::shared_ptr<Device>& device);
-        void pcs_set_acLowProtect(const uint16_t& ac_low_protect,const std::string& mode,std::shared_ptr<Device>& device);
+        void pcs_set_busHighProtect(const double& bus_high_protect,const std::string& mode,std::shared_ptr<Device>& device);
+        void pcs_set_busLowProtect(const double& bus_low_protect,const std::string& mode,std::shared_ptr<Device>& device);
+        void pcs_set_acHighProtect(const double& ac_high_protect,const std::string& mode,std::shared_ptr<Device>& device);
+        void pcs_set_acLowProtect(const double& ac_low_protect,const std::string& mode,std::shared_ptr<Device>& device);
 
         void process_pcs_commands(const std::string& device_name);
         void pcs_manual_control(const std::string& device_name);
@@ -275,6 +275,23 @@ class DehumifierV2Cmd {
         std::unordered_map<int, std::shared_ptr<ModbusClient>> modbus_clients_;
         std::unordered_map<std::string, std::shared_ptr<Device>> device_map_;  
 };
+
+class GtbmsCmd {
+    public:
+        GtbmsCmd(std::unordered_map<int, std::shared_ptr<ModbusClient>> modbus_clients,std::unordered_map<std::string, std::shared_ptr<Device>> device_map);
+        ~GtbmsCmd()=default;
+        
+        void gtbms_vol_on_off(const std::string& switch_state,const std::string& mode,std::shared_ptr<Device>& device);
+        void gtbms_reset_fault(const std::string& mode,std::shared_ptr<Device>& device);
+        void gtbms_read_protection(std::shared_ptr<Device>& device);
+        
+        void process_gtbms_commands(const std::string& device_name);
+        void gtbms_manual_control(const std::string& device_name);
+    
+    private:
+        std::unordered_map<int, std::shared_ptr<ModbusClient>> modbus_clients_;
+        std::unordered_map<std::string, std::shared_ptr<Device>> device_map_;  
+};
     
 
 class EmsCmd { 
@@ -288,12 +305,76 @@ class EmsCmd {
         void set_multi_cfg(const json& cfg_name); // 设置多个配置项的函数声明
         void set_timingMode(const json& timingMode_cfg); // 设置定时模式配置的函数声明
         void set_demandResponseMode(const json& demandResponseMode_cfg);    // 设置需求响应模式配置的函数声明
-        void process_ems_commands(EjPcs15AmCmd& pcs15am_cmd); // 处理EMS相关命令的函数声明
+        void process_ems_commands(EjPcsCmd& pcs_cmd,EjDcdcCmd& dcdc_cmd,GtbmsCmd& gtbms_cmd); // 处理EMS相关命令的函数声明
     private:
         std::shared_ptr<EMS> ems = nullptr;
         std::unordered_map<std::string, std::shared_ptr<Device>> device_map_;
         
 };
+
+
+class Hgm6100Cmd {
+    public:
+        Hgm6100Cmd(std::unordered_map<int, std::shared_ptr<ModbusClient>> modbus_clients,std::unordered_map<std::string, std::shared_ptr<Device>> device_map);
+        ~Hgm6100Cmd()=default;
+        
+        void dg_on(const std::string& mode,std::shared_ptr<Device>& device);
+        void dg_off(const std::string& mode,std::shared_ptr<Device>& device);
+        void dg_set_auto_mode(const std::string& mode,std::shared_ptr<Device>& device);
+        void dg_set_manual_mode(const std::string& mode,std::shared_ptr<Device>& device);
+        
+        void process_dg_hgm6100n_commands(const std::string& device_name);
+        void dg_hgm6100n_manual_control(const std::string& device_name);
+    
+    private:
+        std::unordered_map<int, std::shared_ptr<ModbusClient>> modbus_clients_;
+        std::unordered_map<std::string, std::shared_ptr<Device>> device_map_;  
+};
+
+
+class HengduAcCmd {
+    public:
+        HengduAcCmd(std::unordered_map<int, std::shared_ptr<ModbusClient>> modbus_clients,std::unordered_map<std::string, std::shared_ptr<Device>> device_map);
+        ~HengduAcCmd()=default;
+        
+        void ac_on_off(const std::string& switch_state,const std::string& mode,std::shared_ptr<Device>& device);
+        void force_cooling(const std::string& switch_state,const std::string& mode,std::shared_ptr<Device>& device);
+        void force_heating(const std::string& switch_state,const std::string& mode,std::shared_ptr<Device>& device);
+        void set_cooling_temp(const int16_t& temp,const std::string& mode,std::shared_ptr<Device>& device);
+        void set_cooling_temp_rd(const int16_t& temp_rd,const std::string& mode,std::shared_ptr<Device>& device);
+        void set_heating_temp(const int16_t& temp,const std::string& mode,std::shared_ptr<Device>& device);
+        void set_heating_temp_rd(const int16_t& temp_rd,const std::string& mode,std::shared_ptr<Device>& device);
+        void set_high_temp_alarm(const int16_t& temp,const std::string& mode,std::shared_ptr<Device>& device);
+        void set_low_temp_alarm(const int16_t& temp,const std::string& mode,std::shared_ptr<Device>& device);
+        void set_drying_open_humidity(const uint16_t& humidity,const std::string& mode,std::shared_ptr<Device>& device);
+        void set_drying_humidity_rd(const uint16_t& humidity_rd,const std::string& mode,std::shared_ptr<Device>& device);
+        void set_high_humidity_alarm(const uint16_t& humidity,const std::string& mode,std::shared_ptr<Device>& device);
+        void set_drying_enable(const uint16_t& enable,const std::string& mode,std::shared_ptr<Device>& device);
+        
+        void process_hengdu_ac_commands(const std::string& device_name);
+        void hengdu_ac_manual_control(const std::string& device_name);
+    
+    private:
+        std::unordered_map<int, std::shared_ptr<ModbusClient>> modbus_clients_;
+        std::unordered_map<std::string, std::shared_ptr<Device>> device_map_;  
+};
+
+class Zhongsheng8didoCmd {
+    public:
+        Zhongsheng8didoCmd(std::unordered_map<int, std::shared_ptr<ModbusClient>> modbus_clients,std::unordered_map<std::string, std::shared_ptr<Device>> device_map);
+        ~Zhongsheng8didoCmd()=default;
+        
+        void board_8di8do_operate(const std::string& switch_state,const int do_num,const std::string& mode,std::shared_ptr<Device>& device);
+        void board_8di8do_multi_operate(const std::vector<uint16_t>& switch_list,const std::string& mode,std::shared_ptr<Device>& device);
+        
+        void process_board_8di8do_commands(const std::string& device_name);
+        void board_8di8do_manual_control(const std::string& device_name);
+    
+    private:
+        std::unordered_map<int, std::shared_ptr<ModbusClient>> modbus_clients_;
+        std::unordered_map<std::string, std::shared_ptr<Device>> device_map_;  
+};
+
 
 
 

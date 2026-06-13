@@ -334,6 +334,20 @@ public:
         return result;
     }
 
+    /**
+     * @brief 将 uint16 展开为 16 位 bool 数组 (bit 15 → index 0, bit 0 → index 15)
+     * 与 Python utils.uint16_to_switches 行为完全一致
+     * @param value 16 位无符号整数
+     * @return 长度为 16 的 bool 数组，高位在前
+     */
+    static std::vector<bool> uint16_to_switches(uint16_t value) {
+        std::vector<bool> result(16);
+        for (int i = 15; i >= 0; --i) {
+            result[15 - i] = (value >> i) & 0x01;
+        }
+        return result;
+    }
+
     virtual bool writeCanFrameToDevice(std::shared_ptr<CanOperator> can_client,
                                        sockcanpp::CanId can_id,
                                        const std::vector<uint8_t>& payload) {
@@ -343,6 +357,24 @@ public:
         }
 
         const bool result = can_client->send_frame(can_id, payload);
+        if (!result) {
+            LOG_ERROR_LOC(("Device " + name_ + ": Send CAN frame failed, can_id=" +
+                           std::to_string(static_cast<uint32_t>(can_id))).c_str());
+        }
+        return result;
+    }
+
+    /**
+     * @brief 通过引用发送 CAN 帧（重载，与 read_data 签名风格一致）
+     */
+    virtual bool writeCanFrameToDevice(CanOperator& can_client,
+                                       sockcanpp::CanId can_id,
+                                       const std::vector<uint8_t>& payload) {
+        if (!can_client.is_connected()) {
+            LOG_WARNING_LOC(("CAN client is not connected for device: " + name_).c_str());
+            return false;
+        }
+        const bool result = can_client.send_frame(can_id, payload);
         if (!result) {
             LOG_ERROR_LOC(("Device " + name_ + ": Send CAN frame failed, can_id=" +
                            std::to_string(static_cast<uint32_t>(can_id))).c_str());

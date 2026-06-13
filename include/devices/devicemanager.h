@@ -3,10 +3,11 @@
 #include "pcs.h"
 #include "dcdc.h"
 #include "ems.h"
-#include "bms_uhome.h"
-#include "wea1610.h"
-#include "dehumidifier_v2.h"
+#include "iomodule.h"
+#include "ac_hengdu.h"
 #include "gt_bms.h"  // 添加高特BMS头文件
+#include "dg_hgm6100.h"
+#include "infy_charger.h"
 #include "modbusserver.h"
 #include <thread>
 #include <atomic>
@@ -59,10 +60,14 @@ class DeviceManager{
         std::shared_ptr<Dcdc> dcdc1_ = nullptr;
         std::shared_ptr<Dcdc> dcdc2_ = nullptr;
         std::shared_ptr<ACMeter_3366> dtsd3366_ = nullptr;
-        std::shared_ptr<BmsUhome> bms_uhome_ = nullptr;
-        std::shared_ptr<Wea1610> wea1610_ = nullptr;
-        std::shared_ptr<DehumidifierV2> dehumidifierV2_ = nullptr;
         std::shared_ptr<GtBms> gt_bms_ = nullptr;  // 高特BMS设备
+        
+        std::shared_ptr<AcHengdu> ac_hengdu_ = nullptr;  // ACMeter_3366设备 
+        std::shared_ptr<DgHgm6100n> dg_hgm6100_ = nullptr;  // DG_HGM6100设备
+        std::shared_ptr<IOModule> iomodule_ = nullptr;  // IOModule设备
+
+        std::shared_ptr<InfyCharger> chargers_ = nullptr;  // 充电器设备
+
 
         // 串口号与ModbusClient的映射
         std::unordered_map<int, std::shared_ptr<ModbusClient>> mapComToModbusClient;

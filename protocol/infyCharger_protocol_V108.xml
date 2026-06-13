@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='utf-8'?>
+<infyCharger_protocol_V108 device="infyCharger">
+	<function_code01 code="0x01" description="Read Coils" />
+	<function_code02 code="0x02" description="Read Discrete Input" />
+	<function_code03 code="0x03" description="Read Holding Registers">
+		<hRegister address="1" name="系统总电压(V)" datatype="INT16" unit="V" mag="1" offset="0" />
+		<hRegister address="2" name="系统总电流(A)" datatype="INT16" unit="A" mag="1" offset="0" />
+		<hRegister address="3" name="模块1电压(V)" datatype="INT16" unit="V" mag="1" offset="0" />
+		<hRegister address="4" name="模块1电流(A)" datatype="INT16" unit="A" mag="1" offset="0" />
+		<hRegister address="5" name="模块1环温(℃)" datatype="INT16" unit="℃" mag="1" offset="0" />
+		<hRegister address="6" name="模块1状态表0" datatype="INT16" unit="" mag="1" offset="0" />
+		<hRegister address="7" name="模块1状态表1" datatype="INT16" unit="" mag="1" offset="0" />
+		<hRegister address="8" name="模块1状态表2" datatype="INT16" unit="" mag="10" offset="0" />
+		<hRegister address="9" name="模块1AB线电压(V)" datatype="INT16" unit="V" mag="10" offset="0" />
+		<hRegister address="10" name="模块1BC线电压(V)" datatype="INT16" unit="V" mag="10" offset="0" />
+		<hRegister address="11" name="模块1CA线电压(V)" datatype="INT16" unit="V" mag="10" offset="0" />
+		<hRegister address="12" name="模块2电压(V)" datatype="INT16" unit="V" mag="10" offset="0" />
+		<hRegister address="13" name="模块2电流(A)" datatype="INT16" unit="A" mag="10" offset="0" />
+		<hRegister address="14" name="模块2环温(℃)" datatype="INT16" unit="℃" mag="10" offset="0" />
+		<hRegister address="15" name="模块2状态表0" datatype="INT16" unit="" mag="10" offset="0" />
+		<hRegister address="16" name="模块2状态表1" datatype="INT16" unit="" mag="10" offset="0" />
+		<hRegister address="17" name="模块2状态表2" datatype="INT16" unit="" mag="10" offset="0" />
+		<hRegister address="18" name="模块2AB线电压(V)" datatype="INT16" unit="V" mag="1" offset="0" />
+		<hRegister address="19" name="模块2BC线电压(V)" datatype="INT16" unit="V" mag="1" offset="0" />
+		<hRegister address="20" name="模块2CA线电压(V)" datatype="INT16" unit="V" mag="1" offset="0" />
+		<hRegister address="21" name="模块3电压(V)" datatype="INT16" unit="V" mag="1" offset="0" />
+		<hRegister address="22" name="模块3电流(A)" datatype="UINT16" unit="A" mag="1" offset="0" />
+		<hRegister address="23" name="模块3环温(℃)" datatype="UINT16" unit="℃" mag="1" offset="0" />
+		<hRegister address="24" name="模块3状态表0" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="25" name="模块3状态表1" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="26" name="模块3状态表2" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="27" name="模块3AB线电压(V)" datatype="UINT16" unit="V" mag="10" offset="0" />
+		<hRegister address="28" name="模块3BC线电压(V)" datatype="UINT16" unit="V" mag="10" offset="0" />
+		<hRegister address="29" name="模块3CA线电压(V)" datatype="UINT16" unit="V" mag="10" offset="0" />
+	</function_code03>
+	<function_code04 code="0x04" description="Read Input Registers" />
+	<function_code05 code="0x05" description="Write Single Coil" />
+	<function_code06 code="0x06" description="Write Single Registers" />
+	<dido code="" description="Parse dido">
+		<subdido name="模块1输出短路" level="1" />
+		<subdido name="模块1内部通信故障" level="1" />
+		<subdido name="模块1输入或母线异常" level="1" />
+		<subdido name="模块1休眠" level="1" />
+		<subdido name="模块1放电异常" level="1" />
+		<subdido name="模块1DC侧处于关机状态" level="1" />
+		<subdido name="模块1故障告警" level="1" />
+		<subdido name="模块1保护告警" level="1" />
+		<subdido name="模块1风扇故障告警" level="1" />
+		<subdido name="模块1过温告警" level="1" />
+		<subdido name="模块1输出过压告警" level="1" />
+		<subdido name="模块1WALK-IN使能" level="1" />
+		<subdido name="模块1通讯中断告警" level="1" />
+		<subdido name="模块1处于限功率状态" level="1" />
+		<subdido name="模块1ID重复" level="1" />
+		<subdido name="模块1严重不均流" level="1" />
+		<subdido name="模块1三相输入缺相告警" level="1" />
+		<subdido name="模块1三相输入不平衡告警" level="1" />
+		<subdido name="模块1输入欠压告警" level="1" />
+		<subdido name="模块1输入过压告警" level="1" />
+		<subdido name="模块1PFC侧处于关机状态" level="1" />
+		<subdido name="模块2输出短路" level="1" />
+		<subdido name="模块2内部通信故障" level="1" />
+		<subdido name="模块2输入或母线异常" level="1" />
+		<subdido name="模块2休眠" level="1" />
+		<subdido name="模块2放电异常" level="1" />
+		<subdido name="模块2DC侧处于关机状态" level="1" />
+		<subdido name="模块2故障告警" level="1" />
+		<subdido name="模块2保护告警" level="1" />
+		<subdido name="模块2风扇故障告警" level="1" />
+		<subdido name="模块2过温告警" level="1" />
+		<subdido name="模块2输出过压告警" level="1" />
+		<subdido name="模块2WALK-IN使能" level="1" />
+		<subdido name="模块2通讯中断告警" level="1" />
+		<subdido name="模块2处于限功率状态" level="1" />
+		<subdido name="模块2ID重复" level="1" />
+		<subdido name="模块2严重不均流" level="1" />
+		<subdido name="模块2三相输入缺相告警" level="1" />
+		<subdido name="模块2三相输入不平衡告警" level="1" />
+		<subdido name="模块2输入欠压告警" level="1" />
+		<subdido name="模块2输入过压告警" level="1" />
+		<subdido name="模块2PFC侧处于关机状态" level="1" />
+		<subdido name="模块3输出短路" level="1" />
+		<subdido name="模块3内部通信故障" level="1" />
+		<subdido name="模块3输入或母线异常" level="1" />
+		<subdido name="模块3休眠" level="1" />
+		<subdido name="模块3放电异常" level="1" />
+		<subdido name="模块3DC侧处于关机状态" level="1" />
+		<subdido name="模块3故障告警" level="1" />
+		<subdido name="模块3保护告警" level="1" />
+		<subdido name="模块3风扇故障告警" level="1" />
+		<subdido name="模块3过温告警" level="1" />
+		<subdido name="模块3输出过压告警" level="1" />
+		<subdido name="模块3WALK-IN使能" level="1" />
+		<subdido name="模块3通讯中断告警" level="1" />
+		<subdido name="模块3处于限功率状态" level="1" />
+		<subdido name="模块3ID重复" level="1" />
+		<subdido name="模块3严重不均流" level="1" />
+		<subdido name="模块3三相输入缺相告警" level="1" />
+		<subdido name="模块3三相输入不平衡告警" level="1" />
+		<subdido name="模块3输入欠压告警" level="1" />
+		<subdido name="模块3输入过压告警" level="1" />
+		<subdido name="模块3PFC侧处于关机状态" level="1" />
+	</dido>
+</infyCharger_protocol_V108>

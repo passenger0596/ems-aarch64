@@ -1,72 +1,44 @@
 {
   "pcs1": {
-    "setLvChargeVol": null,
-    "setLvOverVoltage": null,
-    "setLvUnderVoltage": null,
-    "setHvChargeVol": null,
-    "setHvOverVoltage": null,
-    "setHvUnderVoltage": null,
-    "setDcPower": null,
-    "setDcCurrent": null,
-    "on": 0,
-    "off": 0,
-    "setMaxDcPower": null,
-    "setMaxDcCurrent": null,
-    "setCmdCfg": null,
-    "setEmsInsuTestEnable": null,
-    "setInsulTestVol": null,
-    "setInsuTestEnable": null,
-    "setDcQuickCfg": null,
-    "setDcEpo": null,
+    
+    "on": false,
+    "off": false,
 
-    "setActivePower": null,
-    "setReactivePower": null,
     "setFaultReset": null,
     "setSolidParam": null,
+    "setActivePower": null,
+    "setReactivePower": null,
+
     "setGridMode": null,
     "setRunMode": null,
-    "setSinglePhaseControl": null,
+    "setDcBusVol": null,
+    "setSinglePhaseCtrl": null,
     "setMasterMode": null,
-    "setDcParallelEnable": null,
-    "setDehumidifyEnable": null,
+    
     "setOffgridVol": null,
     "setOffgridFreq": null,
-    "setPhaseAPower": null,
-    "setPhaseAReactivePower": null,
-    "setPhaseBPower": null,
-    "setPhaseBReactivePower": null,
-    "setPhaseCPower": null,
-    "setPhaseCReactivePower": null,
-    "setDcBusVol": null,
-    "setDcBusVolForOne": null,
-    "setClearCapacity": null,
-    "setAcEpo": null,
+  
 
-    "setGridOverFreq": null,
-    "setGridUnderFreq": null,
-    "setIsolateOverFreq": null,
-    "setIsolateUnderFreq": null,
-    "setAcOverVoltage": null,
-    "setAcUnderVoltage": null,
+    "setAcHighProtect": null,
+    "setAcLowProtect": null,
     "setAcOverCurrent": null,
-    "setBatOverVoltage": null,
-    "setBatUnderVoltage": null,
-    "setBusOverVoltage": null,
-    "setBusUnderVoltage": null,
     "setDcOverCurrent": null,
+
+    "setBusHighProtect": null,
+    "setBusLowProtect": null,
+
     "setOverTemperature": null,
     "setMaxChargePower": null,
     "setMaxDischargePower": null,
     "setBatMaxChargeCurrent": null,
     "setBatMaxDischargeCurrent": null
+    
   },
   "ems": {
     "sys_startup": false,
     "sys_shutdown": false,
     "sys_setMode": 0,
-    "auto_run": null,
     "sys_reset": false,
-    "timer_run": false,
     "do1": 2,
     "do2": 2,
     "do3": 2,
@@ -118,34 +90,7 @@
     "address": null,
     "rawValue": null,
 
-    "sys_setGridMode": null,
-
-    "set_olRegulationPower": null,
-    "set_olDetectTime": null,
-    "set_olStepTime": null,
-    "set_olStepPower": null,
-    "set_olMaxDischargePower": null,
-    "set_olReductionrPoint": null,
-    "set_olCompensationAllowPoint": null,
-    "set_olCompensationStepPower": null,
-    "set_olCompensationReductionPoint": null,
-    "set_olCompensationMaxChargePower": null,
-
-    "set_lvRegulationVol": null,
-    "set_lvDetectTime": null,
-    "set_lvStepTime": null,
-    "set_lvReactiveStep": null,
-    "set_lvMaxReactivePower": null,
-    "set_lvActiveStep": null,
-    "set_lvMaxActivePower": null,
-    "set_lvTargetVol": null,
-
-    "set_lvComposationStartVol": null,
-    "set_lvStepPower": null,
-    "set_lvMaxChargePower": null,
-    "set_lvMinComposationVol": null,
-
-    "set_antiRefluxDeadZone": null
+    "sys_setGridMode": null
 
   },
   "board_8di8do":{
@@ -158,23 +103,88 @@
     "do7": null,
     "do8": null
   },
-  "ac_wea1610":{
-    "setCooler": false,
-    "setCoolingTemp": null,
-    "setTempReturnDiff": null,
-    "setCompressorDelayTime": null,
-    "setForceCoolingTime": null,
-    "setTempRecalibration": null,
-    "setMinTemp": null,
-    "setMaxTemp": null,
-    "setHeatingTemp": null,
-    "setUnderTempAlarm": null,
-    "setOverTempAlarm": null
+  "dcdc1":{
+    "on": false,
+    "off":false,
+    "setFaultReset": null,
+    "setSolidParam": null,
+    "setPower": null,
+    "setCurrent": null,
+    "setRunMode": null,
+    "setHVhighProtect": null,
+    "setHVlowProtect": null,
+    "setLVhighProtect": null,
+    "setLVlowProtect": null,
+    "setHVchargeVol": null,
+    "setLVchargeVol": null,
+    "setMaster": null,
+    "setEnableAutoStart": null,
+    "setParallelNum": null,
+    "setMaxPowerLimit": null,
+    "setMaxCurrentLimit": null,
+    "setQuickRunMode":null
+
   },
-  "dehumifier_v2":{
-    "setDehumidifyActionValue": null,
-    "setDehumidifyStopValue": null,
-    "setMode": null,
-    "setStartStop": null
+  "dcdc2":{
+    "on": false,
+    "off":false,
+    "setFaultReset": null,
+    "setSolidParam": null,
+    "setPower": null,
+    "setCurrent": null,
+    "setRunMode": null,
+    "setHVhighProtect": null,
+    "setHVlowProtect": null,
+    "setLVhighProtect": null,
+    "setLVlowProtect": null,
+    "setHVchargeVol": null,
+    "setLVchargeVol": null,
+    "setMaster": null,
+    "setEnableAutoStart": null,
+    "setParallelNum": null,
+    "setMaxPowerLimit": null,
+    "setMaxCurrentLimit": null,
+    "setQuickRunMode":null
+  },
+  "chargers":{
+    "on": false,
+    "off": false,
+    "setCharger": false,
+    "setVoltage": null,
+    "setCurrent": null
+  },
+  "dehumidifier":{
+    "setDehumidifier": false,
+    "setStartHumidity": null,
+    "setStopHumidity": null,
+    "setRunMode": null,
+    "setOnOff": null
+  },
+  "air_condition":{
+    "setOnOff": null,
+    "setCoolingTemp":null,
+    "setCoolingTemp_rd": null,
+    "setHeatingTemp": null,
+    "setHeatingTemp_rd": null,
+    "setHighTempAlarm": null,
+    "setLowTempAlarm": null,
+    "setDryingOpenHumidity": null,
+    "setDryingHumidity_rd": null,
+    "setHighHumidityAlarm": null,
+    "setDryingEnable": null,
+    "setForceCooling": null,
+    "setForceHeating": null
+  },
+  "gtbms485":{
+    "setEnableReadProtection": null,
+    "highVoltageOn":false,
+    "highVoltageOff": false,
+    "bms_reset": false
+  },
+  "dg_hgm6100n":{
+    "on": false,
+    "off": false,
+    "setAutoMode": false,
+    "setManualMode": false
   }
 }

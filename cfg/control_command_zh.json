@@ -1,0 +1,229 @@
+{
+  "ems": {
+    "sys_startup":      { "zh": "开机",           "dataKey": "开机",        "group": "系统控制", "confirm": true },
+    "sys_shutdown":     { "zh": "关机",           "dataKey": null,          "group": "系统控制", "confirm": true },
+    "sys_setMode":      { "zh": "系统运行模式",    "dataKey": "系统运行模式",  "group": "系统控制" },
+    "sys_setGridMode":  { "zh": "系统并离网",      "dataKey": "系统并离网",    "group": "系统控制" },
+    "sys_reset":        { "zh": "系统故障复归",    "dataKey": "系统故障复归",  "group": "系统控制", "confirm": true },
+
+    "do1":  { "zh": "DO1", "dataKey": "DO1", "group": "DO输出" },
+    "do2":  { "zh": "DO2", "dataKey": "DO2", "group": "DO输出" },
+    "do3":  { "zh": "DO3", "dataKey": "DO3", "group": "DO输出" },
+    "do4":  { "zh": "DO4", "dataKey": "DO4", "group": "DO输出" },
+
+    "sys_setSocProtect":        { "zh": "保存SOC设置",     "dataKey": "保存SOC设置",      "group": "SOC保护", "multiCmd": "sys_setSocProtect" },
+    
+    "sys_setStartChargeSoc":    { "zh": "开始充电SOC",      "dataKey": "开始充电SOC",                "group": "SOC保护", "multiCmd": "sys_setSocProtect" },
+    "sys_setStopChargeSoc":     { "zh": "停止充电SOC",      "dataKey": "停止充电SOC",       "group": "SOC保护", "multiCmd": "sys_setSocProtect" },
+    "sys_setRdStopChargeSoc":   { "zh": "停止充电SOC回差",  "dataKey": "停止充电SOC回差",   "group": "SOC保护", "multiCmd": "sys_setSocProtect" },
+    "sys_setEndDischargeSoc":   { "zh": "停止放电SOC",      "dataKey": "停止放电SOC",       "group": "SOC保护", "multiCmd": "sys_setSocProtect" },
+    "sys_setRdEndDischargeSoc": { "zh": "停止放电SOC回差",   "dataKey": "停止放电SOC回差",    "group": "SOC保护", "multiCmd": "sys_setSocProtect" },
+
+    "sys_setBms":                   { "zh": "保存",                 "dataKey": null,                  "group": "BMS保护", "multiCmd": "sys_setBms" },
+    "sys_setEndChargeCellVoltage":  { "zh": "停止充电单体电压",       "dataKey": "停止充电单体电压",       "group": "BMS保护", "multiCmd": "sys_setBms" },
+    "sys_setRdEndChargeCellVoltage":{ "zh": "停止充电单体电压回差",    "dataKey": "停止充电单体电压回差",    "group": "BMS保护", "multiCmd": "sys_setBms" },
+    "sys_setEndDischargeCellVoltage":{ "zh": "停止放电单体电压",      "dataKey": "停止放电单体电压",       "group": "BMS保护", "multiCmd": "sys_setBms" },
+    "sys_setRdEndDischargeCellVoltage":{ "zh": "停止放电单体电压回差","dataKey": "停止放电单体电压回差",    "group": "BMS保护", "multiCmd": "sys_setBms" },
+    "sys_setEnableCellVolProtect":  { "zh": "使能单体电压保护",       "dataKey": "使能单体电压保护",       "group": "BMS保护", "multiCmd": "sys_setBms" },
+
+    "sys_setPcs":               { "zh": "保存",             "dataKey": null,              "group": "PCS设置", "multiCmd": "sys_setPcs" },
+    "sys_setPcsRatedPower":     { "zh": "PCS额定功率",      "dataKey": "PCS额定功率",      "group": "PCS设置", "multiCmd": "sys_setPcs" },
+    "sys_setPcsMaxChargePower": { "zh": "PCS最大充电功率",   "dataKey": "PCS最大充电功率",   "group": "PCS设置", "multiCmd": "sys_setPcs" },
+    "sys_setPcsMaxDischargePower": { "zh": "PCS最大放电功率","dataKey": "PCS最大放电功率",   "group": "PCS设置", "multiCmd": "sys_setPcs" },
+
+    "sys_setInput":           { "zh": "保存",           "dataKey": null,            "group": "电网输入", "multiCmd": "sys_setInput" },
+    "sys_setInputRatedPower": { "zh": "电网输入额定功率",  "dataKey": "电网输入额定功率",  "group": "电网输入", "multiCmd": "sys_setInput" },
+    "sys_setInputMaxPower":   { "zh": "电网输入最大功率",  "dataKey": "电网输入最大功率",  "group": "电网输入", "multiCmd": "sys_setInput" },
+
+    "sys_setAutoModeChargePower":   { "zh": "自动模式充电功率",   "dataKey": "自动模式充电功率",   "group": "自动模式" },
+
+    "timingModeSet":            { "zh": "定时模式配置",   "dataKey": "timingModeSet", "type": "timing", "group": "定时模式", "confirm": true, "template": {"chargeTimeList":[],"dischargeTimeList":[]} },
+    "sys_setTimer":             { "zh": "写入定时配置",   "dataKey": null,           "group": "定时模式", "hide": true },
+
+    "demandResponseModeSet":    { "zh": "需求响应配置",   "dataKey": "demandResponseModeSet", "type": "demandResponse", "group": "需求响应", "confirm": true, "template": [] },
+    "sys_setDemandResponse":    { "zh": "写入需求响应配置","dataKey": null,                    "group": "需求响应", "hide": true },
+
+    "sys_saveDevData":      { "zh": "保存设备数据",   "dataKey": null, "group": "高级调试" },
+    "sys_readSingleAddr":   { "zh": "读取单地址",     "dataKey": null, "group": "高级调试" },
+    "sys_writeSingleAddr":  { "zh": "写入单地址",     "dataKey": null, "group": "高级调试" },
+    "com":          { "zh": "通信端口",   "dataKey": null, "group": "高级调试" },
+    "slaveID":      { "zh": "从站ID",    "dataKey": null, "group": "高级调试" },
+    "functionCode": { "zh": "功能码",     "dataKey": null, "group": "高级调试" },
+    "address":      { "zh": "寄存器地址",  "dataKey": null, "group": "高级调试" },
+    "rawValue":     { "zh": "原始值",     "dataKey": null, "group": "高级调试" },
+    "sys_setChargeVol":             { "zh": "充电电压设定",     "dataKey": null, "group": "高级调试" },
+    "sys_setEndChargeVoltage":      { "zh": "停止充电电压",     "dataKey": null, "group": "高级调试" },
+    "sys_setEndDischargeVoltage":   { "zh": "停止放电电压",     "dataKey": null, "group": "高级调试" }
+  },
+
+  "pcs1": {
+    "on":  { "zh": "PCS 开机",    "dataKey": "开机、关机指令", "group": "开关控制", "confirm": true },
+    "off": { "zh": "PCS 关机",    "dataKey": "开机、关机指令", "group": "开关控制", "confirm": true },
+
+    "setActivePower":       { "zh": "有功功率设置",     "dataKey": "下设有功充电/放电功率",           "group": "运行参数" },
+    "setReactivePower":     { "zh": "无功功率设置",     "dataKey": "无功功率补偿功率设置",        "group": "运行参数" },
+    "setGridMode":          { "zh": "并网模式",        "dataKey": "离网模式设置",           "group": "运行参数" },
+    "setRunMode":           { "zh": "运行模式",        "dataKey": "模块运行模式设置",        "group": "运行参数" },
+    "setFaultReset":        { "zh": "故障复归",        "dataKey": null,                    "group": "运行参数" },
+    "setSolidParam":        { "zh": "固化参数",        "dataKey": null,                    "group": "运行参数" },
+
+    "setMaxChargePower":    { "zh": "最大充电功率",     "dataKey": "最大充电功率",           "group": "保护参数" },
+    "setMaxDischargePower": { "zh": "最大放电功率",     "dataKey": "最大放电功率",           "group": "保护参数" },
+    "setAcHighProtect":     { "zh": "交流过压保护",     "dataKey": "交流线电压过压保护点",    "group": "保护参数" },
+    "setAcLowProtect":    { "zh": "交流欠压保护",     "dataKey": "交流线电压欠压保护点",    "group": "保护参数" },
+    "setAcOverCurrent":     { "zh": "交流过流保护",     "dataKey": "交流过流保护点",         "group": "保护参数" },
+    "setBatOverVoltage":    { "zh": "电池过压保护",     "dataKey": "电池过压保护点",         "group": "保护参数" },
+    "setBatUnderVoltage":   { "zh": "电池欠压保护",     "dataKey": "电池欠压保护点",         "group": "保护参数" },
+    "setBatMaxChargeCurrent":    { "zh": "电池最大充电电流", "dataKey": "电池侧最大充电电流限值",  "group": "保护参数" },
+    "setBatMaxDischargeCurrent": { "zh": "电池最大放电电流", "dataKey": "电池侧最大放电电流限值",  "group": "保护参数" },
+    "setOverTemperature":   { "zh": "过温保护",        "dataKey": "模块过温保护点",         "group": "保护参数" },
+    "setGridOverFreq":      { "zh": "电网过频保护",     "dataKey": "电网过频保护",           "group": "保护参数" },
+    "setGridUnderFreq":     { "zh": "电网欠频保护",     "dataKey": "电网欠频保护",           "group": "保护参数" },
+    "setIsolateOverFreq":   { "zh": "离网过频保护",     "dataKey": "孤岛过频保护",           "group": "保护参数" },
+    "setIsolateUnderFreq":  { "zh": "离网欠频保护",     "dataKey": "孤岛欠频保护",           "group": "保护参数" },
+    "setBusHighProtect":    { "zh": "母线过压保护",     "dataKey": "母线过压保护点",         "group": "保护参数" },
+    "setBusLowProtect":   { "zh": "母线欠压保护",     "dataKey": "母线欠压保护点",         "group": "保护参数" },
+    "setDcOverCurrent":     { "zh": "直流过流保护",     "dataKey": "直流过流保护点",         "group": "保护参数" },
+
+    "setPhaseAPower":       { "zh": "A相有功功率",     "dataKey": "A相有功功率设置",        "group": "分相控制" },
+    "setPhaseAReactivePower":{ "zh": "A相无功功率",    "dataKey": "A相无功功率设置",        "group": "分相控制" },
+    "setPhaseBPower":       { "zh": "B相有功功率",     "dataKey": "B相有功功率设置",        "group": "分相控制" },
+    "setPhaseBReactivePower":{ "zh": "B相无功功率",    "dataKey": "B相无功功率设置",        "group": "分相控制" },
+    "setPhaseCPower":       { "zh": "C相有功功率",     "dataKey": "C相有功功率设置",        "group": "分相控制" },
+    "setPhaseCReactivePower":{ "zh": "C相无功功率",    "dataKey": "C相无功功率设置",        "group": "分相控制" },
+
+    "setOffgridVol":    { "zh": "离网电压",     "dataKey": "离网电压设置",     "group": "离网设置" },
+    "setOffgridFreq":   { "zh": "离网频率",     "dataKey": "离网频率设置",     "group": "离网设置" },
+
+    "setDcPower":         { "zh": "直流功率设置",     "dataKey": "下设充放电功率",          "group": "直流设置" },
+    "setDcCurrent":       { "zh": "直流电流设置",     "dataKey": "下设充放电电流",          "group": "直流设置" },
+    "setMaxDcPower":      { "zh": "最大直流功率",     "dataKey": "DC部分最大功率",          "group": "直流设置" },
+    "setMaxDcCurrent":    { "zh": "最大直流电流",     "dataKey": "DC部分最大电流",          "group": "直流设置" },
+    "setDcBusVol":        { "zh": "直流母线电压",     "dataKey": "母线电压设置",            "group": "直流设置" },
+    "setDcBusVolForOne":  { "zh": "单机直流母线电压",  "dataKey": "DC源母线电压设置",        "group": "直流设置" },
+
+    "setLvChargeVol":       { "zh": "低压充电电压",      "dataKey": "低压侧恒压充电电压设置",        "group": "DC侧设置" },
+    "setLvOverVoltage":     { "zh": "低压过压保护",      "dataKey": "低压侧过压保护点",              "group": "DC侧设置" },
+    "setLvUnderVoltage":    { "zh": "低压欠压保护",      "dataKey": "低压侧欠压保护点",              "group": "DC侧设置" },
+    "setHvChargeVol":       { "zh": "高压充电电压",      "dataKey": "高压侧恒压充电电压设置",        "group": "DC侧设置" },
+    "setHvOverVoltage":     { "zh": "高压过压保护",      "dataKey": "高压侧过压保护点",              "group": "DC侧设置" },
+    "setHvUnderVoltage":    { "zh": "高压欠压保护",      "dataKey": "高压侧欠压保护点",              "group": "DC侧设置" },
+
+    "setCmdCfg":            { "zh": "控制配置字",        "dataKey": "控制配置字",                    "group": "其他" },
+    "setEmsInsuTestEnable": { "zh": "绝缘测试使能",      "dataKey": "绝缘检测EMS控制单次检测使能",   "group": "其他" },
+    "setInsulTestVol":      { "zh": "绝缘测试电压",      "dataKey": "绝缘检测启动电压设置",          "group": "其他" },
+    "setInsuTestEnable":    { "zh": "绝缘测试使能开关",   "dataKey": "绝缘检测使能位",                "group": "其他" },
+    "setDcQuickCfg":        { "zh": "直流快速配置",      "dataKey": "DC快速模式设置",               "group": "其他" },
+    "setDcEpo":             { "zh": "直流急停",         "dataKey": "EPO故障触发(DC)",               "group": "其他" },
+    "setAcEpo":             { "zh": "交流急停",         "dataKey": "EPO故障触发(AC)",               "group": "其他" },
+    "setSinglePhaseCtrl":{ "zh": "单相控制",         "dataKey": "并网单相功率独立控制设置",      "group": "其他" },
+    "setMasterMode":        { "zh": "主从模式",         "dataKey": "模块主机设置",                  "group": "其他" },
+    "setDcParallelEnable":  { "zh": "直流并机使能",      "dataKey": "模块电流源并联使能设置",        "group": "其他" },
+    "setDehumidifyEnable":  { "zh": "除湿使能",         "dataKey": "PCS除湿使能",                   "group": "其他" },
+    "setClearCapacity":     { "zh": "清除容量",         "dataKey": "电量清零指令",                  "group": "其他" }
+  
+  },
+
+  "board_8di8do": {
+    "do1": { "zh": "充电指示灯", "dataKey": "充电指示灯","group": "DO输出" },
+    "do2": { "zh": "放电指示灯", "dataKey": "放电指示灯","group": "DO输出" },
+    "do3": { "zh": "待机指示灯", "dataKey": "待机指示灯","group": "DO输出" },
+    "do4": { "zh": "故障指示灯", "dataKey": "故障指示灯", "group": "DO输出" },
+    "do5": { "zh": "电量低", "dataKey": "电量低","group": "DO输出" },
+    "do6": { "zh": "DO6", "dataKey": "do6","group": "DO输出" },
+    "do7": { "zh": "DO7", "dataKey": "do7","group": "DO输出" },
+    "do8": { "zh": "DO8", "dataKey": "do8","group": "DO输出" }
+  },
+
+  "air_condition": {
+    "setOnOff":           { "zh": "空调开关",         "dataKey": "机组运行状态",              "group": "空调控制" },
+    "setCoolingTemp":     { "zh": "制冷温度",         "dataKey": "制冷设定温度",     "group": "空调控制" },
+    "setCoolingTemp_rd":  { "zh": "制冷回差温度",     "dataKey": "制冷回差温度",     "group": "空调控制" },
+    "setHeatingTemp":     { "zh": "制热温度",         "dataKey": "制热启动温度",     "group": "空调控制" },
+    "setHeatingTemp_rd":  { "zh": "制热回差温度",     "dataKey": "制热停止回差值",   "group": "空调控制" },
+    "setHighTempAlarm":   { "zh": "高温告警温度",     "dataKey": "高温告警温度值",   "group": "空调控制" },
+    "setLowTempAlarm":    { "zh": "低温告警温度",     "dataKey": "低温告警温度值",   "group": "空调控制" },
+    "setDryingOpenHumidity": { "zh": "除湿开启湿度",  "dataKey": "除湿开启湿度值",   "group": "空调控制" },
+    "setDryingHumidity_rd":  { "zh": "除湿回差湿度",  "dataKey": "除湿停止回差",     "group": "空调控制" },
+    "setHighHumidityAlarm":  { "zh": "高湿告警值",    "dataKey": "高湿告警值",       "group": "空调控制" },
+    "setDryingEnable":       { "zh": "除湿使能",      "dataKey": "除湿使能",         "group": "空调控制" },
+    "setForceCooling":       { "zh": "强制制冷",       "dataKey": "强制制冷",         "group": "空调控制" },
+    "setForceHeating":       { "zh": "强制制热",       "dataKey": "强制制热",         "group": "空调控制" }
+  
+  },
+
+  "ac_wea1610": {
+    "setCoolingTemp":       { "zh": "制冷温度",       "group": "空调控制" },
+    "setHeatingTemp":       { "zh": "制热温度",       "group": "空调控制" },
+    "setTempReturnDiff":    { "zh": "温度回差",       "group": "空调控制" },
+    "setCompressorDelayTime":{ "zh": "压缩机延时",     "group": "空调控制" },
+    "setForceCoolingTime":  { "zh": "强制制冷时间",    "group": "空调控制" },
+    "setTempRecalibration": { "zh": "温度校准",       "group": "空调控制" },
+    "setMinTemp":           { "zh": "最低温度",       "group": "空调控制" },
+    "setMaxTemp":           { "zh": "最高温度",       "group": "空调控制" },
+    "setUnderTempAlarm":    { "zh": "低温告警阈值",    "group": "空调控制" },
+    "setOverTempAlarm":     { "zh": "过温告警阈值",    "group": "空调控制" }
+  },
+  "dcdc1":{
+    "on":  { "zh": "DCDC1 开机",  "dataKey": "模块开关机设置", "group": "开关控制", "confirm": true },
+    "off": { "zh": "DCDC1 关机",  "dataKey": "模块开关机设置", "group": "开关控制", "confirm": true },
+
+    "setFaultReset":  { "zh": "故障复归",   "dataKey": null,                    "group": "运行参数" },
+    "setSolidParam":  { "zh": "固化参数",   "dataKey": null,                    "group": "运行参数" },
+    "setPower":       { "zh": "功率设置",   "dataKey": "下设充放电功率",          "group": "运行参数" },
+    "setCurrent":     { "zh": "电流设置",   "dataKey": "下设充放电电流（默认）",   "group": "运行参数" },
+    "setRunMode":     { "zh": "运行模式",   "dataKey": "DCDC运行模式设置",       "group": "运行参数" },
+    "setQuickRunMode":{ "zh": "快速运行模式","dataKey": "DCDC快速模式设置",       "group": "运行参数" },
+
+    "setHVhighProtect":  { "zh": "高压侧过压保护",  "dataKey": "高压侧过压保护点",       "group": "保护参数" },
+    "setHVlowProtect":   { "zh": "高压侧欠压保护",  "dataKey": "高压侧欠压保护点",       "group": "保护参数" },
+    "setLVhighProtect":  { "zh": "低压侧过压保护",  "dataKey": "低压侧过压保护点",       "group": "保护参数" },
+    "setLVlowProtect":   { "zh": "低压侧欠压保护",  "dataKey": "低压侧欠压保护点",       "group": "保护参数" },
+    "setHVchargeVol":    { "zh": "高压侧充电电压",  "dataKey": "高压侧恒压充电电压设置值","group": "保护参数" },
+    "setLVchargeVol":    { "zh": "低压侧充电电压",  "dataKey": "低压侧恒压充电电压设置值","group": "保护参数" },
+    "setMaxPowerLimit":  { "zh": "最大功率限制",    "dataKey": "DCDC模块最大功率限定",   "group": "保护参数" },
+    "setMaxCurrentLimit":{ "zh": "最大电流限制",    "dataKey": "DCDC模块最大电流限定",   "group": "保护参数" },
+
+    "setMaster":         { "zh": "主从模式",   "dataKey": "并机主从机设置",  "group": "其他" },
+    "setEnableAutoStart":{ "zh": "自启动使能",  "dataKey": "模块自启动使能",  "group": "其他" },
+    "setParallelNum":    { "zh": "并机数量",   "dataKey": "并机数量设置",    "group": "其他" }
+  },
+  "dcdc2":{
+    "on":  { "zh": "DCDC2 开机",  "dataKey": "模块开关机设置", "group": "开关控制", "confirm": true },
+    "off": { "zh": "DCDC2 关机",  "dataKey": "模块开关机设置", "group": "开关控制", "confirm": true },
+
+    "setFaultReset":  { "zh": "故障复归",   "dataKey": null,                    "group": "运行参数" },
+    "setSolidParam":  { "zh": "固化参数",   "dataKey": null,                    "group": "运行参数" },
+    "setPower":       { "zh": "功率设置",   "dataKey": "下设充放电功率",          "group": "运行参数" },
+    "setCurrent":     { "zh": "电流设置",   "dataKey": "下设充放电电流（默认）",   "group": "运行参数" },
+    "setRunMode":     { "zh": "运行模式",   "dataKey": "DCDC运行模式设置",       "group": "运行参数" },
+    "setQuickRunMode":{ "zh": "快速运行模式","dataKey": "DCDC快速模式设置",       "group": "运行参数" },
+
+    "setHVhighProtect":  { "zh": "高压侧过压保护",  "dataKey": "高压侧过压保护点",       "group": "保护参数" },
+    "setHVlowProtect":   { "zh": "高压侧欠压保护",  "dataKey": "高压侧欠压保护点",       "group": "保护参数" },
+    "setLVhighProtect":  { "zh": "低压侧过压保护",  "dataKey": "低压侧过压保护点",       "group": "保护参数" },
+    "setLVlowProtect":   { "zh": "低压侧欠压保护",  "dataKey": "低压侧欠压保护点",       "group": "保护参数" },
+    "setHVchargeVol":    { "zh": "高压侧充电电压",  "dataKey": "高压侧恒压充电电压设置值","group": "保护参数" },
+    "setLVchargeVol":    { "zh": "低压侧充电电压",  "dataKey": "低压侧恒压充电电压设置值","group": "保护参数" },
+    "setMaxPowerLimit":  { "zh": "最大功率限制",    "dataKey": "DCDC模块最大功率限定",   "group": "保护参数" },
+    "setMaxCurrentLimit":{ "zh": "最大电流限制",    "dataKey": "DCDC模块最大电流限定",   "group": "保护参数" },
+
+    "setMaster":         { "zh": "主从模式",   "dataKey": "并机主从机设置",  "group": "其他" },
+    "setEnableAutoStart":{ "zh": "自启动使能",  "dataKey": "模块自启动使能",  "group": "其他" },
+    "setParallelNum":    { "zh": "并机数量",   "dataKey": "并机数量设置",    "group": "其他" }
+  },
+  "chargers":{
+    "on":         { "zh": "开机", "dataKey": null, "group": "充电机控制", "confirm": true },
+    "off":        { "zh": "关机", "dataKey": null, "group": "充电机控制", "confirm": true },
+    "setCharger": { "zh": "设置使能",   "dataKey": null, "group": "充电机设置",      "multiCmd": "setCharger"  },
+    "setVoltage": { "zh": "电压设置",   "dataKey": null, "group": "充电机设置",      "multiCmd": "setCharger"   },
+    "setCurrent": { "zh": "电流设置",   "dataKey": null, "group": "充电机设置",      "multiCmd": "setCharger"   }
+  },
+  "dg_hgm6100n":{
+    "on": { "zh": "开机",       "dataKey": "控制器运行状态",         "group": "柴发控制","confirm": true },
+    "off": { "zh": "关机",       "dataKey": "控制器运行状态",         "group": "柴发控制" ,"confirm": true},
+    "setAutoMode": { "zh": "设置自动",       "dataKey": null,         "group": "柴发控制" },
+    "setManualMode": { "zh": "设置手动",       "dataKey": null,         "group": "柴发控制" }
+  }
+
+}

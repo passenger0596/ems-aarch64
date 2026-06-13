@@ -26,6 +26,8 @@
 		<hRegister address="4103" name="ReModbus波特率" datatype="UINT16" unit="" mag="1" offset="0" />
 		<hRegister address="4112" name="ReModbus地址" datatype="UINT16" unit="" mag="1" offset="0" />
 		<hRegister address="4113" name="hMIModbus地址" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="5120" name="故障复位指令" datatype="UINT16" unit="" mag="1" offset="0" />
+		<hRegister address="5125" name="固化参数指令" datatype="UINT16" unit="" mag="1" offset="0" />
 		<hRegister address="5632" name="交流线电压过压保护点" datatype="UINT16" unit="V" mag="10" offset="0" />
 		<hRegister address="5633" name="交流线电压欠压保护点" datatype="UINT16" unit="V" mag="10" offset="0" />
 		<hRegister address="5635" name="交流过流保护点" datatype="UINT16" unit="A" mag="10" offset="0" />
@@ -129,13 +131,6 @@
 		<hRegister address="24666" name="电感温度" datatype="INT16" unit="℃" mag="10" offset="0" />
 		<hRegister address="24667" name="当前实际充放电工作模式" datatype="UINT16" unit="" mag="1" offset="0" />
 		<hRegister address="24668" name="并网/离网状态" datatype="UINT16" unit="" mag="1" offset="0" />
-		<hRegister address="25088" name="VSG使能" datatype="UINT16" unit="" mag="1" offset="0" />
-		<hRegister address="25089" name="VSG时间常数" datatype="INT16" unit="" mag="10" offset="0" />
-		<hRegister address="25090" name="VSG阻尼系数" datatype="INT16" unit="" mag="1" offset="0" />
-		<hRegister address="25091" name="VSG一次调频系数" datatype="INT16" unit="" mag="1" offset="0" />
-		<hRegister address="25092" name="VSG调压系数" datatype="INT16" unit="" mag="1" offset="0" />
-		<hRegister address="25093" name="VSG虚拟R系数" datatype="INT16" unit="" mag="1" offset="0" />
-		<hRegister address="25094" name="VSG虚拟L系数" datatype="INT16" unit="" mag="1" offset="0" />
 	</function_code03>
 	<function_code04 code="0x04" description="Read Input Registers" />
 	<function_code05 code="0x05" description="Write Single Coil" />

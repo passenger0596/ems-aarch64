@@ -40,6 +40,10 @@ namespace Config {
     const std::string WEA1610_COMMUNICATION_FILEPATH = "/home/ubuntu/mnt/ems_cpp/protocol/WEA1610_protocol.xml";
     const std::string BMS_UHOME_COMMUNICATION_FILEPATH = "/home/ubuntu/mnt/ems_cpp/protocol/bms_uhome_protocol.json";
     const std::string GTBMS_COMMUNICATION_FILEPATH = "/home/ubuntu/mnt/ems_cpp/protocol/gtBMS_485_protocol_V1.18.xml";
+    const std::string AC_HENGDU_COMMUNICATION_FILEPATH = "/home/ubuntu/mnt/ems_cpp/protocol/AC_hengdu_protocol_V1.3.xml";
+    const std::string DG_HGM6100N_COMMUNICATION_FILEPATH = "/home/ubuntu/mnt/ems_cpp/protocol/HGM6100N_protocol.xml";
+    const std::string INFY_CHARGER_COMMUNICATION_FILEPATH = "/home/ubuntu/mnt/ems_cpp/protocol/infyCharger_protocol_V108.xml";
+
 
 
 }

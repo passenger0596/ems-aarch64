@@ -1,0 +1,43 @@
+{
+    "_comment": "MQTT 服务配置文件示例 —— 复制此文件为 mqtt_config.json 并填入真实配置",
+
+    "broker": "your_mqtt_broker_address",
+    "port": 1883,
+    "username": "your_username",
+    "password": "your_password",
+
+    "sn": "your_device_sn",
+    "project_code": "your_project_name",
+
+    "full_data_interval_s": 60,
+    "delta_data_interval_s": 1.96,
+
+    "compression_enabled": false,
+    "compression_level": 1,
+
+    "init_file_path": "./mqtt_init.json",
+
+    "device_offsets": {
+        "_comment": "每个设备的 MQTT 数据点 ID 起始偏移，自动推导时留空或删除此项",
+        "ems": 0,
+        "bms_uhome": 1000,
+        "pcs1": 5000,
+        "ac_wea1610": 15000,
+        "dehumidifier": 15300,
+        "dtsd3366": 15500
+    },
+
+    "alarm_offsets": {
+        "ems": 0,
+        "bms_uhome": 1000,
+        "pcs1": 3000,
+        "ac_wea1610": 5000,
+        "dehumidifier": 5300
+    },
+
+    "ems_special_points": {
+        "_comment": "EMS 设备额外发布的数据点（如定时模式、需求响应），键为 MQTT ID",
+        "200": "timingModeSet",
+        "300": "demandResponseModeSet"
+    }
+}

@@ -351,12 +351,12 @@
 		<subdido name="保留位0X7068.13" level="2" />
 		<subdido name="离网短路故障" level="2" />
 		<subdido name="低电压穿越超时故障" level="2" />
-		<subdido name="STS在线异常告警" level="2" />
-		<subdido name="电网相序异常告警" level="2" />
-		<subdido name="电网电压有效值异常告警" level="2" />
-		<subdido name="电网频率异常告警" level="2" />
-		<subdido name="电网电压模值异常告警" level="2" />
-		<subdido name="电网电压模值2异常告警" level="2" />
+		<subdido name="STS在线异常告警" level="1" />
+		<subdido name="电网相序异常告警" level="1" />
+		<subdido name="电网电压有效值异常告警" level="1" />
+		<subdido name="电网频率异常告警" level="1" />
+		<subdido name="电网电压模值异常告警" level="1" />
+		<subdido name="电网电压模值2异常告警" level="1" />
 		<subdido name="保留位0X7078.6" level="2" />
 		<subdido name="保留位0X7078.7" level="2" />
 		<subdido name="保留位0X7078.8" level="2" />

@@ -7,9 +7,15 @@
 
 
 Strategy::Strategy(std::shared_ptr<DeviceManager> device_manager) 
-    : device_manager_(device_manager),
-      pcs15am_cmd_(EjPcs15AmCmd(device_manager_->getModbusClients(),device_manager_->device_map_)),
-      ems_cmd_(EmsCmd(device_manager_->device_map_)) {
+    : device_manager_(device_manager)
+    , ems_cmd_(device_manager_->device_map_)
+    , pcs_cmd_(device_manager_->getModbusClients(), device_manager_->device_map_)
+    , dcdc_cmd_(device_manager_->getModbusClients(), device_manager_->device_map_)
+    , gtbms_cmd_(device_manager_->getModbusClients(), device_manager_->device_map_)
+    , hengdu_ac_cmd_(device_manager_->getModbusClients(), device_manager_->device_map_)
+    , dg_hgm6100_cmd_(device_manager_->getModbusClients(), device_manager_->device_map_)
+    , zhongsheng8dido_cmd_(device_manager_->getModbusClients(), device_manager_->device_map_)
+{
 }
 
 Strategy::~Strategy() {
@@ -89,9 +95,20 @@ void Strategy::autoModeRun(){
 
 void Strategy::manualModeRun() {
     // 处理 EMS 命令
-    ems_cmd_.process_ems_commands(pcs15am_cmd_);
+    ems_cmd_.process_ems_commands(pcs_cmd_, dcdc_cmd_, gtbms_cmd_);
     // 手动模式的运行逻辑
-    pcs15am_cmd_.process_pcs_commands("pcs1");
+    pcs_cmd_.process_pcs_commands("pcs1");
+
+    dcdc_cmd_.process_dcdc_commands("dcdc1");
+    dcdc_cmd_.process_dcdc_commands("dcdc2");
+
+    gtbms_cmd_.process_gtbms_commands("gtbms485");
+
+    hengdu_ac_cmd_.process_hengdu_ac_commands("air_condition");
+
+    dg_hgm6100_cmd_.process_dg_hgm6100n_commands("dg_hgm6100n");
+
+    zhongsheng8dido_cmd_.process_board_8di8do_commands("board_8di8do");
     
 }
 
@@ -168,7 +185,7 @@ void Strategy::weeklyPlanModeRun() {
                             // 如果正在充电，停止充电 - 使用线程安全的 getValue
                             if (pcs_power < 0 || ems->weekPlanPower_need < 0) {
                                 if (static_cast<int>(last_sent_pcs_power_) != 0) {
-                                    pcs15am_cmd_.pcs_set_power(0, "定时", pcs1_device);
+                                    pcs_cmd_.pcs_set_power(0, "定时", pcs1_device);
                                     last_sent_pcs_power_ = 0;
                                 }
                             }
@@ -181,14 +198,14 @@ void Strategy::weeklyPlanModeRun() {
                             ems->sys_running_pos = 32;
                             if (static_cast<int>(last_sent_pcs_power_) != static_cast<int>(ems->weekPlanPower_need)) {
                                 // 设置充电功率
-                                pcs15am_cmd_.pcs_set_power(ems->weekPlanPower_need, "定时", pcs1_device);
+                                pcs_cmd_.pcs_set_power(ems->weekPlanPower_need, "定时", pcs1_device);
                                 last_sent_pcs_power_ = ems->weekPlanPower_need;
                             }
                             
                             // 开启PCS - 使用线程安全的 getValue
                             double pcs_switch = pcs1_device->getValue<double>("开机、关机指令", 0);
                             if (pcs_switch != 1) {
-                                pcs15am_cmd_.pcs_on_off("on", "定时", pcs1_device);
+                                pcs_cmd_.pcs_on_off("on", "定时", pcs1_device);
                             }
                             
                         }
@@ -212,7 +229,7 @@ void Strategy::weeklyPlanModeRun() {
                                 
                                 if (pcs_power > 0 || ems->weekPlanPower_need > 0) {
                                     if (static_cast<int>(last_sent_pcs_power_) != 0) {
-                                        pcs15am_cmd_.pcs_set_power(0, "定时", pcs1_device);
+                                        pcs_cmd_.pcs_set_power(0, "定时", pcs1_device);
                                         last_sent_pcs_power_ = 0;
                                     }
                                 }
@@ -224,7 +241,7 @@ void Strategy::weeklyPlanModeRun() {
                             } else {
                                 if (static_cast<int>(last_sent_pcs_power_) != static_cast<int>(ems->weekPlanPower_need)) {
                                     // 设置放电功率
-                                    pcs15am_cmd_.pcs_set_power(ems->weekPlanPower_need, 
+                                    pcs_cmd_.pcs_set_power(ems->weekPlanPower_need, 
                                                     "定时", pcs1_device);
                                     last_sent_pcs_power_ = ems->weekPlanPower_need;
                                 }
@@ -232,7 +249,7 @@ void Strategy::weeklyPlanModeRun() {
                                 // 开启PCS
                                 double pcs_switch = pcs1_device->getValue<double>("开机、关机指令", 0);
                                 if (pcs_switch != 1) {
-                                    pcs15am_cmd_.pcs_on_off("on", "定时", pcs1_device);
+                                    pcs_cmd_.pcs_on_off("on", "定时", pcs1_device);
                                 }
                             }
 
@@ -244,7 +261,7 @@ void Strategy::weeklyPlanModeRun() {
                     
                     double pcs_switch = pcs1_device->getValue<double>("开机、关机指令", 0);
                     if (pcs_switch != 0) {
-                        pcs15am_cmd_.pcs_on_off("off", "定时", pcs1_device);
+                        pcs_cmd_.pcs_on_off("off", "定时", pcs1_device);
                     }
                     
                     // 重置上次发送的功率值
@@ -268,7 +285,7 @@ void Strategy::weeklyPlanModeRun() {
                 
                 // 180秒后自动恢复
                 if (elapsed > 180) {
-                    pcs15am_cmd_.pcs_reset(pcs1_device, "定时");
+                    pcs_cmd_.pcs_reset(pcs1_device, "定时");
                     
                     // 使用线程安全的 setValue 方法
                     ems->setValue<double>("系统状态", 2);
@@ -372,13 +389,13 @@ void Strategy::demandResponseModeRun() {
                             // 如果正在充电，停止充电 - 使用线程安全的 getValue
                             double pcs_power = pcs1_device->getValue<double>("下设有功充电/放电功率", 0);
                             if (pcs_power < 0) {
-                                pcs15am_cmd_.pcs_set_power(0, "需求响应", pcs1_device);
+                                pcs_cmd_.pcs_set_power(0, "需求响应", pcs1_device);
                             }
                             
                             // 清除无功功率
                             double q_power = pcs1_device->getValue<double>("无功功率补偿功率设置", 0);
                             if (q_power != 0) {
-                                pcs15am_cmd_.pcs_set_reactivePower(0, "需求响应", pcs1_device);
+                                pcs_cmd_.pcs_set_reactivePower(0, "需求响应", pcs1_device);
                             }
                             
                             // 检查是否回落到回差范围
@@ -387,16 +404,16 @@ void Strategy::demandResponseModeRun() {
                             }
                         } else {
                             // 设置有功功率
-                            pcs15am_cmd_.pcs_set_power(static_cast<int>(ems->demandPower_need), 
+                            pcs_cmd_.pcs_set_power(static_cast<int>(ems->demandPower_need), 
                                                   "需求响应", pcs1_device);
                             
                             // 设置无功功率
-                            pcs15am_cmd_.pcs_set_reactivePower(reactive_power, "需求响应", pcs1_device);
+                            pcs_cmd_.pcs_set_reactivePower(reactive_power, "需求响应", pcs1_device);
                             
                             // 开启PCS - 使用线程安全的 getValue
                             double pcs_switch = pcs1_device->getValue<double>("开机、关机指令", 0);
                             if (pcs_switch != 1) {
-                                pcs15am_cmd_.pcs_on_off("on", "需求响应", pcs1_device);
+                                pcs_cmd_.pcs_on_off("on", "需求响应", pcs1_device);
                             }
                         }
                     } else {
@@ -414,13 +431,13 @@ void Strategy::demandResponseModeRun() {
                             
                             double pcs_power = pcs1_device->getValue<double>("下设有功充电/放电功率", 0);
                             if (pcs_power > 0) {
-                                pcs15am_cmd_.pcs_set_power(0, "需求响应", pcs1_device);
+                                pcs_cmd_.pcs_set_power(0, "需求响应", pcs1_device);
                             }
                             
                             // 清除无功功率
                             double q_power = pcs1_device->getValue<double>("无功功率补偿功率设置", 0);
                             if (q_power != 0) {
-                                pcs15am_cmd_.pcs_set_reactivePower(0, "需求响应", pcs1_device);
+                                pcs_cmd_.pcs_set_reactivePower(0, "需求响应", pcs1_device);
                             }
                         }
                         
@@ -428,7 +445,7 @@ void Strategy::demandResponseModeRun() {
                             // 如果正在放电，停止放电
                             double pcs_power = pcs1_device->getValue<double>("下设有功充电/放电功率", 0);
                             if (pcs_power > 0) {
-                                pcs15am_cmd_.pcs_set_power(0, "需求响应", pcs1_device);
+                                pcs_cmd_.pcs_set_power(0, "需求响应", pcs1_device);
                             }
                             
                             // 检查是否回落到回差范围
@@ -437,16 +454,16 @@ void Strategy::demandResponseModeRun() {
                             }
                         } else {
                             // 设置有功功率
-                            pcs15am_cmd_.pcs_set_power(static_cast<int>(ems->demandPower_need), 
+                            pcs_cmd_.pcs_set_power(static_cast<int>(ems->demandPower_need), 
                                                   "需求响应", pcs1_device);
                             
                             // 设置无功功率
-                            pcs15am_cmd_.pcs_set_reactivePower(reactive_power, "需求响应", pcs1_device);
+                            pcs_cmd_.pcs_set_reactivePower(reactive_power, "需求响应", pcs1_device);
                             
                             // 开启PCS
                             double pcs_switch = pcs1_device->getValue<double>("开机、关机指令", 0);
                             if (pcs_switch != 1) {
-                                pcs15am_cmd_.pcs_on_off("on", "需求响应", pcs1_device);
+                                pcs_cmd_.pcs_on_off("on", "需求响应", pcs1_device);
                             }
                             
                         }
@@ -459,30 +476,30 @@ void Strategy::demandResponseModeRun() {
                         // 执行周计划逻辑（简化版，与weeklyPlanModeRun类似）
                         if (week_plan_power_need < 0) {
                             ems->weekPlanPower_need = ems->get_max_charge_power(week_plan_power_need);
-                            pcs15am_cmd_.pcs_set_power(static_cast<int>(ems->weekPlanPower_need), 
+                            pcs_cmd_.pcs_set_power(static_cast<int>(ems->weekPlanPower_need), 
                                                   "定时", pcs1_device);
                             
                             // 使用线程安全的 getValue
                             double pcs_switch = pcs1_device->getValue<double>("开机、关机指令", 0);
                             if (pcs_switch != 1) {
-                                pcs15am_cmd_.pcs_on_off("on", "定时", pcs1_device);
+                                pcs_cmd_.pcs_on_off("on", "定时", pcs1_device);
                             }
                             
                         } else if (week_plan_power_need > 0) {
                             ems->weekPlanPower_need = ems->get_max_discharge_power(week_plan_power_need);
-                            pcs15am_cmd_.pcs_set_power(static_cast<int>(ems->weekPlanPower_need), 
+                            pcs_cmd_.pcs_set_power(static_cast<int>(ems->weekPlanPower_need), 
                                                   "定时", pcs1_device);
                             
                             double pcs_switch = pcs1_device->getValue<double>("开机、关机指令", 0);
                             if (pcs_switch != 1) {
-                                pcs15am_cmd_.pcs_on_off("on", "定时", pcs1_device);
+                                pcs_cmd_.pcs_on_off("on", "定时", pcs1_device);
                             }
 
                         } else {
                             // 关闭PCS
                             double pcs_switch = pcs1_device->getValue<double>("开机、关机指令", 0);
                             if (pcs_switch != 0) {
-                                pcs15am_cmd_.pcs_on_off("off", "定时", pcs1_device);
+                                pcs_cmd_.pcs_on_off("off", "定时", pcs1_device);
                             }
                             
 
@@ -493,7 +510,7 @@ void Strategy::demandResponseModeRun() {
                         
                         double pcs_switch = pcs1_device->getValue<double>("开机、关机指令", 0);
                         if (pcs_switch != 0) {
-                            pcs15am_cmd_.pcs_on_off("off", "定时", pcs1_device);
+                            pcs_cmd_.pcs_on_off("off", "定时", pcs1_device);
                         }
                         
 
@@ -515,7 +532,7 @@ void Strategy::demandResponseModeRun() {
                 
                 // 60秒后自动恢复
                 if (elapsed > 60) {
-                    pcs15am_cmd_.pcs_reset(pcs1_device, "定时");
+                    pcs_cmd_.pcs_reset(pcs1_device, "定时");
                     
                     // 使用线程安全的 setValue
                     ems->setValue<double>("系统告警等级", 0);
@@ -678,7 +695,7 @@ void Strategy::alarmLv2Protect() {
             // 使用线程安全的 getValue 方法
             double pcs1_switch = pcs1_device->getValue<double>("开机、关机指令", 0);
             if (pcs1_switch != 0) {
-                pcs15am_cmd_.pcs_on_off("off", "保护", pcs1_device);
+                pcs_cmd_.pcs_on_off("off", "保护", pcs1_device);
             }
         }
         
@@ -706,7 +723,7 @@ void Strategy::alarmLv3Protect() {
     
     try {
         if (pcs1_device) {
-            pcs15am_cmd_.pcs_on_off("off", "保护", pcs1_device);
+            pcs_cmd_.pcs_on_off("off", "保护", pcs1_device);
         }    
         
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -757,7 +774,7 @@ bool Strategy::timerStartupProcess() {
     int count = 0;
     while (count < 32) {
         count++;
-        ems_cmd_.process_ems_commands(pcs15am_cmd_);
+        ems_cmd_.process_ems_commands(pcs_cmd_, dcdc_cmd_, gtbms_cmd_);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         
         if (pcs1_device->online_status) {
@@ -809,7 +826,7 @@ bool Strategy::demandResponseStartupProcess() {
     int count = 0;
     while (count < 32) {
         count++;
-        ems_cmd_.process_ems_commands(pcs15am_cmd_);
+        ems_cmd_.process_ems_commands(pcs_cmd_, dcdc_cmd_, gtbms_cmd_);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         
         if (pcs1_device->online_status) {

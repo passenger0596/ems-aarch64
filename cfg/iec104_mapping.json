@@ -1,0 +1,3691 @@
+{
+    "server": {
+        "ip": "0.0.0.0",
+        "port": 2404
+    },
+    "interrogation_groups": {
+        "BOOL": 1,
+        "INT16": 2,
+        "UINT16": 2,
+        "INT": 2,
+        "INT32": 3,
+        "UINT32": 3,
+        "FLOAT": 4
+    },
+    "stations": [
+        {
+            "name": "ems",
+            "common_address": 1,
+            "monitor_points": [
+                {
+                    "ioa": 1,
+                    "key": "远程使能",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 2,
+                    "key": "开机",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 3,
+                    "key": "系统运行模式",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 4,
+                    "key": "系统并离网",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 5,
+                    "key": "系统状态",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 6,
+                    "key": "系统告警等级",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 7,
+                    "key": "自动模式充电功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 8,
+                    "key": "DI1",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 9,
+                    "key": "DI2",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 10,
+                    "key": "DI3",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 11,
+                    "key": "DI4",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 12,
+                    "key": "DO1",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 13,
+                    "key": "DO2",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 14,
+                    "key": "DO3",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 15,
+                    "key": "DO4",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 16,
+                    "key": "有功功率设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 17,
+                    "key": "系统故障复归",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 18,
+                    "key": "停止充电SOC",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 19,
+                    "key": "停止充电SOC回差",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 20,
+                    "key": "停止放电SOC",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 21,
+                    "key": "停止放电SOC回差",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 22,
+                    "key": "PCS额定功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 23,
+                    "key": "PCS最大充电功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 24,
+                    "key": "PCS最大放电功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 25,
+                    "key": "电网输入额定功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 26,
+                    "key": "电网输入最大功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 27,
+                    "key": "停止充电单体电压",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 28,
+                    "key": "停止充电单体电压回差",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 29,
+                    "key": "停止放电单体电压",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 30,
+                    "key": "停止放电单体电压回差",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 31,
+                    "key": "停止充电电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 32,
+                    "key": "停止放电电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 33,
+                    "key": "使能SOC保护",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 34,
+                    "key": "使能单体电压保护",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 35,
+                    "key": "防逆流使能",
+                    "datatype": "BOOL",
+                    "iec104_type": "M_SP_NA_1"
+                },
+                {
+                    "ioa": 36,
+                    "key": "防逆流死区",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 37,
+                    "key": "重过载告警值",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 38,
+                    "key": "重过载确认时间",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 39,
+                    "key": "重过载调整间隔",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 40,
+                    "key": "重过载步长",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 41,
+                    "key": "重过载最大放电功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 42,
+                    "key": "重过载恢复功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 43,
+                    "key": "补点允许功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 44,
+                    "key": "重载补点步长",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 45,
+                    "key": "补点降低点功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 46,
+                    "key": "补点最大充电功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 47,
+                    "key": "低电压告警值",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 48,
+                    "key": "低电压确认时间",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 49,
+                    "key": "低压治理调整间隔",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 50,
+                    "key": "无功调节步长",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 51,
+                    "key": "低压治理最大无功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 52,
+                    "key": "有功调节步长",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 53,
+                    "key": "低压治理最大放电功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 54,
+                    "key": "低压治理恢复电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 55,
+                    "key": "高电压告警值",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 56,
+                    "key": "动作调整步长",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 57,
+                    "key": "高电压最大充电功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 58,
+                    "key": "高电压恢复电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                }
+            ],
+            "control_points": [
+                {
+                    "ioa": 10000,
+                    "key": "远程使能",
+                    "tcp_addr": 0,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 1,
+                    "desc": "远程使能"
+                },
+                {
+                    "ioa": 10001,
+                    "key": "系统运行模式",
+                    "tcp_addr": 1,
+                    "datatype": "UINT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 3,
+                    "desc": "系统运行模式设置"
+                },
+                {
+                    "ioa": 10002,
+                    "key": "开机",
+                    "tcp_addr": 2,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 2,
+                    "desc": "系统开关机"
+                },
+                {
+                    "ioa": 10003,
+                    "key": "系统并离网",
+                    "tcp_addr": 3,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 4,
+                    "desc": "系统并离网"
+                },
+                {
+                    "ioa": 10004,
+                    "key": "有功功率设置",
+                    "tcp_addr": 4,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 16,
+                    "desc": "有功功率设置"
+                },
+                {
+                    "ioa": 10005,
+                    "key": "系统故障复归",
+                    "tcp_addr": 5,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 17,
+                    "desc": "系统故障复归"
+                },
+                {
+                    "ioa": 10006,
+                    "key": "防逆流使能",
+                    "tcp_addr": 6,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 35,
+                    "desc": "防逆流使能"
+                },
+                {
+                    "ioa": 10007,
+                    "key": "DO1",
+                    "tcp_addr": 7,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 12,
+                    "desc": "DO1"
+                },
+                {
+                    "ioa": 10008,
+                    "key": "DO2",
+                    "tcp_addr": 8,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 13,
+                    "desc": "DO2"
+                },
+                {
+                    "ioa": 10009,
+                    "key": "DO3",
+                    "tcp_addr": 9,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 14,
+                    "desc": "DO3"
+                },
+                {
+                    "ioa": 10010,
+                    "key": "DO4",
+                    "tcp_addr": 10,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 15,
+                    "desc": "DO4"
+                },
+                {
+                    "ioa": 10011,
+                    "key": "使能SOC保护",
+                    "tcp_addr": 11,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 33,
+                    "desc": "使能SOC保护"
+                },
+                {
+                    "ioa": 10012,
+                    "key": "停止充电SOC",
+                    "tcp_addr": 12,
+                    "datatype": "UINT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 18,
+                    "desc": "停止充电SOC"
+                },
+                {
+                    "ioa": 10013,
+                    "key": "停止充电SOC回差",
+                    "tcp_addr": 13,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 19,
+                    "desc": "停止充电SOC回差"
+                },
+                {
+                    "ioa": 10014,
+                    "key": "停止放电SOC",
+                    "tcp_addr": 14,
+                    "datatype": "UINT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 20,
+                    "desc": "停止放电SOC"
+                },
+                {
+                    "ioa": 10015,
+                    "key": "停止放电SOC回差",
+                    "tcp_addr": 15,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 21,
+                    "desc": "停止放电SOC回差"
+                },
+                {
+                    "ioa": 10016,
+                    "key": "PCS额定功率",
+                    "tcp_addr": 16,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 22,
+                    "desc": "PCS额定功率"
+                },
+                {
+                    "ioa": 10017,
+                    "key": "PCS最大充电功率",
+                    "tcp_addr": 17,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 23,
+                    "desc": "PCS最大充电功率"
+                },
+                {
+                    "ioa": 10018,
+                    "key": "PCS最大放电功率",
+                    "tcp_addr": 18,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 24,
+                    "desc": "PCS最大放电功率"
+                },
+                {
+                    "ioa": 10019,
+                    "key": "电网输入额定功率",
+                    "tcp_addr": 19,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 25,
+                    "desc": "电网输入额定功率"
+                },
+                {
+                    "ioa": 10020,
+                    "key": "电网输入最大功率",
+                    "tcp_addr": 20,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 26,
+                    "desc": "电网输入最大功率"
+                },
+                {
+                    "ioa": 10021,
+                    "key": "使能单体电压保护",
+                    "tcp_addr": 21,
+                    "datatype": "BOOL",
+                    "iec104_type": "C_SC_NA_1",
+                    "related_monitor_ioa": 34,
+                    "desc": "使能单体电压保护"
+                },
+                {
+                    "ioa": 10022,
+                    "key": "停止充电单体电压",
+                    "tcp_addr": 22,
+                    "datatype": "FLOAT",
+                    "iec104_type": "C_SE_NC_1",
+                    "related_monitor_ioa": 27,
+                    "desc": "停止充电单体电压"
+                },
+                {
+                    "ioa": 10023,
+                    "key": "停止充电单体电压回差",
+                    "tcp_addr": 23,
+                    "datatype": "FLOAT",
+                    "iec104_type": "C_SE_NC_1",
+                    "related_monitor_ioa": 28,
+                    "desc": "停止充电单体电压回差"
+                },
+                {
+                    "ioa": 10024,
+                    "key": "停止放电单体电压",
+                    "tcp_addr": 24,
+                    "datatype": "FLOAT",
+                    "iec104_type": "C_SE_NC_1",
+                    "related_monitor_ioa": 29,
+                    "desc": "停止放电单体电压"
+                },
+                {
+                    "ioa": 10025,
+                    "key": "停止放电单体电压回差",
+                    "tcp_addr": 25,
+                    "datatype": "FLOAT",
+                    "iec104_type": "C_SE_NC_1",
+                    "related_monitor_ioa": 30,
+                    "desc": "停止放电单体电压回差"
+                },
+                {
+                    "ioa": 10026,
+                    "key": "重过载告警值",
+                    "tcp_addr": 26,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 37,
+                    "desc": "重过载告警值(kW)"
+                },
+                {
+                    "ioa": 10027,
+                    "key": "重过载确认时间",
+                    "tcp_addr": 27,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 38,
+                    "desc": "重过载检测时间(S)"
+                },
+                {
+                    "ioa": 10028,
+                    "key": "重过载调整间隔",
+                    "tcp_addr": 28,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 39,
+                    "desc": "重过载调整间隔(S)"
+                },
+                {
+                    "ioa": 10029,
+                    "key": "重过载步长",
+                    "tcp_addr": 29,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 40,
+                    "desc": "重过载步进值(kW/S)"
+                },
+                {
+                    "ioa": 10030,
+                    "key": "重过载最大放电功率",
+                    "tcp_addr": 30,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 41,
+                    "desc": "重过载最大放电功率阈值(kW)"
+                },
+                {
+                    "ioa": 10031,
+                    "key": "重过载恢复功率",
+                    "tcp_addr": 31,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 42,
+                    "desc": "重过载恢复功率(kW)"
+                },
+                {
+                    "ioa": 10032,
+                    "key": "补点允许功率",
+                    "tcp_addr": 32,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 43,
+                    "desc": "重过载补点允许功率(kW)"
+                },
+                {
+                    "ioa": 10033,
+                    "key": "重载补点步长",
+                    "tcp_addr": 33,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 44,
+                    "desc": "重过载补点步长(kW/S)"
+                },
+                {
+                    "ioa": 10034,
+                    "key": "补点降低点功率",
+                    "tcp_addr": 34,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 45,
+                    "desc": "重过载补点降低点功率(kW)"
+                },
+                {
+                    "ioa": 10035,
+                    "key": "补点最大充电功率",
+                    "tcp_addr": 35,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 46,
+                    "desc": "重过载补点最大充电功率阈值(kW)"
+                },
+                {
+                    "ioa": 10036,
+                    "key": "低电压告警值",
+                    "tcp_addr": 36,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 47,
+                    "desc": "低压治理电压阈值(V)"
+                },
+                {
+                    "ioa": 10037,
+                    "key": "低电压确认时间",
+                    "tcp_addr": 37,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 48,
+                    "desc": "低压治理检测时间(S)"
+                },
+                {
+                    "ioa": 10038,
+                    "key": "低压治理调整间隔",
+                    "tcp_addr": 38,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 49,
+                    "desc": "低压治理调整间隔(S)"
+                },
+                {
+                    "ioa": 10039,
+                    "key": "无功调节步长",
+                    "tcp_addr": 39,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 50,
+                    "desc": "低压治理无功调节步长(kVar/S)"
+                },
+                {
+                    "ioa": 10040,
+                    "key": "低压治理最大无功功率",
+                    "tcp_addr": 40,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 51,
+                    "desc": "低压治理最大无功功率阈值(kVar)"
+                },
+                {
+                    "ioa": 10041,
+                    "key": "有功调节步长",
+                    "tcp_addr": 41,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 52,
+                    "desc": "低压治理有功调节步长(kW/S)"
+                },
+                {
+                    "ioa": 10042,
+                    "key": "低压治理最大放电功率",
+                    "tcp_addr": 42,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 53,
+                    "desc": "低压治理最大放电功率阈值(kW)"
+                },
+                {
+                    "ioa": 10043,
+                    "key": "低压治理恢复电压",
+                    "tcp_addr": 43,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 54,
+                    "desc": "低压治理恢复电压(V)"
+                },
+                {
+                    "ioa": 10044,
+                    "key": "高电压告警值",
+                    "tcp_addr": 44,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 55,
+                    "desc": "高电压治理动作值(V)"
+                },
+                {
+                    "ioa": 10045,
+                    "key": "动作调整步长",
+                    "tcp_addr": 45,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 56,
+                    "desc": "高电压治理调节步长(kVar/S)"
+                },
+                {
+                    "ioa": 10046,
+                    "key": "高电压最大充电功率",
+                    "tcp_addr": 46,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 57,
+                    "desc": "高电压治理最大充电功率阈值(kW)"
+                },
+                {
+                    "ioa": 10047,
+                    "key": "高电压恢复电压",
+                    "tcp_addr": 47,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 58,
+                    "desc": "高电压治理恢复电压阈值(V)"
+                },
+                {
+                    "ioa": 10048,
+                    "key": "自动模式充电功率",
+                    "tcp_addr": 48,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 7,
+                    "desc": "自动模式充电功率(kW)"
+                },
+                {
+                    "ioa": 10049,
+                    "key": "防逆流死区",
+                    "tcp_addr": 49,
+                    "datatype": "INT16",
+                    "iec104_type": "C_SE_NB_1",
+                    "related_monitor_ioa": 36,
+                    "desc": "防逆流死区(kW)"
+                }
+            ]
+        },
+        {
+            "name": "pcs1",
+            "common_address": 2,
+            "monitor_points": [
+                {
+                    "ioa": 1,
+                    "key": "低压侧恒压充电电压设置",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 2,
+                    "key": "低压侧过压保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 3,
+                    "key": "低压侧欠压保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 4,
+                    "key": "高压侧恒压充电电压设置",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 5,
+                    "key": "高压侧过压保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 6,
+                    "key": "高压侧欠压保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 7,
+                    "key": "下设充放电功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 8,
+                    "key": "下设充放电电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 9,
+                    "key": "开机、关机指令",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 10,
+                    "key": "DC部分最大功率",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 11,
+                    "key": "DC部分最大电流",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 12,
+                    "key": "控制配置字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 13,
+                    "key": "绝缘检测EMS控制单次检测使能",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 14,
+                    "key": "绝缘检测启动电压设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 15,
+                    "key": "绝缘检测使能位",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 16,
+                    "key": "DC快速模式设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 17,
+                    "key": "EPO故障触发(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 18,
+                    "key": "硬件故障字屏蔽字1(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 19,
+                    "key": "硬件故障字屏蔽字2(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 20,
+                    "key": "电池侧故障字屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 21,
+                    "key": "母线侧故障字屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 22,
+                    "key": "并机故障字屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 23,
+                    "key": "系统故障字屏蔽字(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 24,
+                    "key": "开关故障字屏蔽字(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 25,
+                    "key": "其他故障字屏蔽字(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 26,
+                    "key": "DSP版本V(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 27,
+                    "key": "DSP版本B(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 28,
+                    "key": "DSP版本D(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 29,
+                    "key": "工作状态(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 30,
+                    "key": "散热器温度",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 31,
+                    "key": "母线总电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 32,
+                    "key": "正母线电压(DCDC)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 33,
+                    "key": "负母线电压(DCDC)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 34,
+                    "key": "正负母线压差",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 35,
+                    "key": "电池电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 36,
+                    "key": "电池电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 37,
+                    "key": "电池功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 38,
+                    "key": "DC部分环境温度",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 39,
+                    "key": "DC环境温度限额功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 40,
+                    "key": "电池侧正对地绝缘电阻",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 41,
+                    "key": "电池侧负对地绝缘电阻",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 42,
+                    "key": "绝缘检测运行时间计数器",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 43,
+                    "key": "绝缘检测运行",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 44,
+                    "key": "总充电电量",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 45,
+                    "key": "总放电电量",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 46,
+                    "key": "日充电电量",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 47,
+                    "key": "日放电电量",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 48,
+                    "key": "累计运行年",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 49,
+                    "key": "累计运行天",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 50,
+                    "key": "累计运行时",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 51,
+                    "key": "累计运行分",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 52,
+                    "key": "累计运行秒",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 53,
+                    "key": "硬件故障字1(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 54,
+                    "key": "硬件故障字2(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 55,
+                    "key": "电池侧故障字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 56,
+                    "key": "母线侧故障字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 57,
+                    "key": "并机故障字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 58,
+                    "key": "系统故障字(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 59,
+                    "key": "开关故障字(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 60,
+                    "key": "其他故障字(DC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 61,
+                    "key": "DSP版本V(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 62,
+                    "key": "DSP版本B(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 63,
+                    "key": "DSP版本D(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 64,
+                    "key": "CPLD版本V(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 65,
+                    "key": "CPLD版本B(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 66,
+                    "key": "CPLD版本D(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 67,
+                    "key": "ARM版本V",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 68,
+                    "key": "ARM版本B",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 69,
+                    "key": "ARM版本D",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 70,
+                    "key": "交流历史充电总量",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 71,
+                    "key": "交流当日充电量",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 72,
+                    "key": "交流历史放电总量",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 73,
+                    "key": "交流日放电总量",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 74,
+                    "key": "模块交流总有功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 75,
+                    "key": "模块交流A相有功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 76,
+                    "key": "模块交流B相有功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 77,
+                    "key": "模块交流C相有功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 78,
+                    "key": "模块交流总无功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 79,
+                    "key": "模块交流A相无功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 80,
+                    "key": "模块交流B相无功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 81,
+                    "key": "模块交流C相无功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 82,
+                    "key": "模块交流总视在功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 83,
+                    "key": "模块交流A相视在功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 84,
+                    "key": "模块交流B相视在功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 85,
+                    "key": "模块交流C相视在功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 86,
+                    "key": "模块交流总功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 87,
+                    "key": "模块交流A相功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 88,
+                    "key": "模块交流B相功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 89,
+                    "key": "模块交流C相功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 90,
+                    "key": "负载电压频率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 91,
+                    "key": "负载电压相序",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 92,
+                    "key": "负载AB线电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 93,
+                    "key": "负载BC线电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 94,
+                    "key": "负载CA线电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 95,
+                    "key": "负载A相电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 96,
+                    "key": "负载B相电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 97,
+                    "key": "负载C相电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 98,
+                    "key": "逆变AB线电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 99,
+                    "key": "逆变BC线电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 100,
+                    "key": "逆变CA线电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 101,
+                    "key": "逆变A相电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 102,
+                    "key": "逆变B相电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 103,
+                    "key": "逆变C相电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 104,
+                    "key": "电感A相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 105,
+                    "key": "电感B相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 106,
+                    "key": "电感C相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 107,
+                    "key": "电感N相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 108,
+                    "key": "输出A相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 109,
+                    "key": "输出B相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 110,
+                    "key": "输出C相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 111,
+                    "key": "输出N相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 112,
+                    "key": "负载A相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 113,
+                    "key": "负载B相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 114,
+                    "key": "负载C相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 115,
+                    "key": "电网A相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 116,
+                    "key": "电网B相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 117,
+                    "key": "电网C相电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 118,
+                    "key": "交流负载总有功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 119,
+                    "key": "交流负载A相有功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 120,
+                    "key": "交流负载B相有功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 121,
+                    "key": "交流负载C相有功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 122,
+                    "key": "总母线电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 123,
+                    "key": "正母线电压(ACDC)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 124,
+                    "key": "负母线电压(ACDC)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 125,
+                    "key": "并网/离网状态",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 126,
+                    "key": "工作状态(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 127,
+                    "key": "硬件故障字1(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 128,
+                    "key": "硬件故障字2(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 129,
+                    "key": "电网故障字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 130,
+                    "key": "母线故障字(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 131,
+                    "key": "交流电容故障字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 132,
+                    "key": "系统故障字(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 133,
+                    "key": "开关故障字(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 134,
+                    "key": "其他故障字(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 135,
+                    "key": "系统运行模式",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 136,
+                    "key": "并网运行模式数量",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 137,
+                    "key": "离网运行模块数量",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 138,
+                    "key": "当前模块功率CANID",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 139,
+                    "key": "设备温度降额运行系数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 140,
+                    "key": "设备温度降额运行中",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 141,
+                    "key": "设备IGBT温度",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 142,
+                    "key": "环境温度",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 143,
+                    "key": "数字输入1",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 144,
+                    "key": "数字输入2",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 145,
+                    "key": "数字输入3",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 146,
+                    "key": "数字输入4(DRM0)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 147,
+                    "key": "数字输入5(EPO)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 148,
+                    "key": "离网运行状态",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 149,
+                    "key": "STS告警字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 150,
+                    "key": "STS并离网状态",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 151,
+                    "key": "负载总无功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 152,
+                    "key": "负载A相无功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 153,
+                    "key": "负载B相无功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 154,
+                    "key": "负载C相无功功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 155,
+                    "key": "负载总视在功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 156,
+                    "key": "负载A相视在功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 157,
+                    "key": "负载B相视在功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 158,
+                    "key": "负载C相视在功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 159,
+                    "key": "负载A相功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 160,
+                    "key": "负载B相功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 161,
+                    "key": "负载C相功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 162,
+                    "key": "负载总功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 163,
+                    "key": "电网A相电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 164,
+                    "key": "电网B相电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 165,
+                    "key": "电网C相电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 166,
+                    "key": "电网AB线电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 167,
+                    "key": "电网BC线电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 168,
+                    "key": "电网CA线电压",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 169,
+                    "key": "有功功率设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 170,
+                    "key": "无功补偿功率设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 171,
+                    "key": "离网模式设置",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 172,
+                    "key": "模块运行模式设置",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 173,
+                    "key": "并网单相功率独立控制设置",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 174,
+                    "key": "模块主机设置",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 175,
+                    "key": "模块电流源并联使能设置",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 176,
+                    "key": "PCS除湿使能",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 177,
+                    "key": "模块并联台数设置",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 178,
+                    "key": "离网电压设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 179,
+                    "key": "离网频率设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 180,
+                    "key": "A相有功功率设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 181,
+                    "key": "A相无功功率设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 182,
+                    "key": "B相有功功率设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 183,
+                    "key": "B相无功功率设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 184,
+                    "key": "C相有功功率设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 185,
+                    "key": "C相无功功率设置",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 186,
+                    "key": "DC源母线电压设置",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 187,
+                    "key": "母线电压设置",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 188,
+                    "key": "电量清零指令",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 189,
+                    "key": "EPO故障触发(AC)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 190,
+                    "key": "硬件故障字1屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 191,
+                    "key": "硬件故障字2屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 192,
+                    "key": "电网故障字屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 193,
+                    "key": "母线故障字屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 194,
+                    "key": "交流电容故障字屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 195,
+                    "key": "系统故障字屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 196,
+                    "key": "开关故障字屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 197,
+                    "key": "其他故障字屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 198,
+                    "key": "FPGA故障锁存屏蔽字",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 199,
+                    "key": "电网过频保护",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 200,
+                    "key": "电网欠频保护",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 201,
+                    "key": "孤岛过频保护",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 202,
+                    "key": "孤岛欠频保护",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 203,
+                    "key": "交流线电压过压保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 204,
+                    "key": "交流线电压欠压保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 205,
+                    "key": "交流过流保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 206,
+                    "key": "电池过压保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 207,
+                    "key": "电池欠压保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 208,
+                    "key": "母线过压保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 209,
+                    "key": "母线欠压保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 210,
+                    "key": "直流过流保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 211,
+                    "key": "模块过温保护点",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 212,
+                    "key": "最大充电功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 213,
+                    "key": "最大放电功率",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 214,
+                    "key": "电池侧最大充电电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 215,
+                    "key": "电池侧最大放电电流",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                }
+            ]
+        },
+        {
+            "name": "bms_uhome",
+            "common_address": 3,
+            "monitor_points": [
+                {
+                    "ioa": 1,
+                    "key": "电池系统电压(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 2,
+                    "key": "电池系统电流(A)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 3,
+                    "key": "电池平均温度(℃)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 4,
+                    "key": "电池SOC(%)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 5,
+                    "key": "电池SOH(%)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 6,
+                    "key": "最大单体电压(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 7,
+                    "key": "最小单体电压(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 8,
+                    "key": "最大单体电压序号",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 9,
+                    "key": "最小单体电压序号",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 10,
+                    "key": "电池最高温度(℃)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 11,
+                    "key": "电池最低温度(℃)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 12,
+                    "key": "电池最高温度序号",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 13,
+                    "key": "电池最低温度序号",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 14,
+                    "key": "电池充电电压限值(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 15,
+                    "key": "电池最大充电电流(A)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 16,
+                    "key": "电池放电电压限值(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 17,
+                    "key": "电池最大放电电流(A)",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 18,
+                    "key": "电池剩余电量(kWh)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 19,
+                    "key": "充电使能",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 20,
+                    "key": "放电使能",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 21,
+                    "key": "强制充电使能",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 22,
+                    "key": "充满电使能",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 23,
+                    "key": "继电器1开关状态",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 24,
+                    "key": "继电器2开关状态",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 25,
+                    "key": "SOC校准",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 26,
+                    "key": "紧急充电",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 27,
+                    "key": "单体电压1(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 28,
+                    "key": "单体电压2(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 29,
+                    "key": "单体电压3(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 30,
+                    "key": "单体电压4(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 31,
+                    "key": "单体电压5(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 32,
+                    "key": "单体电压6(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 33,
+                    "key": "单体电压7(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 34,
+                    "key": "单体电压8(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 35,
+                    "key": "单体电压9(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 36,
+                    "key": "单体电压10(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 37,
+                    "key": "单体电压11(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 38,
+                    "key": "单体电压12(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 39,
+                    "key": "单体电压13(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 40,
+                    "key": "单体电压14(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 41,
+                    "key": "单体电压15(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 42,
+                    "key": "单体电压16(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 43,
+                    "key": "单体电压17(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 44,
+                    "key": "单体电压18(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 45,
+                    "key": "单体电压19(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 46,
+                    "key": "单体电压20(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 47,
+                    "key": "单体电压21(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 48,
+                    "key": "单体电压22(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 49,
+                    "key": "单体电压23(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 50,
+                    "key": "单体电压24(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 51,
+                    "key": "单体电压25(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 52,
+                    "key": "单体电压26(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 53,
+                    "key": "单体电压27(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 54,
+                    "key": "单体电压28(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 55,
+                    "key": "单体电压29(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 56,
+                    "key": "单体电压30(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 57,
+                    "key": "单体电压31(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 58,
+                    "key": "单体电压32(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 59,
+                    "key": "单体电压33(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 60,
+                    "key": "单体电压34(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 61,
+                    "key": "单体电压35(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 62,
+                    "key": "单体电压36(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 63,
+                    "key": "单体电压37(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 64,
+                    "key": "单体电压38(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 65,
+                    "key": "单体电压39(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 66,
+                    "key": "单体电压40(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 67,
+                    "key": "单体电压41(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 68,
+                    "key": "单体电压42(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 69,
+                    "key": "单体电压43(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 70,
+                    "key": "单体电压44(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 71,
+                    "key": "单体电压45(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 72,
+                    "key": "单体电压46(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 73,
+                    "key": "单体电压47(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 74,
+                    "key": "单体电压48(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 75,
+                    "key": "单体电压49(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 76,
+                    "key": "单体电压50(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 77,
+                    "key": "单体电压51(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 78,
+                    "key": "单体电压52(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 79,
+                    "key": "单体电压53(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 80,
+                    "key": "单体电压54(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 81,
+                    "key": "单体电压55(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 82,
+                    "key": "单体电压56(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 83,
+                    "key": "单体电压57(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 84,
+                    "key": "单体电压58(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 85,
+                    "key": "单体电压59(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 86,
+                    "key": "单体电压60(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 87,
+                    "key": "单体电压61(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 88,
+                    "key": "单体电压62(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 89,
+                    "key": "单体电压63(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 90,
+                    "key": "单体电压64(V)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 91,
+                    "key": "单体温度1(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 92,
+                    "key": "单体温度2(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 93,
+                    "key": "单体温度3(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 94,
+                    "key": "单体温度4(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 95,
+                    "key": "单体温度5(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 96,
+                    "key": "单体温度6(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 97,
+                    "key": "单体温度7(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 98,
+                    "key": "单体温度8(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 99,
+                    "key": "单体温度9(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 100,
+                    "key": "单体温度10(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 101,
+                    "key": "单体温度11(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 102,
+                    "key": "单体温度12(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 103,
+                    "key": "单体温度13(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 104,
+                    "key": "单体温度14(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 105,
+                    "key": "单体温度15(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 106,
+                    "key": "单体温度16(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 107,
+                    "key": "单体温度17(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 108,
+                    "key": "单体温度18(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 109,
+                    "key": "单体温度19(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 110,
+                    "key": "单体温度20(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 111,
+                    "key": "单体温度21(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 112,
+                    "key": "单体温度22(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 113,
+                    "key": "单体温度23(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 114,
+                    "key": "单体温度24(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 115,
+                    "key": "单体温度25(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 116,
+                    "key": "单体温度26(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 117,
+                    "key": "单体温度27(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 118,
+                    "key": "单体温度28(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 119,
+                    "key": "单体温度29(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 120,
+                    "key": "单体温度30(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 121,
+                    "key": "单体温度31(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 122,
+                    "key": "单体温度32(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 123,
+                    "key": "单体温度33(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 124,
+                    "key": "单体温度34(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 125,
+                    "key": "单体温度35(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 126,
+                    "key": "单体温度36(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 127,
+                    "key": "单体温度37(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 128,
+                    "key": "单体温度38(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 129,
+                    "key": "单体温度39(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 130,
+                    "key": "单体温度40(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 131,
+                    "key": "单体温度41(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 132,
+                    "key": "单体温度42(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 133,
+                    "key": "单体温度43(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 134,
+                    "key": "单体温度44(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 135,
+                    "key": "单体温度45(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 136,
+                    "key": "单体温度46(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 137,
+                    "key": "单体温度47(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 138,
+                    "key": "单体温度48(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 139,
+                    "key": "单体温度49(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 140,
+                    "key": "单体温度50(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 141,
+                    "key": "单体温度51(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 142,
+                    "key": "单体温度52(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 143,
+                    "key": "单体温度53(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 144,
+                    "key": "单体温度54(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 145,
+                    "key": "单体温度55(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 146,
+                    "key": "单体温度56(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 147,
+                    "key": "单体温度57(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 148,
+                    "key": "单体温度58(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 149,
+                    "key": "单体温度59(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 150,
+                    "key": "单体温度60(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 151,
+                    "key": "单体温度61(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 152,
+                    "key": "单体温度62(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 153,
+                    "key": "单体温度63(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 154,
+                    "key": "单体温度64(℃)",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                }
+            ]
+        },
+        {
+            "name": "dtsd3366",
+            "common_address": 4,
+            "monitor_points": [
+                {
+                    "ioa": 1,
+                    "key": "A相电压",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 2,
+                    "key": "B相电压",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 3,
+                    "key": "C相电压",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 4,
+                    "key": "A相电流",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 5,
+                    "key": "B相电流",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 6,
+                    "key": "C相电流",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 7,
+                    "key": "有功总功率",
+                    "datatype": "INT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 8,
+                    "key": "A相有功总功率",
+                    "datatype": "INT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 9,
+                    "key": "B相有功总功率",
+                    "datatype": "INT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 10,
+                    "key": "C相有功总功率",
+                    "datatype": "INT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 11,
+                    "key": "无功总功率",
+                    "datatype": "INT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 12,
+                    "key": "A相无功总功率",
+                    "datatype": "INT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 13,
+                    "key": "B相无功总功率",
+                    "datatype": "INT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 14,
+                    "key": "C相无功总功率",
+                    "datatype": "INT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 15,
+                    "key": "总视在功率",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 16,
+                    "key": "A相视在功率",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 17,
+                    "key": "B相视在功率",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 18,
+                    "key": "C相视在功率",
+                    "datatype": "UINT32",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 19,
+                    "key": "总功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 20,
+                    "key": "A相功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 21,
+                    "key": "B相功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 22,
+                    "key": "C相功率因数",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 23,
+                    "key": "A相相角",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 24,
+                    "key": "B相相角",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 25,
+                    "key": "C相相角",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 26,
+                    "key": "电网频率",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 27,
+                    "key": "组合有功总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 28,
+                    "key": "组合有功尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 29,
+                    "key": "组合有功峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 30,
+                    "key": "组合有功平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 31,
+                    "key": "组合有功谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 32,
+                    "key": "正向有功总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 33,
+                    "key": "正向有功尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 34,
+                    "key": "正向有功峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 35,
+                    "key": "正向有功平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 36,
+                    "key": "正向有功谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 37,
+                    "key": "反向有功总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 38,
+                    "key": "反向有功尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 39,
+                    "key": "反向有功峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 40,
+                    "key": "反向有功平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 41,
+                    "key": "反向有功谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 42,
+                    "key": "组合无功1总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 43,
+                    "key": "组合无功1尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 44,
+                    "key": "组合无功1峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 45,
+                    "key": "组合无功1平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 46,
+                    "key": "组合无功1谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 47,
+                    "key": "组合无功2总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 48,
+                    "key": "组合无功2尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 49,
+                    "key": "组合无功2峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 50,
+                    "key": "组合无功2平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 51,
+                    "key": "组合无功2谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 52,
+                    "key": "一象限无功总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 53,
+                    "key": "一象限无功尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 54,
+                    "key": "一象限无功峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 55,
+                    "key": "一象限无功平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 56,
+                    "key": "一象限无功谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 57,
+                    "key": "二象限无功总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 58,
+                    "key": "二象限无功尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 59,
+                    "key": "二象限无功峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 60,
+                    "key": "二象限无功平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 61,
+                    "key": "二象限无功谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 62,
+                    "key": "三象限无功总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 63,
+                    "key": "三象限无功尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 64,
+                    "key": "三象限无功峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 65,
+                    "key": "三象限无功平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 66,
+                    "key": "三象限无功谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 67,
+                    "key": "四象限无功总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 68,
+                    "key": "四象限无功尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 69,
+                    "key": "四象限无功峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 70,
+                    "key": "四象限无功平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 71,
+                    "key": "四象限无功谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 72,
+                    "key": "正向视在总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 73,
+                    "key": "正向视在尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 74,
+                    "key": "正向视在峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 75,
+                    "key": "正向视在平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 76,
+                    "key": "正向视在谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 77,
+                    "key": "反向视在总电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 78,
+                    "key": "反向视在尖电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 79,
+                    "key": "反向视在峰电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 80,
+                    "key": "反向视在平电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                },
+                {
+                    "ioa": 81,
+                    "key": "反向视在谷电能",
+                    "datatype": "FLOAT",
+                    "iec104_type": "M_ME_NC_1"
+                }
+            ]
+        },
+        {
+            "name": "ac_wea1610",
+            "common_address": 5,
+            "monitor_points": [
+                {
+                    "ioa": 1,
+                    "key": "柜温",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 2,
+                    "key": "风机温度",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 3,
+                    "key": "加热继电器输出状态",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 4,
+                    "key": "报警状态",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 5,
+                    "key": "制冷设定温度",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 6,
+                    "key": "回差温度值",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 7,
+                    "key": "压缩机延时时间",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 8,
+                    "key": "强制制冷时间",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 9,
+                    "key": "柜内温度校正",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 10,
+                    "key": "设置温度最小值",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 11,
+                    "key": "设置温度最大值",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 12,
+                    "key": "加热设定温度值",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 13,
+                    "key": "低温报警值",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 14,
+                    "key": "高温报警值",
+                    "datatype": "INT16",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 15,
+                    "key": "从机地址",
+                    "datatype": "UINT16",
+                    "iec104_type": "M_ME_NB_1"
+                }
+            ]
+        },
+        {
+            "name": "dehumidifier",
+            "common_address": 6,
+            "monitor_points": [
+                {
+                    "ioa": 1,
+                    "key": "湿度动作值",
+                    "datatype": "INT",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 2,
+                    "key": "湿度停止值",
+                    "datatype": "INT",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 3,
+                    "key": "通讯地址",
+                    "datatype": "INT",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 4,
+                    "key": "波特率",
+                    "datatype": "INT",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 5,
+                    "key": "手动自动状态",
+                    "datatype": "INT",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 6,
+                    "key": "运行状态",
+                    "datatype": "INT",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 7,
+                    "key": "温度",
+                    "datatype": "INT",
+                    "iec104_type": "M_ME_NB_1"
+                },
+                {
+                    "ioa": 8,
+                    "key": "湿度",
+                    "datatype": "INT",
+                    "iec104_type": "M_ME_NB_1"
+                }
+            ]
+        }
+    ]
+}

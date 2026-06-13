@@ -98,7 +98,7 @@ bool CanOperator::send_frame(sockcanpp::CanId can_id,
         driver_->sendMessage(msg);
         return true;
     } catch (const std::exception& e) {
-        LOG_ERROR_LOC("CAN send_frame error: " + std::string(e.what()));
+        // LOG_ERROR_LOC("CAN send_frame error: " + std::string(e.what()));
         return false;
     }
 }
@@ -112,7 +112,7 @@ bool CanOperator::send_frame(const sockcanpp::CanMessage& message)
         driver_->sendMessage(message);
         return true;
     } catch (const std::exception& e) {
-        LOG_ERROR_LOC("CAN send_frame error: " + std::string(e.what()));
+        // LOG_ERROR_LOC("CAN send_frame error: " + std::string(e.what()));
         return false;
     }
 }

@@ -172,7 +172,7 @@ void UnixSocketServer::clientHandler(std::shared_ptr<ClientContext> context) {
         while (!context->stopFlag) {
             try {
                 // 控制发送频率
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 
                 // 发送数据
                 if (!sendDataToClient(context)) {

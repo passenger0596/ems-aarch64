@@ -18,15 +18,23 @@ DeviceManager::DeviceManager() {
     // 初始化所有设备实例
     this->ems_ = EMS::instance();
     this->pcs_ = std::make_shared<Pcs>("pcs1", 0, 1);
-    
-    this->wea1610_ = std::make_shared<Wea1610>("ac_wea1610", 2, 1);
-    this->dtsd3366_ = std::make_shared<ACMeter_3366>("dtsd3366", 4, 1);
-
+    this->dcdc1_ = std::make_shared<Dcdc>("dcdc1", 1, 1);
+    this->dcdc2_ = std::make_shared<Dcdc>("dcdc2", 1, 2);
     // 创建高特BMS设备（假设使用串口5，Modbus从站地址为1）
-    this->gt_bms_ = std::make_shared<GtBms>("gt_bms", 5, 1);
+    this->gt_bms_ = std::make_shared<GtBms>("gtbms485", 2, 1);
+    this->ac_hengdu_ = std::make_shared<AcHengdu>("air_condition", 3, 1);
     
-    this->devices_ = {this->ems_, this->pcs_, this->wea1610_, 
-                      this->dtsd3366_, this->gt_bms_}; 
+    this->dtsd3366_ = std::make_shared<ACMeter_3366>("dtsd3366", 4, 1);
+    this->dg_hgm6100_ = std::make_shared<DgHgm6100n>("dg_hgm6100n", 5, 1);
+    this->iomodule_ = std::make_shared<IOModule>("board_8di8do", 7, 20);
+
+    this->chargers_ = std::make_shared<InfyCharger>("chargers", 17, 1);
+    this->chargers_->init_config(Config::INFY_CHARGER_COMMUNICATION_FILEPATH);
+    
+    
+    this->devices_ = {this->ems_, this->pcs_, this->dcdc1_, this->dcdc2_,
+                      this->gt_bms_, this->ac_hengdu_, this->dtsd3366_,this->dg_hgm6100_, this->iomodule_, this->chargers_
+                      }; 
     
     for (auto& device : this->devices_) {
         this->device_map_[device->get_name()] = device;
@@ -284,15 +292,33 @@ void DeviceManager::readDeviceThreadWithStopFlag(
  * @brief CAN 设备的线程主循环
  * 轮询该接口下挂载的所有 CAN 设备
  */
-void DeviceManager::readCanDeviceThreadWithStopFlag(uint8_t com, 
+void DeviceManager::readCanDeviceThreadWithStopFlag(uint8_t com,
     std::shared_ptr<CanOperator> can_operator, int thread_id)
 {
     // 获取当前线程的停止标志引用
     auto& stop_flag = this->thread_stop_flags_[thread_id];
-    
+
     LOG_INFO_LOC(("CAN read thread started for COM" + std::to_string(static_cast<int>(com))).c_str());
 
+    int consecutive_errors = 0;
+    static constexpr int MAX_CONSECUTIVE_ERRORS = 10;
+
     while (!stop_flag && !this->stop_threads_) {
+        // ── 自动重连：如果 CAN 接口断开，尝试重连 ──
+        if (!can_operator->is_connected()) {
+            LOG_WARNING_LOC(("CAN interface " + can_operator->get_interface_name() +
+                             " disconnected, attempting reconnect...").c_str());
+            if (can_operator->connect()) {
+                LOG_INFO_LOC(("CAN interface " + can_operator->get_interface_name() +
+                              " reconnected successfully").c_str());
+                consecutive_errors = 0;
+            } else {
+                // 重连失败，等待后重试
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                continue;
+            }
+        }
+
         // 依次读取该接口下的每个设备
         for (auto& device : this->can_dev_map[com]) {
             if (stop_flag || this->stop_threads_) {
@@ -302,8 +328,20 @@ void DeviceManager::readCanDeviceThreadWithStopFlag(uint8_t com,
             try {
                 // 调用设备特定的 CAN 读取逻辑
                 device->read_data(*can_operator);
+                consecutive_errors = 0;  // 成功则重置错误计数
             } catch (const std::exception& e) {
                 LOG_ERROR_LOC("CAN thread error for " + device->get_name() + ": " + e.what());
+                consecutive_errors++;
+
+                // 连续错误超过阈值，触发重连
+                if (consecutive_errors >= MAX_CONSECUTIVE_ERRORS) {
+                    LOG_WARNING_LOC(("Too many CAN errors (" +
+                                     std::to_string(consecutive_errors) +
+                                     "), forcing reconnect...").c_str());
+                    can_operator->disconnect();
+                    consecutive_errors = 0;
+                    break;  // 跳出设备循环，下一轮迭代会触发重连
+                }
             }
         }
         // 周期停顿，避免占用过多 CPU
@@ -560,8 +598,11 @@ void DeviceManager::publishDataToRedis()
                             const RegisterData& reg_data = pair.second;
                             
                             json reg_json = {
-                                {"value", reg_data.value},
-                                {"unit", reg_data.unit}
+                                    {"value", reg_data.value},
+                                    {"unit", reg_data.unit},
+                                    {"datatype", reg_data.datatype},
+                                    {"mag", reg_data.mag},
+                                    {"offset", reg_data.offset}
                             };
                             data_dict_json[key] = reg_json;
                         }
@@ -576,7 +617,10 @@ void DeviceManager::publishDataToRedis()
                         
                         json reg_json = {
                             {"value", reg_data.value},
-                            {"unit", reg_data.unit}
+                            {"unit", reg_data.unit},
+                            {"datatype", reg_data.datatype},
+                            {"mag", reg_data.mag},
+                            {"offset", reg_data.offset}
                         };
                         data_dict_json[key] = reg_json;
                     }
@@ -846,6 +890,42 @@ void DeviceManager::handleControlMessage(const std::string& channel, const std::
                         // pcs_->set_power(power);
                     }
                     
+                    // ══════ InfyCharger 充电机控制 ══════
+                    if (device_name == "chargers") {
+                        auto charger = std::dynamic_pointer_cast<InfyCharger>(device);
+                        if (charger) {
+                            // 开关机控制: command="on_off", value=0或1
+                            if (command == "on_off" && json_msg.contains("value")) {
+                                int on_off = json_msg["value"].get<int>();
+                                charger->set_on_off(on_off);
+                                LOG_INFO_LOC(("充电机开关机: " + std::to_string(on_off)).c_str());
+
+                                // 通过 CAN 发送控制帧
+                                auto can_ops = getCanOperators();
+                                auto it = can_ops.find(static_cast<int>(charger->get_com()));
+                                if (it != can_ops.end()) {
+                                    charger->multiWriteCmdToDevice(it->second);
+                                }
+                            }
+                            // 电压电流设置: command="set_voltage_current", voltage=xxx, current=xxx
+                            else if (command == "set_voltage_current" &&
+                                     json_msg.contains("voltage") && json_msg.contains("current")) {
+                                double voltage = json_msg["voltage"].get<double>();
+                                double current = json_msg["current"].get<double>();
+                                charger->set_voltage_current(voltage, current);
+                                LOG_INFO_LOC(("充电机设置电压电流: V=" + std::to_string(voltage) +
+                                              "V, I=" + std::to_string(current) + "A").c_str());
+
+                                // 通过 CAN 发送控制帧
+                                auto can_ops = getCanOperators();
+                                auto it = can_ops.find(static_cast<int>(charger->get_com()));
+                                if (it != can_ops.end()) {
+                                    charger->multiWriteCmdToDevice(it->second);
+                                }
+                            }
+                        }
+                    }
+
                     // 示例：如果是EMS设备，可以设置运行模式
                     if (device_name == "ems") {
                         if (json_msg.contains("mode")) {
