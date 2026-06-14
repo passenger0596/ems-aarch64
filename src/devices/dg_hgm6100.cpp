@@ -54,9 +54,7 @@ DgHgm6100n::DgHgm6100n(const std::string& name, int com, int id)
 void DgHgm6100n::init_config(const std::string& config_file) {
     // 直接使用父类的默认实现，ACHengdu不需要特殊处理
     Device::init_config(config_file);
-    
-    LOG_INFO_LOC("hgm6100n柴发加载配置文件成功: " + 
-                 std::to_string(this->data_dict_.size()) + " registers.");
+
 }
 
 void DgHgm6100n::parse_rawdata(const std::vector<uint16_t>& data_list)

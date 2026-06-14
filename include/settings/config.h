@@ -23,12 +23,16 @@ namespace Config {
     };
 
     const std::string SOCKET_PATH = "/home/ubuntu/mnt/ems_project/ems_local.socket";;
+
     const std::string CONTROL_CMD_FILEPATH = "/home/ubuntu/mnt/ems_cpp/cfg/control_command.json";
+
     const std::string EMS_DATA_DICT_FILEPATH = "/home/ubuntu/mnt/ems_cpp/cfg/ems_data_dict.json";
-    const std::string MQTT_CMD_FILEPATH = "/home/ubuntu/mnt/ems_cpp/cfg/mqtt_cmd.json";
-    
     const std::string EMS_TCP_CMD_FILEPATH = "/home/ubuntu/mnt/ems_cpp/cfg/ems_tcp_cmd.json";
     const std::string EMS_CONFIG_FILEPATH_JSON = "/home/ubuntu/mnt/ems_cpp/cfg/ems_configure_param.json";
+
+    const std::string MQTT_CMD_FILEPATH = "/home/ubuntu/mnt/ems_cpp/cfg/mqtt_cmd.json";
+    
+    
 
     const std::string EJDCDC_COMMUNICATION_FILEPATH = "/home/ubuntu/mnt/ems_cpp/protocol/ejDCDC_protocol_V2.2.xml";
     const std::string EJPCS_COMMUNICATION_FILEPATH = "/home/ubuntu/mnt/ems_cpp/protocol/ejPCS_protocol_V.1.24.xml";

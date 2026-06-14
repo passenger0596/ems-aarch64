@@ -40,9 +40,6 @@ ACMeter_3366::ACMeter_3366(const std::string& name, int com, int id)
 void ACMeter_3366::init_config(const std::string& config_file) {
     // 直接使用父类的默认实现，ACMeter_3366不需要特殊处理
     Device::init_config(config_file);
-    
-    LOG_INFO_LOC("ACMeter_3366 Config loaded successfully: " + 
-                 std::to_string(this->data_dict_.size()) + " registers.");
 }
 
 void ACMeter_3366::parse_rawdata(const std::vector<uint16_t>& data_list)

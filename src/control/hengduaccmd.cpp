@@ -125,21 +125,21 @@ void HengduAcCmd::process_hengdu_ac_commands(const std::string& device_name) {
         std::shared_ptr<Device>& device = device_map_.at(device_name);
         
         if (device_commands.contains("setOnOff") && !device_commands["setOnOff"].is_null()) {
-            std::string switch_state = device_commands["setOnOff"].get<bool>() ? "on" : "off";
+            std::string switch_state = device_commands["setOnOff"].get<int>() == 1 ? "on" : "off";
             LOG_INFO_LOC("准备执行 " + device_name + " 开关命令: " + switch_state);
             ac_on_off(switch_state, "手动", device);
             device_commands["setOnOff"] = nullptr;
         }
         
         if (device_commands.contains("setForceCooling") && !device_commands["setForceCooling"].is_null()) {
-            std::string switch_state = device_commands["setForceCooling"].get<bool>() ? "on" : "off";
+            std::string switch_state = device_commands["setForceCooling"].get<int>() == 1 ? "on" : "off";
             LOG_INFO_LOC("准备执行 " + device_name + " 强制制冷命令: " + switch_state);
             force_cooling(switch_state, "手动", device);
             device_commands["setForceCooling"] = nullptr;
         }
         
         if (device_commands.contains("setForceHeating") && !device_commands["setForceHeating"].is_null()) {
-            std::string switch_state = device_commands["setForceHeating"].get<bool>() ? "on" : "off";
+            std::string switch_state = device_commands["setForceHeating"].get<int>() == 1 ? "on" : "off";
             LOG_INFO_LOC("准备执行 " + device_name + " 强制加热命令: " + switch_state);
             force_heating(switch_state, "手动", device);
             device_commands["setForceHeating"] = nullptr;

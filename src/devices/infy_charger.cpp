@@ -99,7 +99,9 @@ InfyCharger::InfyCharger(const std::string& name, int can_channel, int id,
 
 // ======================== init_config ========================
 void InfyCharger::init_config(const std::string& config_file) {
-    LOG_INFO_LOC(("加载 InfyCharger 配置文件: " + config_file));
+    // 该方法目的只是为 充电机加载告警配置，不加载其他寄存器配置
+
+    LOG_INFO_LOC(("加载 InfyCharger 告警配置文件: " + config_file));
 
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(config_file.c_str());
@@ -543,7 +545,7 @@ void InfyCharger::send_control_frames(CanOperator& can_operator) {
                 LOG_INFO_LOC(("InfyCharger 开关机切换: " + std::to_string(charger_on_off_)));
             }
         } else {
-            LOG_ERROR_LOC("InfyCharger 发送开关机 CAN 帧失败");
+            // LOG_ERROR_LOC("InfyCharger 发送开关机 CAN 帧失败");
         }
     }
 
@@ -564,7 +566,7 @@ void InfyCharger::send_control_frames(CanOperator& can_operator) {
                               std::to_string(set_sys_current_) + "A"));
             }
         } else {
-            LOG_ERROR_LOC("InfyCharger 发送电压电流 CAN 帧失败");
+            // LOG_ERROR_LOC("InfyCharger 发送电压电流 CAN 帧失败");
         }
     }
 }

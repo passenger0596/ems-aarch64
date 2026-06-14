@@ -57,6 +57,7 @@ int main() {
         device_manager->createReadThreads();        // 启动设备数据读取线程
         device_manager->startRunningLogThread();    // 启动运行日志线程
         device_manager->startModbusTcpServer();     // 启动 Modbus TCP 服务器
+        device_manager->startDbInserterThread();     // 启动数据库定时插入线程
 
         // 启动云端控制订阅（与Python端保持一致）
         device_manager->startSubscribeCloudControl();

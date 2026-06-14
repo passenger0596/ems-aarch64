@@ -70,8 +70,6 @@ void AcHengdu::init_config(const std::string& config_file) {
     // 直接使用父类的默认实现，ACHengdu不需要特殊处理
     Device::init_config(config_file);
     
-    LOG_INFO_LOC("恒度空调加载配置文件成功: " + 
-                 std::to_string(this->data_dict_.size()) + " registers.");
 }
 
 void AcHengdu::parse_rawdata(const std::vector<uint16_t>& data_list)

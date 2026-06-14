@@ -347,16 +347,28 @@ bool SqlCpp::createDeviceTable(const std::string& table_name,
     
     try {
         std::string escaped_table = escapeSqlIdentifier(table_name);
+
+        // 检查表是否已存在
+        bool table_exists = false;
+        {
+            SQLite::Statement check(*main_db_,
+                "SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?");
+            check.bind(1, table_name);
+            if (check.executeStep()) {
+                table_exists = check.getColumn(0).getInt() > 0;
+            }
+        }
+
         std::stringstream sql;
         sql << "CREATE TABLE IF NOT EXISTS " << escaped_table << " ("
             << "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             << "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,"
             << "online_status BOOLEAN DEFAULT 0";
-        
+
         for (const auto& field : fields) {
-            sql << ", " << escapeSqlIdentifier(field.first) << " " 
+            sql << ", " << escapeSqlIdentifier(field.first) << " "
                 << fieldTypeToSql(field.second.type, field.second.length);
-            
+
             if (!field.second.nullable) {
                 sql << " NOT NULL";
             }
@@ -364,12 +376,16 @@ bool SqlCpp::createDeviceTable(const std::string& table_name,
                 sql << " UNIQUE";
             }
         }
-        
+
         sql << ");";
-        
+
         main_db_->exec(sql.str());
-        
-        LOG_INFO_LOC(("设备表创建成功: " + table_name).c_str());
+
+        if (table_exists) {
+            LOG_DEBUG_LOC(("设备表已存在: " + table_name).c_str());
+        } else {
+            LOG_INFO_LOC(("设备表创建成功: " + table_name).c_str());
+        }
         return true;
     } catch (const std::exception& e) {
         last_error_ = "创建设备表失败: " + std::string(e.what());
@@ -848,15 +864,19 @@ bool SqlCpp::insertDeviceDataFromRegister(const std::string& table_name,
         LOG_ERROR_LOC(last_error_.c_str());
         return false;
     }
-    
-    // 首先确保表结构存在
-    if (!createOrUpdateDeviceTableFromRegister(table_name, register_data)) {
-        LOG_ERROR_LOC(("创建或更新表结构失败: " + table_name).c_str());
-        return false;
+
+    // 首次遇到该表：创建/检查结构，并标记已检查
+    // 后续调用直接跳过，避免重复 CREATE TABLE IF NOT EXISTS + PRAGMA
+    if (checked_tables_.find(table_name) == checked_tables_.end()) {
+        if (!createOrUpdateDeviceTableFromRegister(table_name, register_data)) {
+            LOG_ERROR_LOC(("创建或更新表结构失败: " + table_name).c_str());
+            return false;
+        }
+        checked_tables_.insert(table_name);
     }
-    
+
     std::lock_guard<std::mutex> lock(main_mutex_);
-    
+
     // 调用内部实现（不重复获取锁）
     return insertDeviceDataFromRegisterInternal(table_name, register_data, online_status);
 }

@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <unordered_set>
 #include <mutex>
 #include <memory>
 #include <functional>
@@ -231,6 +232,9 @@ private:
     
     // 最后错误信息
     std::string last_error_;
+
+    // 已检查过的表名缓存（避免每次插入都重复 CREATE TABLE IF NOT EXISTS + PRAGMA）
+    std::unordered_set<std::string> checked_tables_;
 };
 
 // 便捷宏定义

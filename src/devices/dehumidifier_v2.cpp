@@ -33,9 +33,7 @@ DehumidifierV2::DehumidifierV2(const std::string& name, int com, int id)
 
 void DehumidifierV2::init_config(const std::string& config_file) {
     Device::init_config(config_file);
-    
-    LOG_INFO_LOC("DehumidifierV2 Config loaded successfully: " + 
-                 std::to_string(this->data_dict_.size()) + " registers.");
+
 }
 
 void DehumidifierV2::parse_rawdata(const std::vector<uint16_t>& data_list) 

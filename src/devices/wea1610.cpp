@@ -33,20 +33,6 @@ Wea1610::Wea1610(const std::string& name, int com, int id)
 
 void Wea1610::init_config(const std::string& config_file) {
     Device::init_config(config_file);
-    
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(config_file.c_str());
-    
-    if (result) {
-        pugi::xml_node root = doc.document_element();
-        if (root) {
-            parse_alarm_config(root);
-        }
-    }
-    
-    LOG_INFO_LOC("Wea1610 Config loaded successfully: " + 
-                 std::to_string(this->data_dict_.size()) + " registers, " + 
-                 std::to_string(this->alarm_map.size()) + " alarms.");
 }
 
 void Wea1610::parse_rawdata(const std::vector<uint16_t>& data_list) 

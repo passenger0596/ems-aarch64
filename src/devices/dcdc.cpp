@@ -41,22 +41,6 @@ Dcdc::Dcdc(const std::string& name, int com, int id)
 void Dcdc::init_config(const std::string& config_file) {
     // 首先调用父类的默认实现来加载基本寄存器配置
     Device::init_config(config_file);
-    
-    // 然后加载DCDC特有的告警配置
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(config_file.c_str());
-    
-    if (result) {
-        pugi::xml_node root = doc.document_element();
-        if (root) {
-            // 使用父类提供的parse_alarm_config方法解析告警信息
-            Device::parse_alarm_config(root);
-        }
-    }
-    
-    LOG_INFO_LOC("DCDC Config loaded successfully: " + 
-                 std::to_string(this->data_dict_.size()) + " registers, " + 
-                 std::to_string(this->alarm_map.size()) + " alarms.");
 }
 
 void Dcdc::parse_rawdata(const std::vector<uint16_t>& data_list) 

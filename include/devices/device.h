@@ -194,6 +194,11 @@ public:
             }
         }
 
+        pugi::xml_node dido_node = root.child("dido");
+        if (dido_node) { 
+            parse_alarm_config(root);
+        }
+
         // 预留数据缓存区空间
         this->data_buffer.reserve(150);
 

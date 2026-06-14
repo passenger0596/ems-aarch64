@@ -42,6 +42,14 @@ class DeviceManager{
         // 新增：订阅云端控制消息
         void startSubscribeCloudControl();
         void stopSubscribeCloudControl();
+
+        // 新增：数据库定时插入线程（从Redis获取数据，避免加锁）
+        // 调用 startDbInserterThread() 启动，stopDbInserterThread() 停止
+        // 不需要时注释掉 startDbInserterThread() 的调用即可
+        void startDbInserterThread(int save_period_seconds = 15);
+        void stopDbInserterThread();
+        // 独立方法：从Redis获取所有设备数据并保存到数据库，可单独调用
+        void saveDeviceDataFromRedis();
         
         // 新增：设置控制消息回调函数
         using ControlMessageCallback = std::function<void(const std::string&, const std::string&)>;
@@ -112,12 +120,18 @@ class DeviceManager{
         
         // 新增：控制消息回调,mqtt->redis->本地控制消息
         ControlMessageCallback control_message_callback_;
-        
+
         // 新增：订阅线程函数
         void cloudControlSubscribeThread();
-        
+
         // 新增：处理控制消息，mqtt->redis->本地控制消息
         void handleControlMessage(const std::string& channel, const std::string& message);
+
+        // 新增：数据库定时插入线程
+        std::thread db_inserter_thread_;
+        std::atomic<bool> stop_db_inserter_{false};
+        // 数据库插入线程主循环
+        void dbInserterThreadLoop(int save_period_seconds);
 
         // ── Modbus TCP 服务器 ──
         struct Fc03Mapping {
@@ -130,6 +144,8 @@ class DeviceManager{
             uint16_t rtu_addr;        // RTU原始modbus地址（EMS为0）
             uint16_t last_val[2];     // 上一次HR值，检测客户端写入
             int skip_count;           // RTU写入后跳过N轮推送等data_dict追上
+            bool is_fc03_original = false;  // rtu_addr是否来自FC03地址空间（false则跳过RTU写回）
+            uint8_t original_fc = 0;       // 原始功能码: 0=无, 1=FC01线圈, 3=FC03保持寄存器, 其他=只读不写回
         };
 
         std::unique_ptr<ModbusServer> modbus_tcp_server_;
@@ -148,8 +164,8 @@ class DeviceManager{
 
         // ── 定时模式 / 需求响应模式块映射 ──
         // 可配置的起始地址（可通过 setter 修改）
-        uint16_t timer_block_start_addr_      = 100;
-        uint16_t demand_block_start_addr_     = 200;
+        uint16_t timer_block_start_addr_      = 200;
+        uint16_t demand_block_start_addr_     = 400;
 
         // 动态条目数（根据 EMS 配置文件中的实际条目数决定）
         int timer_charge_entries_    = 0;

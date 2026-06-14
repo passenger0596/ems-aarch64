@@ -43,26 +43,7 @@ IOModule::IOModule(const std::string& name, int com, int id)
 }
 
 void IOModule::init_config(const std::string& config_file) {
-    LOG_INFO_LOC("Loading IOModule config from: " + config_file);
     Device::init_config(config_file);
-
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(config_file.c_str());
-
-    if (!result) {
-        LOG_ERROR_LOC("Failed to load config file: " + config_file +
-                     ", Error: " + std::string(result.description()));
-        return;
-    }
-
-    pugi::xml_node root = doc.document_element();
-    if (!root) {
-        LOG_ERROR_LOC("Invalid XML format");
-        return;
-    }
-
-    // 解析告警信息
-    parse_alarm_config(root);
     
 }
 

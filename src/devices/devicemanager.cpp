@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "canoperator.h"
 #include "modbusclient.h"
+#include "sqlcpp.h"
 #include <hiredis/hiredis.h>
 #include "log.h"
 #include <thread>
@@ -356,7 +357,10 @@ void DeviceManager::stopAllThreads()
     // 1. 停止日志线程
     stopRunningLogThread();
 
-    // 2. 停止云端订阅线程
+    // 2. 停止数据库定时插入线程
+    stopDbInserterThread();
+
+    // 3. 停止云端订阅线程
     stopSubscribeCloudControl();
 
     // 3. 全局停止标志
@@ -549,12 +553,179 @@ void DeviceManager::startRunningLogThread() {
 
 void DeviceManager::stopRunningLogThread() {
     this->stop_running_log_ = true;
-    
+
     if (this->running_log_thread_.joinable()) {
         this->running_log_thread_.join();
     }
-    
+
     LOG_INFO_LOC("运行日志显示线程已停止");
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 数据库定时插入（从Redis获取设备数据，避免对 data_dict_ 加锁）
+// ═══════════════════════════════════════════════════════════════
+
+void DeviceManager::saveDeviceDataFromRedis() {
+    // 1. 连接Redis
+    redisContext* redis_conn = redisConnect("127.0.0.1", 6379);
+    if (redis_conn == nullptr || redis_conn->err) {
+        if (redis_conn) {
+            LOG_ERROR_LOC("DB插入线程 Redis连接错误: " + std::string(redis_conn->errstr));
+            redisFree(redis_conn);
+        } else {
+            LOG_ERROR_LOC("DB插入线程 无法分配Redis上下文");
+        }
+        return;
+    }
+
+    // 设置超时
+    struct timeval timeout = {2, 0};  // 2秒
+    redisSetTimeout(redis_conn, timeout);
+
+    int total_inserted = 0;
+    int skipped_offline = 0;
+    int skipped_missing = 0;
+
+    // 2. 遍历所有设备，从Redis获取数据
+    for (const auto& device : devices_) {
+        if (!device) continue;
+
+        const std::string dev_name = device->get_name();
+        std::string redis_key = "device:" + dev_name;
+
+        // 从Redis获取JSON数据
+        redisReply* reply = static_cast<redisReply*>(
+            redisCommand(redis_conn, "GET %s", redis_key.c_str()));
+
+        if (reply == nullptr || reply->type != REDIS_REPLY_STRING) {
+            if (reply) freeReplyObject(reply);
+            skipped_missing++;
+            continue;
+        }
+
+        std::string json_str(reply->str, reply->len);
+        freeReplyObject(reply);
+
+        // 3. 解析JSON
+        try {
+            auto data_json = nlohmann::json::parse(json_str);
+
+            // 检查在线状态
+            bool online = data_json.value("online_status", false);
+            if (!online) {
+                skipped_offline++;
+                continue;
+            }
+
+            // 提取 data 字段
+            if (!data_json.contains("data") || !data_json["data"].is_object()) {
+                skipped_missing++;
+                continue;
+            }
+
+            const auto& data_obj = data_json["data"];
+
+            // 4. 构建 RegisterData map（从Redis JSON重建）
+            std::unordered_map<std::string, RegisterData> register_data;
+            for (auto it = data_obj.begin(); it != data_obj.end(); ++it) {
+                const std::string& key = it.key();
+                const auto& val = it.value();
+
+                RegisterData rd;
+                rd.value    = val.value("value", 0.0);
+                rd.mag      = val.value("mag", 1.0);
+                rd.offset   = val.value("offset", 0);
+                rd.datatype = val.value("datatype", "INT16");
+                rd.unit     = val.value("unit", "");
+
+                register_data[key] = rd;
+            }
+
+            if (register_data.empty()) {
+                skipped_missing++;
+                continue;
+            }
+
+            // 5. 插入数据库（表名使用设备名小写）
+            std::string table_name = dev_name;
+            std::transform(table_name.begin(), table_name.end(),
+                           table_name.begin(), ::tolower);
+
+            if (SqlCpp::getInstance().insertDeviceDataFromRegister(
+                    table_name, register_data, online)) {
+                total_inserted++;
+            }
+
+        } catch (const nlohmann::json::parse_error& e) {
+            LOG_ERROR_LOC(("DB插入 解析JSON失败 [" + dev_name + "]: " + e.what()).c_str());
+        } catch (const std::exception& e) {
+            LOG_ERROR_LOC(("DB插入 异常 [" + dev_name + "]: " + e.what()).c_str());
+        }
+    }
+
+    // 6. 清理Redis连接
+    redisFree(redis_conn);
+
+    LOG_INFO_LOC(("数据库插入完成: 成功=" + std::to_string(total_inserted) +
+                  ", 离线跳过=" + std::to_string(skipped_offline) +
+                  ", 无数据跳过=" + std::to_string(skipped_missing)).c_str());
+}
+
+void DeviceManager::dbInserterThreadLoop(int save_period_seconds) {
+    LOG_INFO_LOC(("数据库定时插入线程启动，保存周期=" +
+                  std::to_string(save_period_seconds) + "秒").c_str());
+
+    // 等待首个周期再开始（避免启动时集中写入）
+    for (int i = 0; i < save_period_seconds && !stop_db_inserter_; ++i) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+
+    while (!stop_db_inserter_.load()) {
+        try {
+            saveDeviceDataFromRedis();
+        } catch (const std::exception& e) {
+            LOG_ERROR_LOC(("数据库插入线程异常: " + std::string(e.what())).c_str());
+        }
+
+        // 按周期等待，每秒检查停止标志以便快速退出
+        for (int i = 0; i < save_period_seconds && !stop_db_inserter_; ++i) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+    }
+
+    LOG_INFO_LOC("数据库定时插入线程已停止");
+}
+
+void DeviceManager::startDbInserterThread(int save_period_seconds) {
+    if (db_inserter_thread_.joinable()) {
+        LOG_WARNING_LOC("数据库定时插入线程已在运行");
+        return;
+    }
+
+    // 确保数据库已初始化
+    if (!SqlCpp::getInstance().isInitialized()) {
+        LOG_WARNING_LOC("数据库未初始化，尝试初始化...");
+        if (!SqlCpp::getInstance().initialize()) {
+            LOG_ERROR_LOC("数据库初始化失败，数据库插入线程未启动");
+            return;
+        }
+    }
+
+    stop_db_inserter_ = false;
+    db_inserter_thread_ = std::thread(
+        &DeviceManager::dbInserterThreadLoop, this, save_period_seconds);
+    LOG_INFO_LOC(("数据库定时插入线程已启动，周期=" +
+                  std::to_string(save_period_seconds) + "秒").c_str());
+}
+
+void DeviceManager::stopDbInserterThread() {
+    stop_db_inserter_ = true;
+
+    if (db_inserter_thread_.joinable()) {
+        db_inserter_thread_.join();
+    }
+
+    LOG_INFO_LOC("数据库定时插入线程已停止");
 }
 
 
@@ -1223,6 +1394,14 @@ void DeviceManager::initModbusTcpServer(const std::string& ip, int port) {
             m.skip_count = 0; m.last_val[0] = m.last_val[1] = 0;
                 m.reg_count   = reg_count_of(rd.datatype);
                 m.rtu_addr    = rd.address;  // RTU原始modbus地址
+                // 判断该key的RTU地址原始功能码，决定写回方式:
+                //   0=无RTU来源  1=FC01(线圈→FC05)  3=FC03(保持寄存器→FC06/16)
+                //   2/4=只读来源(FC02离散输入/FC04输入寄存器)→拒绝写入
+                if (dev->fc03_nameToAddr_map.find(k) != dev->fc03_nameToAddr_map.end())
+                    m.original_fc = 3;
+                else if (dev->fc01_nameToAddr_map.find(k) != dev->fc01_nameToAddr_map.end())
+                    m.original_fc = 1;
+                // FC02/FC04 保持 original_fc=0，syncAllFc03中跳过写回
 
                 int dummy;
                 uint16_t out[2];
@@ -1284,15 +1463,26 @@ void DeviceManager::startModbusTcpServer() {
     // 设置每个设备的 FC04 ModbusTcp服务器起始地址
     setDeviceFc04StartAddr("ems", 0);
     setDeviceFc04StartAddr("pcs1", 1000);
-    setDeviceFc04StartAddr("gt_bms", 2000);
-    setDeviceFc04StartAddr("dtsd3366", 4000);
-    setDeviceFc04StartAddr("ac_wea1610", 4500);
+    setDeviceFc04StartAddr("dcdc1", 1300);
+    setDeviceFc04StartAddr("dcdc2", 1400);
+    setDeviceFc04StartAddr("chargers", 1500);
+    setDeviceFc04StartAddr("dtsd3366", 1600);
+    setDeviceFc04StartAddr("air_condition", 1800);
+    setDeviceFc04StartAddr("board_8di8do", 1900);
+    setDeviceFc04StartAddr("gtbms485", 2000);
+    setDeviceFc04StartAddr("dg_hgm6100n", 3000);
+
 
     // 设置每个设备的 FC03 ModbusTcp服务器起始地址（非EMS设备）
     setDeviceFc03StartAddr("pcs1", 1000);
-    setDeviceFc03StartAddr("gt_bms", 2000);
-    setDeviceFc03StartAddr("dtsd3366", 4000);
-    setDeviceFc03StartAddr("ac_wea1610", 4500);
+    setDeviceFc03StartAddr("dcdc1", 1300);
+    setDeviceFc03StartAddr("dcdc2", 1400);
+    setDeviceFc03StartAddr("chargers", 1500);
+    setDeviceFc03StartAddr("dtsd3366", 1600);
+    setDeviceFc03StartAddr("air_condition", 1800);
+    setDeviceFc03StartAddr("board_8di8do", 1900);
+    setDeviceFc03StartAddr("gtbms485", 2000);
+    setDeviceFc03StartAddr("dg_hgm6100n", 3000);
 
     initModbusTcpServer(ip, port);
 
@@ -1435,21 +1625,48 @@ void DeviceManager::syncAllFc03() {
             double real = regs_to_value(cur, m.reg_count, m.mag, m.offset);
             if (m.device_name == "ems") {
                 ems_writes.push_back({m.key, real});
-            } else if (m.rtu_addr != 0 && m.key != "online_status") {
+            } else if (m.original_fc >= 1) {
                 auto dev = getDeviceByName(m.device_name);
-                auto mb = mapComToModbusClient.find(static_cast<int>(dev ? dev->get_com() : 0));
-                if (mb != mapComToModbusClient.end() && mb->second && mb->second->is_connected() && dev) {
-                    dev->updateRegisterValue(m.key, real);
-                    mb->second->set_slave(dev->get_id());
-                    bool ok = (m.reg_count >= 2) ? mb->second->write_registers(m.rtu_addr, 2, cur)
-                                                   : mb->second->write_register(m.rtu_addr, cur[0]);
-                    if (ok) {
-                        m.skip_count = FC03_SKIP_CYCLES;
-                        LOG_INFO_LOC(("FC03 写回: [" + m.device_name + "][" + m.key +
-                                      "] tcp=" + std::to_string(addr) + " rtu=" + std::to_string(m.rtu_addr) +
-                                      " raw=" + std::to_string(cur[0]) + " real=" + std::to_string(real) +
-                                      " skip=" + std::to_string(FC03_SKIP_CYCLES)).c_str());
+                if (m.original_fc == 1) {
+                    // ── FC01 来源：线圈 → 用 FC05 写回（0→OFF, 非0→ON）──
+                    auto mb = mapComToModbusClient.find(static_cast<int>(dev ? dev->get_com() : 0));
+                    if (mb != mapComToModbusClient.end() && mb->second && mb->second->is_connected() && dev) {
+                        dev->updateRegisterValue(m.key, real);
+                        mb->second->set_slave(dev->get_id());
+                        bool coil_val = (real != 0.0);
+                        bool ok = mb->second->write_coil(m.rtu_addr, coil_val);
+                        if (ok) {
+                            m.skip_count = FC03_SKIP_CYCLES;
+                            LOG_INFO_LOC(("FC03 写回(FC05线圈): [" + m.device_name + "][" + m.key +
+                                          "] tcp=" + std::to_string(addr) + " rtu=" + std::to_string(m.rtu_addr) +
+                                          " coil=" + std::to_string(coil_val) + " real=" + std::to_string(real) +
+                                          " skip=" + std::to_string(FC03_SKIP_CYCLES)).c_str());
+                        }
                     }
+                } else if (m.original_fc == 3) {
+                    // ── FC03 来源：保持寄存器 → 用 FC06/FC16 写回 ──
+                    auto mb = mapComToModbusClient.find(static_cast<int>(dev ? dev->get_com() : 0));
+                    if (mb != mapComToModbusClient.end() && mb->second && mb->second->is_connected() && dev) {
+                        dev->updateRegisterValue(m.key, real);
+                        mb->second->set_slave(dev->get_id());
+                        bool ok = (m.reg_count >= 2) ? mb->second->write_registers(m.rtu_addr, 2, cur)
+                                                       : mb->second->write_register(m.rtu_addr, cur[0]);
+                        if (ok) {
+                            m.skip_count = FC03_SKIP_CYCLES;
+                            LOG_INFO_LOC(("FC03 写回(FC06/16): [" + m.device_name + "][" + m.key +
+                                          "] tcp=" + std::to_string(addr) + " rtu=" + std::to_string(m.rtu_addr) +
+                                          " raw=" + std::to_string(cur[0]) + " real=" + std::to_string(real) +
+                                          " skip=" + std::to_string(FC03_SKIP_CYCLES)).c_str());
+                        }
+                    }
+                } else {
+                    // ── FC02/FC04/未知来源：只读，拒绝写入 data_dict ──
+                    // 实际设备的data_dict由读取线程更新，TCP客户端写入不应覆盖
+                    LOG_WARNING_LOC(("FC03 拒绝写入(只读来源 fc=" + std::to_string(m.original_fc) +
+                                     "): [" + m.device_name + "][" + m.key +
+                                     "] tcp=" + std::to_string(addr) +
+                                     " rtu=" + std::to_string(m.rtu_addr) +
+                                     " real=" + std::to_string(real)).c_str());
                 }
             }
             m.last_val[0] = cur[0];
